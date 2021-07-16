@@ -1,10 +1,11 @@
 *{
   margin: 0;
-  padding: 0
+  padding: 0;
+  transition: 0.5s;
 }
 
 .navbar-brand-image {
-    width: 80px;
+   width: 80px;
 }
 
 .hidnavbar {
@@ -20,7 +21,7 @@
 .intro {
     min-height:500px;
     padding-top:150px;
-    background-image: url();
+    background-image: url(../image/background.jpg);
   	background-attachment:fixed;
   	background-size:cover;
   	color:white;
@@ -60,8 +61,39 @@
   opacity: 1;
   transition: 2s;
 }
+.img-small-opacity img {
+  width: 45px;
+  opacity: 65%;
+  overflow: hidden;
+}
 
-.searchengine{
-  margin-top: 6px;
-  margin-bottom: 6px;
+.hid260{
+  opacity: 0;
+  transition: 1s;
+}
+
+.hid260.show{
+  opacity: 1;
+  transition: 1s;
+}
+
+.color-custom-1{
+  background-color:rgba(255, 255, 255, 0.527);
+  color: black;
+}
+.border-custom-1{
+  border: 5px 5px 5px 5px black;
+}
+
+.error-msg{
+  opacity: 0;
+  transition: 1s;
+  height: 0;
+}
+
+.error-msg.show{
+  background-color: rgba(128, 128, 128, 0.555);
+  opacity: 1;
+  transition: 1s;
+  height: 5%;
 }

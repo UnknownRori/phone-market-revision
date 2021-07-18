@@ -8,14 +8,23 @@
    width: 80px;
 }
 
+.navbar{
+  height: 60px;
+}
 .hidnavbar {
   opacity: 0;
+  height: 0px;
   transition: 1s;
 }
 
 .hidnavbar.show {
   opacity: 0.95;
+  height: 60px;
   transition: 1s;
+}
+.navbar.navmsg{
+  transition: 1s;
+  margin-top: 30px;
 }
 
 .intro {
@@ -85,15 +94,61 @@
   border: 5px 5px 5px 5px black;
 }
 
-.error-msg{
+.msg{
+  margin-top: -20px;
   opacity: 0;
   transition: 1s;
   height: 0;
 }
 
-.error-msg.show{
-  background-color: rgba(128, 128, 128, 0.555);
+.msg.show{
+  margin-top: 60px;
   opacity: 1;
   transition: 1s;
   height: 5%;
+}
+
+.msg.short{
+  margin: 0;
+  transition: 1s;
+  height: 5%;
+}
+
+.msg.warning{
+  background-color: #ffc107 !important;
+  color: white;
+}
+
+.msg.error{
+  background-color: #dc3545 !important;
+  color: white;
+}
+
+.msg.success{
+  background-color: #28a745 !important;
+  color: white;
+}
+.msg.info{
+  background-color: #17a2b8 !important;
+  color: white;
+}
+
+.profile{
+  height: 30px;
+  border-radius: 20%;
+  transition: 1s;
+}
+.profile:hover{
+  transition: 1s;
+  transform: scale(2)!important;
+  filter: brightness(100%);
+}
+
+.floating-bottom{
+  position: absolute;
+  padding: 0px 0px 3.5% 1%;
+}
+
+.collapse{
+  background-color: rgba(255, 255, 255, 0.849);
 }

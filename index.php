@@ -1,6 +1,6 @@
 <?php
     require_once 'php\connect.php';
-    error_reporting(0);
+    
 ?>
 
 <!DOCTYPE html>
@@ -17,12 +17,12 @@
     <link rel="icon" href="resource/image/favicon.jpg">
     <title>Home</title>
 </head>
-<body>
-    <div class="error-msg">
-        <span id="error-msg" class="color-danger"></span>
+<body id="home">
+    <div class="msg fixed-top text-center">
+        <span id="msg"></span>
     </div>
     <nav class="navbar navbar-expand-sm bg-light navbar-light fixed-top  hidnavbar">
-        <a class="navbar-brand" href="../phone-market-revision">
+        <a class="navbar-brand" href="#home">
             <img src="resource\image\Apple.png" class="navbar-brand-image" alt="Brand"> Store
         </a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#collapsibleNavbar">
@@ -40,10 +40,17 @@
                     <a href="contactus.php" class="nav-link">Contact us</a>
                 </li>
                 <?php
-                if($_SESSION['username'] !== null){
+                if(isset($_SESSION['admin'])){
                     echo '
                     <li class="nav-item">
-                        <a href="/php/dashboard.php" class="nav-link">Dashboard</a>
+                        <a href="/php/dashboard.php" class="nav-link">Manage Users</a>
+                    </li>
+                    ';
+                }
+                if(isset($_SESSION['vendor'])){
+                    echo '
+                    <li class="nav-item">
+                        <a href="/php/dashboard.php" class="nav-link">Manage Product</a>
                     </li>
                     ';
                 }
@@ -56,17 +63,17 @@
                 </li>
             </ul>
             <ul class="navbar-nav">
-                <?php if($_SESSION['username'] == null){
-                    echo '<a href=".\php\login.php" class="btn btn-info">Log in</a>';
-                }else{
+                <?php if(isset($_SESSION['username'])){
                     echo '
                     <div>
-                        <a class="navbar-brand" href="' . $_SESSION['username'] . '">' . $_SESSION['username'] . '
-                            <img src="' . $_SESSION['username'] . '" alt="">
+                        <a class="navbar-brand" href="/php/user.php?users=' . $_SESSION['username'] . '">' . $_SESSION['username'] . '
+                            <img class="profile" src="resource/image/profile/' . $_SESSION['username'] . '.jpg" alt="">
                         </a>
                     </div>
                     ';
                     echo '<a href=".\php\logout.php" class="btn btn-danger">Log out</a>';
+                }else{
+                    echo '<a href=".\php\login.php" class="btn btn-info">Log in</a>';
                 }?>
             </ul>
         </div>
@@ -83,7 +90,7 @@
         <section id="about" class="about">
             <div class="container">
             <div class="row d-flex flex-row-reverse">
-                <div class="col-6 img-hover">
+                <div class="col-6">
                     <img src="resource\image\teaser\nophone.png" alt="NoPhone" class="img-fluid">
                 </div>
                 <div class="col-6 text-left">
@@ -97,7 +104,7 @@
                 </div>
             </div>
             <div class="row d-flex">
-                <div class="col-6 img-hover">
+                <div class="col-6">
                     <img src="resource\image\teaser\nophone2.png" alt="No Phone" class='img img-fluid'>
                 </div>
                 <div class="col-6">
@@ -116,7 +123,7 @@
         
         </section>
     </div>
-    <div class="footer fixed-bottom img-small-opacity hid260">
+    <div class="footer fixed-bottom img-small-opacity hid260 floating-bottom">
         <a href="https://github.com/UnknownRori/phone-market-revision" target="_blank" title="Source Code">
             <img src="resource/image/contactus/github.png" alt="github">
         </a>
@@ -136,6 +143,7 @@
     </div>
     <script>
         printLetterByLetter("intro", "A Fake Apple Store", 100);
+        error_msg(1);
     </script>
 </body>
 </html>

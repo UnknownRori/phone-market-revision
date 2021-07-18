@@ -63,15 +63,15 @@
         </div>
     </nav>
 
-    <a href="https://twitter.com/UnknownRori">
-            <img src="resource/image/contactus/twitter.png" alt="twitter">
+    <a href="https://twitter.com/UnknownRori" target="_blank">
+        <img src="resource/image/contactus/twitter.png" alt="twitter">
     </a>
-    <div class="footer fixed-bottom img-small-opacity hid260">
+    <div class="footer fixed-bottom img-small-opacity floating-bottom">
         <a href="https://github.com/UnknownRori/phone-market-revision" target="_blank" title="Source Code">
             <img src="resource/image/contactus/github.png" alt="github">
         </a>
     </div>
-    <div class="footer bg-light">
+    <div class="footer bg-light fixed-bottom">
         <div class="container">
             <div class="text-center">
                 <p class="text-muted">

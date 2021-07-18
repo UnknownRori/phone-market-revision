@@ -1,7 +1,61 @@
 <?php
     require_once 'connect.php';
+    if(isset($_SESSION['login'])){
+        echo '<script>
+        sessionStorage.setItem("msg", "User already log in!");
+        sessionStorage.setItem("msg_type", "warning");
+        </script>';
+        echo '<script>window.location="../../phone-market-revision";</script>';
+    }
+    if(isset($_POST['login'])){
+        $_SESSION['preload-login-username'] = $_POST['username_1'];
+        $prepare = $conn->prepare("SELECT id, username, password, admin, vendor FROM users WHERE username=? ");
+        $prepare->bind_param("s", $username);
 
+        $username = $_POST['username_1'];
 
+        $prepare->execute();
+        $result = $prepare->get_result();
+        $users = $result->fetch_assoc();
+        $prepare->close();
+        if($users['username'] == null){
+            echo '<script>
+                sessionStorage.setItem("msg", "Incorrect Username!");
+                sessionStorage.setItem("msg_type", "error");
+                window.location="login.php";
+                </script>';
+        }
+        if($prepare == TRUE){
+            $password = $_POST['password_1'];
+            if(password_verify($password, $users['password'])){
+                $updatepassword = $conn->prepare("UPDATE users SET password=? WHERE id=?");
+                $updatepassword->bind_param("si", $newpassword, $id);
+                $newpassword = password_hash($password, PASSWORD_DEFAULT);
+                $id = $users['id'];
+                $updatepassword->execute(); 
+                $updatepassword->close();
+                $_SESSION['username'] = $users['username'];
+                $_SESSION['admin'] = $users['admin'];
+                $_SESSION['vendor'] = $users['vendor'];
+                $_SESSION['login'] = 1;
+                echo '<script>
+                sessionStorage.setItem("msg", "Log in successfully!");
+                sessionStorage.setItem("msg_type", "success");
+                window.location="../../phone-market-revision";
+                </script>';
+            }else{
+                echo '<script>
+                sessionStorage.setItem("msg", "Incorrect password!");
+                sessionStorage.setItem("msg_type", "error");
+                </script>';
+            }
+        }else{
+            echo '<script>
+                sessionStorage.setItem("msg", "Fatal Error!");
+                sessionStorage.setItem("msg_type", "error");
+                </script>';
+        }
+    }
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -17,12 +71,12 @@
     <link rel="icon" href="../resource/image/favicon.jpg">
     <title>Login</title>
 </head>
-<body>
-    <div class="error-msg">
-        <span id="error-msg" class="color-danger"></span>
+<body id="home">
+    <div class="msg fixed-top text-center">
+        <span id="msg" class="text-white"></span>
     </div>
-    <nav class="navbar navbar-expand-sm bg-light navbar-light sticky-top">
-        <a class="navbar-brand" href="../phone-market-revision">
+    <nav class="navbar navbar-expand-sm bg-light navbar-light fixed-top">
+        <a class="navbar-brand" href="#home">
             <img src="..\resource\image\Apple.png" class="navbar-brand-image" alt="Brand"> Store
         </a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#collapsibleNavbar">
@@ -44,13 +98,13 @@
             </ul>
         </div>
     </nav>
-    <div class="container" style="margin-top: 10%;">
+    <div class="container" style="margin-top: 200px;">
         <div class="row">
-            <div class="col-9" style="border: 2px outset black; border-radius: 5px; margin-left: 13%;">
+            <div class="col-9" style="margin-left: 13%;">
                 <h3 class="text-center">Login</h3>
                 <form action="" method="POST">
                     <div class="form-group">
-                        <input type="text" name="username_1" class="form-control" placeholder="Enter Username">
+                        <input type="text" name="username_1" class="form-control" placeholder="Enter Username" value="<?php if(isset($_SESSION['preload-login-username'])){echo $_SESSION['preload-login-username'];} ?>">
                     </div>
                     <div class="form-group">
                         <input type="password" name="password_1" class="form-control" placeholder="Enter Password">
@@ -75,10 +129,13 @@
             </div>
         </div>
     </div>
-    <div class="footer fixed-bottom img-small-opacity">
+    <div class="footer fixed-bottom img-small-opacity floating-bottom">
         <a href="https://github.com/UnknownRori/phone-market-revision" target="_blank" title="Source Code">
             <img src="../resource/image/contactus/github.png" alt="github">
         </a>
     </div>
 </body>
+<script>
+    error_msg(2);
+</script>
 </html>

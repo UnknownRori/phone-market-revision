@@ -95,7 +95,7 @@
 }
 
 .msg{
-  margin-top: -20px;
+  margin-top: 0;
   opacity: 0;
   transition: 1s;
   height: 0;

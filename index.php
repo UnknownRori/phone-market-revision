@@ -1,6 +1,5 @@
 <?php
     require_once 'php\connect.php';
-    
 ?>
 
 <!DOCTYPE html>
@@ -43,14 +42,14 @@
                 if(isset($_SESSION['admin'])){
                     echo '
                     <li class="nav-item">
-                        <a href="/php/dashboard.php" class="nav-link">Manage Users</a>
+                        <a href="php/manageuser.php" class="nav-link">Manage Users</a>
                     </li>
                     ';
                 }
                 if(isset($_SESSION['vendor'])){
                     echo '
                     <li class="nav-item">
-                        <a href="/php/dashboard.php" class="nav-link">Manage Product</a>
+                        <a href="php/manageproduct.php" class="nav-link">Manage Product</a>
                     </li>
                     ';
                 }
@@ -64,8 +63,11 @@
             </ul>
             <ul class="navbar-nav">
                 <?php if(isset($_SESSION['username'])){
-                    echo '
+                    echo '        
                     <div>
+                        <a href="#" id="notification">
+                            <span class="glyphicon">&#x2709;</span>
+                        </a>
                         <a class="navbar-brand" href="/php/user.php?users=' . $_SESSION['username'] . '">' . $_SESSION['username'] . '
                             <img class="profile" src="resource/image/profile/' . $_SESSION['username'] . '.jpg" alt="">
                         </a>
@@ -144,6 +146,7 @@
     <script>
         printLetterByLetter("intro", "A Fake Apple Store", 100);
         error_msg(1);
+        getcurrentpage();
     </script>
 </body>
 </html>

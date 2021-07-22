@@ -2,10 +2,10 @@
     require_once 'connect.php';
     if(isset($_SESSION['login'])){
         echo '<script>
-        sessionStorage.setItem("msg", "User already log in!");
-        sessionStorage.setItem("msg_type", "warning");
+            sessionStorage.setItem("msg", "User already log in!");
+            sessionStorage.setItem("msg_type", "warning");
+            window.location = sessionStorage.getItem("last_url");
         </script>';
-        echo '<script>window.location="../../phone-market-revision";</script>';
     }
 
     if(isset($_POST['signup'])){
@@ -29,11 +29,12 @@
         
                 $addusers->execute();
                 $addusers->close();
+                $_SESSION['users_id'] = $users['id'];
                 $_SESSION['username'] = $username;
                 $_SESSION['login'] = 1;
                 sessionStorage.setItem("msg", "Account successfully created!");
                 sessionStorage.setItem("msg_type", "success");
-                echo '<script>window.location="../../phone-market-revision";</script>';
+                echo '<script>window.location = sessionStorage.getItem("last_url");</script>';
             }else{
                 echo '<script>
                     sessionStorage.setItem("msg", "Please re-enter your password correctly!");
@@ -65,7 +66,7 @@
 </head>
 <body id="home">
     <div class="msg fixed-top text-center">
-        <span id="msg" class="text-white"></span>
+        <span id="msg"></span>
     </div>
     <nav class="navbar navbar-expand-sm bg-light navbar-light fixed-top">
         <a class="navbar-brand" href="#home">

@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jul 18, 2021 at 03:25 AM
+-- Generation Time: Jul 19, 2021 at 09:13 AM
 -- Server version: 10.4.10-MariaDB
 -- PHP Version: 7.3.12
 
@@ -21,6 +21,22 @@ SET time_zone = "+00:00";
 --
 -- Database: `phone-market-revision`
 --
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `buy_request`
+--
+
+CREATE TABLE `buy_request` (
+  `id` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL,
+  `product_id` int(11) NOT NULL,
+  `total_requested` int(11) NOT NULL,
+  `buy_timestamp` timestamp NOT NULL DEFAULT current_timestamp(),
+  `delivery_timestamp` timestamp NOT NULL DEFAULT current_timestamp(),
+  `read_status` tinyint(1) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
 
@@ -51,6 +67,20 @@ CREATE TABLE `feature` (
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `mail`
+--
+
+CREATE TABLE `mail` (
+  `id` int(11) NOT NULL,
+  `writer_id` int(11) NOT NULL,
+  `receiver_id` int(11) NOT NULL,
+  `content` varchar(2048) NOT NULL,
+  `read_status` tinyint(1) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `product`
 --
 
@@ -62,6 +92,13 @@ CREATE TABLE `product` (
   `stock` int(11) NOT NULL,
   `description` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data for table `product`
+--
+
+INSERT INTO `product` (`id`, `user_id`, `product_name`, `price`, `stock`, `description`) VALUES
+(1, 1, 'test_product', 123, 345, 'asd');
 
 -- --------------------------------------------------------
 
@@ -95,7 +132,7 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`id`, `username`, `password`, `admin`, `vendor`) VALUES
-(1, 'UnknownRori', '$2y$10$RkXNDpR3sz.0o6eSGkxPE.WWlkmuE08ZFvY9pyFjCn41hC6tESahi', 1, 1),
+(1, 'UnknownRori', '$2y$10$zQRuqe3wjyCTgCnkyxIx7OLpk8F7qrW5wflAdW/yndbMGfLndFIka', 1, 1),
 (4, 'Akashi', '$2y$10$qqFyLeHnO891s.EKf8ahfuVM1vW7Iyw0xMuvhDWLG.PfkYZ0XazRa', 0, 1);
 
 -- --------------------------------------------------------
@@ -116,6 +153,14 @@ CREATE TABLE `view_history` (
 --
 
 --
+-- Indexes for table `buy_request`
+--
+ALTER TABLE `buy_request`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `users_request` (`user_id`),
+  ADD KEY `product_request` (`product_id`);
+
+--
 -- Indexes for table `comment`
 --
 ALTER TABLE `comment`
@@ -129,6 +174,14 @@ ALTER TABLE `comment`
 ALTER TABLE `feature`
   ADD PRIMARY KEY (`id`),
   ADD KEY `product_id` (`product_id`);
+
+--
+-- Indexes for table `mail`
+--
+ALTER TABLE `mail`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `writer` (`writer_id`),
+  ADD KEY `reader` (`receiver_id`);
 
 --
 -- Indexes for table `product`
@@ -166,6 +219,12 @@ ALTER TABLE `view_history`
 --
 
 --
+-- AUTO_INCREMENT for table `buy_request`
+--
+ALTER TABLE `buy_request`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
 -- AUTO_INCREMENT for table `comment`
 --
 ALTER TABLE `comment`
@@ -178,10 +237,16 @@ ALTER TABLE `feature`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
+-- AUTO_INCREMENT for table `mail`
+--
+ALTER TABLE `mail`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
 -- AUTO_INCREMENT for table `product`
 --
 ALTER TABLE `product`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `purchase_history`
@@ -206,6 +271,13 @@ ALTER TABLE `view_history`
 --
 
 --
+-- Constraints for table `buy_request`
+--
+ALTER TABLE `buy_request`
+  ADD CONSTRAINT `product_request` FOREIGN KEY (`product_id`) REFERENCES `product` (`id`),
+  ADD CONSTRAINT `users_request` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`);
+
+--
 -- Constraints for table `comment`
 --
 ALTER TABLE `comment`
@@ -217,6 +289,13 @@ ALTER TABLE `comment`
 --
 ALTER TABLE `feature`
   ADD CONSTRAINT `product_id` FOREIGN KEY (`product_id`) REFERENCES `product` (`id`);
+
+--
+-- Constraints for table `mail`
+--
+ALTER TABLE `mail`
+  ADD CONSTRAINT `reader` FOREIGN KEY (`receiver_id`) REFERENCES `users` (`id`),
+  ADD CONSTRAINT `writer` FOREIGN KEY (`writer_id`) REFERENCES `users` (`id`);
 
 --
 -- Constraints for table `product`

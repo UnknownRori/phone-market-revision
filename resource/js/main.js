@@ -67,9 +67,9 @@ function error_msg(page){
                 }
                 $('.navbar').removeClass('navmsg');
                 sessionStorage.setItem("msg", "");
-                sessionStorage.setItem("msg-type", "");
+                sessionStorage.setItem("msg_type", "");
                 var errormsg = sessionStorage.getItem("msg");
-            }, 5000);
+            }, 7000);
         };
     }else if(page === 2){
         if (msg !== "") {
@@ -99,9 +99,31 @@ function error_msg(page){
                     $('.msg').removeClass('info');
                 }
                 sessionStorage.setItem("msg", "");
-                sessionStorage.setItem("msg-type", "");
+                sessionStorage.setItem("msg_type", "");
                 var errormsg = sessionStorage.getItem("msg");
-            }, 5000);
+            }, 7000);
         };
     };
 }
+
+function getcurrentpage(){
+    sessionStorage.setItem("last_url", window.location.href);
+}
+
+// review this
+function mobileview(){
+    if ($(window).width() < 600) {
+        
+    }
+}
+
+// review this
+$(document).ready(function () {
+    $('.navbar a').on('click', function (e) {
+        href = $(this).attr('href');
+        eHref = $(href);
+        $('html').animate({
+            scrollTop: eHref.offset().top - 70
+        }, 1000, 'easeInOutBack')
+    })
+})

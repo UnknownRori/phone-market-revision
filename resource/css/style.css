@@ -1,7 +1,7 @@
 *{
   margin: 0;
   padding: 0;
-  transition: 0.5s;
+  transition: 1s;
 }
 
 .navbar-brand-image {
@@ -90,10 +90,6 @@
   background-color:rgba(255, 255, 255, 0.527);
   color: black;
 }
-.border-custom-1{
-  border: 5px 5px 5px 5px black;
-}
-
 .msg{
   margin-top: 0;
   opacity: 0;
@@ -146,7 +142,7 @@
 
 .floating-bottom{
   position: absolute;
-  padding: 0px 0px 3.5% 1%;
+  padding: 0px 0px 3.5% 1% !important ;
 }
 
 .collapse{

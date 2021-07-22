@@ -2,10 +2,10 @@
     require_once 'connect.php';
     if(isset($_SESSION['login'])){
         echo '<script>
-        sessionStorage.setItem("msg", "User already log in!");
-        sessionStorage.setItem("msg_type", "warning");
+            sessionStorage.setItem("msg", "User already log in!");
+            sessionStorage.setItem("msg_type", "warning");
+            window.location = sessionStorage.getItem("last_url");
         </script>';
-        echo '<script>window.location="../../phone-market-revision";</script>';
     }
     if(isset($_POST['login'])){
         $_SESSION['preload-login-username'] = $_POST['username_1'];
@@ -34,6 +34,7 @@
                 $id = $users['id'];
                 $updatepassword->execute(); 
                 $updatepassword->close();
+                $_SESSION['users_id'] = $users['id'];
                 $_SESSION['username'] = $users['username'];
                 $_SESSION['admin'] = $users['admin'];
                 $_SESSION['vendor'] = $users['vendor'];
@@ -41,7 +42,7 @@
                 echo '<script>
                 sessionStorage.setItem("msg", "Log in successfully!");
                 sessionStorage.setItem("msg_type", "success");
-                window.location="../../phone-market-revision";
+                window.location = sessionStorage.getItem("last_url");
                 </script>';
             }else{
                 echo '<script>
@@ -73,7 +74,7 @@
 </head>
 <body id="home">
     <div class="msg fixed-top text-center">
-        <span id="msg" class="text-white"></span>
+        <span id="msg"></span>
     </div>
     <nav class="navbar navbar-expand-sm bg-light navbar-light fixed-top">
         <a class="navbar-brand" href="#home">

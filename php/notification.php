@@ -1,5 +1,5 @@
 <?php
-
+    require_once 'connect.php';
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -48,22 +48,6 @@
                     echo '
                     <li class="nav-item">
                         <a href="manageproduct.php" class="nav-link">Manage Product</a>
-                    </li>
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="navbardrop" data-toggle="dropdown">
-                            Page Action
-                        </a>
-                        <div class="dropdown-menu">
-                            <a class="dropdown-item" href="#" id="">Product</a>
-                            <a class="dropdown-item" href="#" id="">Request</a>
-                        </div>
-                    </li>
-                    <li class="nav-item">
-                        <form class="form-inline" action="" method="post">
-                            <div class="form-group">
-                                <input type="text" name="Product_Name" placeholder="Create Product" class="form-control">
-                            </div>
-                        </form>
                     </li>
                     ';
                 }

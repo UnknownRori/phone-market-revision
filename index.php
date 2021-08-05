@@ -65,10 +65,10 @@
                 <?php if(isset($_SESSION['username'])){
                     echo '        
                     <div>
-                        <a href="#" id="notification">
+                        <a href="php/notification.php" id="notification">
                             <span class="glyphicon">&#x2709;</span>
                         </a>
-                        <a class="navbar-brand" href="/php/user.php?users=' . $_SESSION['username'] . '">' . $_SESSION['username'] . '
+                        <a class="navbar-brand" href="php/user.php?users=' . $_SESSION['username'] . '">' . $_SESSION['username'] . '
                             <img class="profile" src="resource/image/profile/' . $_SESSION['username'] . '.jpg" alt="">
                         </a>
                     </div>

@@ -1,32 +1,11 @@
 <?php
     require_once 'connect.php';
-    if(isset($_SESSION['vendor']) == 0){
-        echo '<script>
-            sessionStorage.setItem("msg", "User must log in first!");
-            sessionStorage.setItem("msg_type", "warning");
-            window.location = "login.php";
-        </script>';
-    } 
-    if(isset($_POST['Product_Name'])){
-        if($_POST['Product_Name'] != null){
-            echo '<script>
-            sessionStorage.setItem("msg", "Sapi kuda terbang ke angkasa!");
-            sessionStorage.setItem("msg_type", "success");
-            </script>';
-        }else{
-            echo '<script>
-            sessionStorage.setItem("msg", "Please enter your product name correctly!");
-            sessionStorage.setItem("msg_type", "warning");
-            window.location = "manageproduct.php";
-            </script>';
-        }
-    }
-    $preparedata = $conn->prepare("SELECT * FROM product WHERE user_id=?");
-    $preparedata->bind_param("i", $user_id);
-    $user_id = $_SESSION['users_id'];
-    $preparedata->execute();
-    $data = $preparedata->get_result();
-    $preparedata->close();
+    $getusers = $conn->prepare("SELECT * FROM users WHERE username=?");
+    $getusers->bind_param("s", $username);
+    $username = $_SESSION['username'];
+    $getusers->execute();
+    $usersdata = $getusers->get_result();
+    $getusers->close();
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -39,8 +18,17 @@
     <script src="../resource/js/bootstrap.min.js"></script>
     <link rel="stylesheet" href="../resource/css/style.css">
     <link rel="stylesheet" href="../resource/css/bootstrap.min.css">
-    <link rel="icon" href="../resource/image/favicon.jpg">
-    <title>Manage Product</title>
+    <?php 
+        echo '
+        <link rel="icon" href="../resource/image/profile/' . $_SESSION['username'] .'.jpg">
+        ';
+        
+    ?>
+    <title>
+        <?php
+            echo $_SESSION['username'];
+        ?>
+    </title>
 </head>
 <body>
     <div class="msg fixed-top text-center">
@@ -75,23 +63,7 @@
                 if(isset($_SESSION['vendor'])){
                     echo '
                     <li class="nav-item">
-                        <a href="manageproduct.php" class="nav-link active">Manage Product</a>
-                    </li>
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="navbardrop" data-toggle="dropdown">
-                            Page Action
-                        </a>
-                        <div class="dropdown-menu">
-                            <a class="dropdown-item" href="#" id="">Product</a>
-                            <a class="dropdown-item" href="#" id="">Request</a>
-                        </div>
-                    </li>
-                    <li class="nav-item">
-                        <form class="form-inline" action="" method="post">
-                            <div class="form-group">
-                                <input type="text" name="Product_Name" placeholder="Create Product" class="form-control">
-                            </div>
-                        </form>
+                        <a href="manageproduct.php" class="nav-link">Manage Product</a>
                     </li>
                     ';
                 }
@@ -104,7 +76,7 @@
                         <a href="notification.php" id="notification">
                             <span class="glyphicon">&#x2709;</span>
                         </a>
-                        <a class="navbar-brand" href="user.php?username=' . $_SESSION['username'] . '">' . $_SESSION['username'] . '
+                        <a class="navbar-brand" style="transition: 0.5s;" id="user-page-active" href="user.php?username=' . $_SESSION['username'] . '">' . $_SESSION['username'] . '
                             <img class="profile" src="../resource/image/profile/' . $_SESSION['username'] . '.jpg" alt="">
                         </a>
                     </div>
@@ -114,10 +86,12 @@
             </ul>
         </div>
     </nav>
-    <div class="container" style="border: 2px solid red; margin-top:90px;">
-
+    <div class="container">
+        <div class="" style="margin-top: 90px;">
+            <img src="" alt="">
+        </div>
     </div>
-    <div class="footer fixed-bottom img-small-opacity floating-bottom">
+    <div class="footer fixed-bottom img-small-opacity floating-bottom" style="">
         <a href="https://github.com/UnknownRori/phone-market-revision" target="_blank" title="Source Code">
             <img src="../resource/image/contactus/github.png" alt="github">
         </a>
@@ -137,6 +111,16 @@
     </div>
 </body>
 <script>
-    error_msg(2);
+$(document).ready(function (){
+    setInterval(function() {
+    // your code goes here...
+    document.getElementById("user-page-active").style.color = "#000";
+    }, 1000);
+    setInterval(function() {
+    // your code goes here...
+    document.getElementById("user-page-active").style.color = "#171717c9";
+    }, 2500);
+})
+error_msg(2);
 </script>
 </html>

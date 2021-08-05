@@ -81,10 +81,10 @@
                 <?php if(isset($_SESSION['username'])){
                     echo '
                     <div>
-                        <a href="#" id="notification">
+                        <a href="php/notification.php" id="notification">
                             <span class="glyphicon">&#x2709;</span>
                         </a>
-                        <a class="navbar-brand" href="/php/user.php?users=' . $_SESSION['username'] . '">' . $_SESSION['username'] . '
+                        <a class="navbar-brand" href="./php/user.php?users=' . $_SESSION['username'] . '">' . $_SESSION['username'] . '
                             <img class="profile" src="resource/image/profile/' . $_SESSION['username'] . '.jpg" alt="">
                         </a>
                     </div>
@@ -164,7 +164,7 @@
             </div>
         </div>
     </div>
-    <div class="footer fixed-bottom img-small-opacity" style="padding: 0px 0px 3.5% 1% !important;">
+    <div class="footer fixed-bottom img-small-opacity floating-bottom">
         <a href="https://github.com/UnknownRori/phone-market-revision" target="_blank" title="Source Code">
             <img src="resource/image/contactus/github.png" alt="github">
         </a>

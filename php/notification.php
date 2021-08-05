@@ -1,11 +1,5 @@
 <?php
-    require_once 'connect.php';
-    $getusers = $conn->prepare("SELECT * FROM users WHERE username=?");
-    $getusers->bind_param("s", $username);
-    $username = $_SESSION['username'];
-    $getusers->execute();
-    $usersdata = $getusers->get_result();
-    $getusers->close();
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -18,21 +12,11 @@
     <script src="../resource/js/bootstrap.min.js"></script>
     <link rel="stylesheet" href="../resource/css/style.css">
     <link rel="stylesheet" href="../resource/css/bootstrap.min.css">
-    <?php 
-        echo '
-        <link rel="icon" href="../resource/image/profile/' . $_SESSION['username'] .'.jpg">
-        ';
-        
-    ?>
-    <title>
-        <?php
-            echo $_SESSION['username'];
-        ?>
-    </title>
+    <title>Notification</title>
 </head>
 <body>
     <div class="msg fixed-top text-center">
-        <span id="msg"></span>
+       <span id="msg"></span>
     </div>
     <nav class="navbar navbar-expand-sm bg-light navbar-light fixed-top">
         <a class="navbar-brand" href="#home">
@@ -63,15 +47,21 @@
                 if(isset($_SESSION['vendor'])){
                     echo '
                     <li class="nav-item">
-                        <a href="manageproduct.php" class="nav-link active">Manage Product</a>
+                        <a href="manageproduct.php" class="nav-link">Manage Product</a>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbardrop" data-toggle="dropdown">
+                            Page Action
+                        </a>
+                        <div class="dropdown-menu">
+                            <a class="dropdown-item" href="#" id="">Product</a>
+                            <a class="dropdown-item" href="#" id="">Request</a>
+                        </div>
                     </li>
                     <li class="nav-item">
                         <form class="form-inline" action="" method="post">
                             <div class="form-group">
                                 <input type="text" name="Product_Name" placeholder="Create Product" class="form-control">
-                            </div>
-                            <div class="form-group" style="margin-left: 5px;">
-                                <input type="submit" class="btn btn-primary" value="Create" name="createprod">
                             </div>
                         </form>
                     </li>
@@ -83,7 +73,7 @@
                 <?php if(isset($_SESSION['username'])){
                     echo '
                     <div>
-                        <a href="#" id="notification">
+                        <a href="notification.php" id="notification">
                             <span class="glyphicon">&#x2709;</span>
                         </a>
                         <a class="navbar-brand" href="user.php?username=' . $_SESSION['username'] . '">' . $_SESSION['username'] . '
@@ -96,14 +86,12 @@
             </ul>
         </div>
     </nav>
-    <div class="container">
-        <div class="" style="margin-top: 90px;">
-        
-        </div>
+    <div class="container" style="margin-top:90px;">
+
     </div>
-    <div class="footer fixed-bottom img-small-opacity">
+    <div class="footer fixed-bottom img-small-opacity floating-bottom">
         <a href="https://github.com/UnknownRori/phone-market-revision" target="_blank" title="Source Code">
-            <img src="resource/image/contactus/github.png" alt="github">
+            <img src="../resource/image/contactus/github.png" alt="github">
         </a>
     </div>
     <div class="footer bg-light fixed-bottom">
@@ -120,4 +108,7 @@
         </div>
     </div>
 </body>
+<script>
+    error_msg(2);
+</script>
 </html>

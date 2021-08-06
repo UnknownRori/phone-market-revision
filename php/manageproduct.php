@@ -9,9 +9,17 @@
     } 
     if(isset($_POST['Product_Name'])){
         if($_POST['Product_Name'] != null){
+            $adddata = $conn->prepare("INSERT INTO product (user_id, product_name, price, stock, description) value (?, ?, ?, ?, ?)");
+            $adddata->bind_param("isiis", $users_id, $product_name, $price, $stock, $desc);
+            $users_id = $_SESSION['users_id'];
+            $product_name = $_POST['Product_Name'];
+            $price = 0;
+            $stock = 0;
+            $desc = "default";
+            $adddata->execute();
+            $adddata->close();
             echo '<script>
-            sessionStorage.setItem("msg", "Sapi kuda terbang ke angkasa!");
-            sessionStorage.setItem("msg_type", "success");
+            window.location = "editproduct.php?id=' . $product_name . '";
             </script>';
         }else{
             echo '<script>

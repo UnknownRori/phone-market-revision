@@ -1,13 +1,18 @@
 <?php
     require_once 'php\connect.php';
-    $preparedata = $conn->prepare("SELECT * FROM product");
+    $preparedata = $conn->prepare("SELECT product.*, users.id, users.username FROM product INNER JOIN users ON product.user_id = users.id");
     $preparedata->execute();
     $data = $preparedata->get_result();
     $preparedata->close();
-
     if(isset($_POST['search_product'])){
         if($_POST['search_product'] != null){
-            
+            $data = NULL;
+            $searchengine = $conn->prepare("SELECT product.*, users.id, users.username FROM product INNER JOIN users ON product.user_id = users.id WHERE product.product_name LIKE ?  OR users.username LIKE ? ");
+            $searchengine->bind_param("ss", $searchterm, $searchterm);
+            $searchterm = '%' . $_POST['search_product'] . '%';
+            $searchengine->execute();
+            $data = $searchengine->get_result();
+            $searchengine->close();
         }else{
             echo '<script>
             sessionStorage.setItem("msg", "Cannot search empty query!");
@@ -96,7 +101,7 @@
             </ul>
         </div>
     </nav>
-    <div id="extend" class="container" style="margin-top: 90px;">
+    <div id="extend" class="container" style="margin-top: 90px; margin-bottom: 30px;">
         <div class="row">
             <div class="table-responsive">
                 <table class="table table-hover">
@@ -106,13 +111,7 @@
                         <td>Price</td>
                         <td>Stock</td>
                         <td>Vendor</td>
-                        <td>
-                            <?php
-                                if(isset($_SESSION['login'])){
-                                    echo 'Action';
-                                }
-                            ?>
-                        </td>
+                        <td>Action</td>
                     </tr>
                     <?php $i=1; foreach($data as $row):?>
                     <tr class="text-center">
@@ -130,32 +129,22 @@
                         </td>
                         <td>
                             <?php
-                                $getusers = $conn->prepare("SELECT username FROM users WHERE  id=?");
-                                $getusers->bind_param("i", $id);
-                                $id = $row['id'];
-                                $getusers->execute();
-                                $result = $getusers->get_result();
-                                $users = $result->fetch_assoc();
-                                $getusers->close();
-                                if($users['username'] == null){
-                                    echo '<script>
-                                        sessionStorage.setItem("msg", "Database Error on table ' . $i .'");
-                                        sessionStorage.setItem("msg_type", "error");
-                                        </script>';
-                                }else{
-                                    echo $users['username'];
-                                }
+                                echo $row['username'];
                             ?>
                         </td>
                         <td>
                             <?php
-                            if(isset($_SESSION['login'])){
-                                echo '<a class="btn btn-primary" href="#" style="margin-right: 4px; margin-left: 4px; margin-top: 2px; margin-bottom: 2px;" href="product.php?id=' . $row['id'] .'">Buy</a>';
-                                if(($_SESSION['admin'])){
-                                echo '<a class="btn btn-warning" style="margin-right: 4px; margin-left: 4px; margin-top: 2px; margin-bottom: 2px;" href="./php/deleteproduct.php?id='. $row['id'] . '">Issue Warning</a>';
-                                echo '<a class="btn btn-danger" style="margin-right: 4px; margin-left: 4px; margin-top: 2px; margin-bottom: 2px;" href="./php/deleteproduct.php?id=' . $row['id'] . '">Delete</a>';
+                                echo '<a class="btn btn-primary" href="#" style="margin-right: 4px; margin-left: 4px; margin-top: 2px; margin-bottom: 2px;" href="#.php?id=' . $row['id'] .'">Detail</a>';
+                                if(isset($_SESSION['login'])){
+                                    if(($_SESSION['admin'])){
+                                    echo '<a class="btn btn-warning" style="margin-right: 4px; margin-left: 4px; margin-top: 2px; margin-bottom: 2px;" href="./php/#.php?id='. $row['id'] . '">Issue Warning</a>';
+                                    }
+                                    if(($_SESSION['users_id']) == $row['user_id'] || $_SESSION['admin']){
+                                        echo '<a class="btn btn-danger" style="margin-right: 4px; margin-left: 4px; margin-top: 2px; margin-bottom: 2px;" href="./php/#.php?id=' . $row['id'] . '">Delete</a>';
+                                    }else if($_SESSION['vendor']){
+                                        echo '<a class="btn btn-danger disabled" style="margin-right: 4px; margin-left: 4px; margin-top: 2px; margin-bottom: 2px;" href="./php/#.php?id=' . $row['id'] . '">Delete</a>';
+                                    }
                                 }
-                            }
                             ?>
                         </td>
                     </tr>

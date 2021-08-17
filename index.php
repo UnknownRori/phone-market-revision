@@ -147,6 +147,26 @@
         printLetterByLetter("intro", "A Fake Apple Store", 100);
         error_msg(1);
         getcurrentpage();
+        function printLetterByLetter(destination, message, speed) {
+            var i = 0;
+            var interval = setInterval(function () {
+                document.getElementById(destination).innerHTML += message.charAt(i);
+                i++;
+                if (i > message.length) {
+                    clearInterval(interval);
+                }
+            }, speed);
+        }
+        // review this
+        $(document).ready(function () {
+            $('.navbar a').on('click', function (e) {
+                href = $(this).attr('href');
+                eHref = $(href);
+                $('html').animate({
+                    scrollTop: eHref.offset().top - 70
+                }, 1000, 'easeInOutBack')
+            })
+        })
     </script>
 </body>
 </html>

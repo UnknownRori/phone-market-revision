@@ -64,14 +64,14 @@
                     <a href="contactus.php" class="nav-link">Contact us</a>
                 </li>
                 <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="navbardrop" data-toggle="dropdown">
-                            Display
-                        </a>
-                        <div class="dropdown-menu">
-                            <a class="dropdown-item nav-link active" href="#" id="detailed">Grid</a>
-                            <a class="dropdown-item nav-link" href="#" id="list">List</a>
-                        </div>
-                    </li>
+                    <a class="nav-link dropdown-toggle" href="#" id="navbardrop" data-toggle="dropdown">
+                        Display
+                    </a>
+                    <div class="dropdown-menu">
+                        <a class="dropdown-item nav-link active" href="#" id="detailed">Grid</a>
+                        <a class="dropdown-item nav-link" href="#" id="list">List</a>
+                    </div>
+                </li>
                 <?php
                 if(isset($_SESSION['admin'])){
                     echo '
@@ -165,15 +165,15 @@
                 </div>
                 <div style="margin-top: 10px; padding: 5px;">
                     <?php
-                        echo '<a class="btn btn-primary" href="#" style="margin-right: 4px; margin-left: 4px; margin-top: 2px; margin-bottom: 2px;" href="#.php?id=' . $row['id'] .'">Detail</a>';
+                        echo '<a class="btn btn-primary" href="#" style="margin-right: 4px; margin-left: 4px; margin-top: 2px; margin-bottom: 2px;" href="#.php?id=' . $row['prod_id'] .'">Detail</a>';
                         if(isset($_SESSION['login'])){
                             if(($_SESSION['admin'])){
-                            echo '<a class="btn btn-warning" style="margin-right: 4px; margin-left: 4px; margin-top: 2px; margin-bottom: 2px;" href="./php/#.php?id='. $row['id'] . '">Issue Warning</a>';
+                            echo '<a class="btn btn-warning" style="margin-right: 4px; margin-left: 4px; margin-top: 2px; margin-bottom: 2px;" href="./php/#.php?id='. $row['prod_id'] . '">Issue Warning</a>';
                             }
                             if(($_SESSION['users_id']) == $row['user_id'] || $_SESSION['admin']){
-                                echo '<a class="btn btn-danger" style="margin-right: 4px; margin-left: 4px; margin-top: 2px; margin-bottom: 2px;" href="./php/#.php?id=' . $row['id'] . '">Delete</a>';
+                                echo '<a class="btn btn-danger" style="margin-right: 4px; margin-left: 4px; margin-top: 2px; margin-bottom: 2px;" href="./php/deleteproduct.php?id=' . $row['prod_id'] . '">Delete</a>';
                             }else if($_SESSION['vendor']){
-                                echo '<a class="btn btn-danger disabled" style="margin-right: 4px; margin-left: 4px; margin-top: 2px; margin-bottom: 2px;" href="./php/#.php?id=' . $row['id'] . '">Delete</a>';
+                                echo '<a class="btn btn-danger disabled" style="margin-right: 4px; margin-left: 4px; margin-top: 2px; margin-bottom: 2px;" href="./php/deleteproduct.php?id=' . $row['prod_id'] . '">Delete</a>';
                             }
                         }
                     ?>
@@ -181,7 +181,7 @@
             </div>
         <?php $i++;endforeach;?>
     </div>
-    <div class="footer fixed-bottom img-small-opacity floating-bottom" style="width: 20px !important;">
+    <div class="footer fixed-bottom img-small-opacity floating-bottom">
         <a href="https://github.com/UnknownRori/phone-market-revision" target="_blank" title="Source Code">
             <img src="resource/image/contactus/github.png" alt="github">
         </a>

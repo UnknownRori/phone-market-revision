@@ -33,7 +33,7 @@
                     <a href="../phone-market-revision" class="nav-link active">Home</a>
                 </li>
                 <li class="nav-item">
-                    <a href="productlist.php" class="nav-link">Product</a>
+                    <a href="product.php" class="nav-link">Product</a>
                 </li>
                 <li class="nav-item">
                     <a href="contactus.php" class="nav-link">Contact us</a>
@@ -147,16 +147,6 @@
         printLetterByLetter("intro", "A Fake Apple Store", 100);
         error_msg(1);
         getcurrentpage();
-        function printLetterByLetter(destination, message, speed) {
-            var i = 0;
-            var interval = setInterval(function () {
-                document.getElementById(destination).innerHTML += message.charAt(i);
-                i++;
-                if (i > message.length) {
-                    clearInterval(interval);
-                }
-            }, speed);
-        }
         // review this
         $(document).ready(function () {
             $('.navbar a').on('click', function (e) {

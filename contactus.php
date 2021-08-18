@@ -42,7 +42,7 @@
                     <a href="../phone-market-revision" class="nav-link">Home</a>
                 </li>
                 <li class="nav-item">
-                    <a href="productlist.php" class="nav-link">Product</a>
+                    <a href="product.php" class="nav-link">Product</a>
                 </li>
                 <li class="nav-item">
                     <a href="contactus.php" class="nav-link active">Contact us</a>

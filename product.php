@@ -33,7 +33,7 @@
     <link rel="stylesheet" href="resource/css/style.css">
     <link rel="stylesheet" href="resource/css/bootstrap.min.css">
     <link rel="icon" href="resource/image/favicon.jpg">
-    <title>Detailed Product List</title>
+    <title>Product</title>
     <style>
         p {
             margin: 0;
@@ -68,8 +68,8 @@
                             Display
                         </a>
                         <div class="dropdown-menu">
-                            <a class="dropdown-item nav-link" href="productlist.php" id="list">List</a>
-                            <a class="dropdown-item nav-link active" href="productdetailed.php" id="detailed">Detailed</a>
+                            <a class="dropdown-item nav-link active" href="#" id="detailed">Grid</a>
+                            <a class="dropdown-item nav-link" href="#" id="list">List</a>
                         </div>
                     </li>
                 <?php
@@ -163,7 +163,7 @@
                         </tr>
                     </table>
                 </div>
-                <div style="margin-top: 10px;">
+                <div style="margin-top: 10px; padding: 5px;">
                     <?php
                         echo '<a class="btn btn-primary" href="#" style="margin-right: 4px; margin-left: 4px; margin-top: 2px; margin-bottom: 2px;" href="#.php?id=' . $row['id'] .'">Detail</a>';
                         if(isset($_SESSION['login'])){
@@ -181,7 +181,7 @@
             </div>
         <?php $i++;endforeach;?>
     </div>
-    <div class="footer fixed-bottom img-small-opacity floating-bottom">
+    <div class="footer fixed-bottom img-small-opacity floating-bottom" style="width: 20px !important;">
         <a href="https://github.com/UnknownRori/phone-market-revision" target="_blank" title="Source Code">
             <img src="resource/image/contactus/github.png" alt="github">
         </a>

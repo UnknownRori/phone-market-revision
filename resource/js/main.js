@@ -12,6 +12,17 @@ $(window).scroll(function(){
     }
 })
 
+function printLetterByLetter(destination, message, speed) {
+    var i = 0;
+    var interval = setInterval(function () {
+        document.getElementById(destination).innerHTML += message.charAt(i);
+        i++;
+        if (i > message.length) {
+            clearInterval(interval);
+        }
+    }, speed);
+}
+
 function error_msg(page){
     var msg = sessionStorage.getItem("msg");
     var msg_type = sessionStorage.getItem("msg_type");

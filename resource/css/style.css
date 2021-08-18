@@ -143,8 +143,13 @@
 .floating-bottom{
   position: absolute;
   padding: 0px 0px 4.5% 0.5% !important ;
+  width: 20px !important;
 }
 
 .collapse{
   background-color: rgba(255, 255, 255, 0.849);
+}
+
+.extend{
+  margin-top: 90px;
 }

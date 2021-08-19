@@ -50,7 +50,7 @@
     <link rel="icon" href="../resource/image/favicon.jpg">
     <title>Manage Product</title>
 </head>
-<body>
+<body id="home">
     <div class="msg fixed-top text-center">
         <span id="msg"></span>
     </div>

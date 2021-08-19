@@ -86,6 +86,7 @@
                 <img src="resource\image\Apple.png" alt="Apple" style="width: 200px;">
             </div>
             <h3 id="intro" class="text-center"></h3>
+            <h6 id="intro-secondary" class="text-center"></h6>
         </div>
     </div>
     <div class="container color-custom-1">
@@ -144,7 +145,10 @@
         </div>
     </div>
     <script>
-        printLetterByLetter("intro", "A Fake Apple Store", 100);
+        $(document).ready(function(){
+            printLetterByLetter("intro", "A Fake Apple Store", 100);
+            printLetterByLetter("intro-secondary", "by UnknownRori", 100);
+        });
         error_msg(1);
         getcurrentpage();
         // review this
@@ -156,6 +160,21 @@
                     scrollTop: eHref.offset().top - 70
                 }, 1000, 'easeInOutBack')
             })
+        });
+        $(window).scroll(function(){
+            wScroll = $(this).scrollTop();
+            if(wScroll > 220){
+                $('.hidnavbar').addClass('show');
+                $('.about').addClass('show');
+            }else{
+                $('.hidnavbar').removeClass('show');
+                $('.about').removeClass('show');
+                $('.preview').removeClass('show');
+            }if(wScroll > 260){
+                $('.hid260').addClass('show');
+            }if (wScroll > 700) {
+                $('.preview').addClass('show');
+            }
         })
     </script>
 </body>

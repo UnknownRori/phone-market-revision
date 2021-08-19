@@ -40,8 +40,7 @@
         }
     </style>
 </head>
-<body>
-    <body id="home">
+<body id="home">
     <div class="msg fixed-top text-center">
         <span id="msg"></span>
     </div>
@@ -199,7 +198,6 @@
             </div>
         </div>
     </div>
-</body>
 </body>
 <script>
     error_msg(2);

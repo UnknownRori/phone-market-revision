@@ -56,7 +56,7 @@ function error_msg(page){
                 sessionStorage.setItem("msg_type", "");
                 msg = sessionStorage.getItem("msg");
                 msg_type = sessionStorage.getItem("msg_type");
-                document.getElementById('msg').value = '';
+                document.getElementById('msg').innerHTML = '';
             }, 7000);
         };
     }else if(page === 2){
@@ -90,7 +90,7 @@ function error_msg(page){
                 sessionStorage.setItem("msg_type", "");
                 msg = sessionStorage.getItem("msg");
                 msg_type = sessionStorage.getItem("msg_type");
-                document.getElementById('msg').value = '';
+                document.getElementById('msg').innerHTML = '';
             }, 7000);
         };
     };

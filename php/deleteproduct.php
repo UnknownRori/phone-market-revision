@@ -32,9 +32,10 @@
             $deletecommand->bind_param("i", $prodid);
             $prodid = $_GET['id'];
             $deletecommand->execute();
-            if($prepare == TRUE){
-                echo '<script>alert("Product Successfully Deleted!");window.location="../product.php"</script>';
-            }
+            echo '<script>
+            sessionStorage.setItem("msg", "Product Successfully Deleted!");
+            sessionStorage.setItem("msg_type", "success");
+            window.location="../product.php"</script>';
             $deletecommand->close();
         }
     }else{

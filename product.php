@@ -6,6 +6,7 @@
     $preparedata->close();
     if(isset($_POST['search_product'])){
         if($_POST['search_product'] != null){
+            // BasicSearchEngineAlgorithm:
             $data = NULL;
             $searchengine = $conn->prepare("SELECT product.*, users.id, users.username FROM product INNER JOIN users ON product.user_id = users.id WHERE product.product_name LIKE ?  OR users.username LIKE ? ");
             $searchengine->bind_param("ss", $searchterm, $searchterm);
@@ -13,6 +14,8 @@
             $searchengine->execute();
             $data = $searchengine->get_result();
             $searchengine->close();
+            //AdvancedSearchEngineAlgorithm:
+            //Todo: add ProductNameOnly Tag, VendorOnly Tag, SpecificCharacter Tag
         }else{
             echo '<script>
             sessionStorage.setItem("msg", "Cannot search empty query!");
@@ -72,12 +75,14 @@
                     </div>
                 </li>
                 <?php
-                if(isset($_SESSION['admin'])){
-                    echo '
-                    <li class="nav-item">
-                        <a href="php/manageuser.php" class="nav-link">Manage Users</a>
-                    </li>
-                    ';
+                if(isset($_SESSION['login'])){
+                    if($_SESSION['admin'] == 1){
+                        echo '
+                        <li class="nav-item">
+                            <a href="php/manageuser.php" class="nav-link">Manage Users</a>
+                        </li>
+                        ';
+                    }
                 }
                 if(isset($_SESSION['vendor'])){
                     echo '
@@ -116,9 +121,19 @@
         </div>
     </nav>
     <div id="extend" class="container" style="margin-top: 90px; height: 100vh;">
-        <?php $i=1; foreach($data as $row):?>
+        <?php foreach($data as $row):?>
             <div style="width: 300px; float:left; margin: 20px">
-                <img src="resource/image/product/No Phone.png" alt=""class="img img-fluid">
+                <?php
+                    if($row['photo_name']){
+                        echo '
+                        <img src="resource/image/product/' . $row['photo_name'] .'.png" alt=""class="img img-fluid">
+                        ';
+                    }else{
+                        echo '
+                        <img src="resource/image/404imgnotfound.png" alt=""class="img img-fluid">
+                        ';
+                    }
+                ?>
                 <div style="margin-top: 10px; float: unset;">
                     <table class="table" style="margin-top: 10px;">
                         <tr>
@@ -167,7 +182,11 @@
                         echo '<a class="btn btn-primary" href="#" style="margin-right: 4px; margin-left: 4px; margin-top: 2px; margin-bottom: 2px;" href="#.php?id=' . $row['prod_id'] .'">Detail</a>';
                         if(isset($_SESSION['login'])){
                             if(($_SESSION['admin'])){
-                            echo '<a class="btn btn-warning" style="margin-right: 4px; margin-left: 4px; margin-top: 2px; margin-bottom: 2px;" href="./php/#.php?id='. $row['prod_id'] . '">Issue Warning</a>';
+                                if($row['warned_status'] == 1){
+                                    echo '<button title="Already Warned!"  class="btn btn-warning" style="margin-right: 4px; margin-left: 4px; margin-top: 2px; margin-bottom: 2px;" disabled>Issue Warning</button>';
+                                }else{
+                                    echo '<a class="btn btn-warning" style="margin-right: 4px; margin-left: 4px; margin-top: 2px; margin-bottom: 2px;" href="./php/#.php?id='. $row['prod_id'] . '">Issue Warning</a>';
+                                }
                             }
                             if(($_SESSION['users_id']) == $row['user_id'] || $_SESSION['admin']){
                                 echo '<a class="btn btn-danger" style="margin-right: 4px; margin-left: 4px; margin-top: 2px; margin-bottom: 2px;" href="./php/deleteproduct.php?id=' . $row['prod_id'] . '">Delete</a>';
@@ -178,7 +197,7 @@
                     ?>
                 </div>
             </div>
-        <?php $i++;endforeach;?>
+        <?php endforeach;?>
     </div>
     <div class="footer fixed-bottom img-small-opacity floating-bottom">
         <a href="https://github.com/UnknownRori/phone-market-revision" target="_blank" title="Source Code">

@@ -30,8 +30,8 @@
         }
     }
     $preparedata = $conn->prepare("SELECT * FROM product WHERE user_id=?");
-    $preparedata->bind_param("i", $user_id);
-    $user_id = $_SESSION['users_id'];
+    $preparedata->bind_param("i", $id);
+    $id = $_SESSION['users_id'];
     $preparedata->execute();
     $data = $preparedata->get_result();
     $preparedata->close();
@@ -64,7 +64,7 @@
         <div class="collapse navbar-collapse justify-content-between" id="collapsibleNavbar">
             <ul class="navbar-nav mr-auto">
                 <li class="nav-item">
-                    <a href="../phone-market-revision" class="nav-link">Home</a>
+                    <a href="../../phone-market-revision" class="nav-link">Home</a>
                 </li>
                 <li class="nav-item">
                     <a href="../product.php" class="nav-link">Product</a>
@@ -73,12 +73,14 @@
                     <a href="../contactus.php" class="nav-link">Contact us</a>
                 </li>
                 <?php
-                if(isset($_SESSION['admin'])){
-                    echo '
-                    <li class="nav-item">
-                        <a href="manageuser.php" class="nav-link">Manage Users</a>
-                    </li>
-                    ';
+                if(isset($_SESSION['login'])){
+                    if($_SESSION['admin'] == 1){
+                        echo '
+                        <li class="nav-item">
+                            <a href="php/manageuser.php" class="nav-link">Manage Users</a>
+                        </li>
+                        ';
+                    }
                 }
                 if(isset($_SESSION['vendor'])){
                     echo '
@@ -122,8 +124,53 @@
             </ul>
         </div>
     </nav>
-    <div class="container" style="border: 2px solid red; margin-top:90px;">
-
+    <div class="container" style="margin-top:90px;">
+        
+        <table class="table table-hover">
+            <tr>
+                <td>#</td>
+                <td>Product ID</td>
+                <td>Product Name</td>
+                <td>Photo Availabilty</td>
+                <td>Price</td>
+                <td>Available Stock</td>
+                <td>Request Stock</td>
+                <td>Stock Status</td>
+                <td>Warned Status</td>
+                <td>Action</td>
+            </tr>
+            <?php $i=1; foreach($data as $row):?>
+            <tr>
+                <td>
+                    <?php echo $i;  ?>
+                </td>
+                <td>
+                    <?php echo $row['prod_id']; ?>
+                </td>
+                <td>
+                    <?php echo $row['product_name']; ?>
+                </td>
+                <td>
+                    <?php echo $row['photo_name']; ?>
+                </td>
+                <td>
+                    <?php echo $row['price']; ?>
+                </td>
+                <td>
+                    <?php echo $row['stock']; ?>
+                </td>
+                <td>
+                    <?php echo $row['stock_request']; ?>
+                </td>
+                <td>
+                    Soon!
+                </td>
+                <td>
+                    <?php echo $row['warned_status']; ?>
+                </td>
+            </tr>
+            <?php $i++;endforeach;?>
+        </table>
     </div>
     <div class="footer fixed-bottom img-small-opacity floating-bottom">
         <a href="https://github.com/UnknownRori/phone-market-revision" target="_blank" title="Source Code">

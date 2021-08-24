@@ -39,12 +39,14 @@
                     <a href="contactus.php" class="nav-link">Contact us</a>
                 </li>
                 <?php
-                if(isset($_SESSION['admin'])){
-                    echo '
-                    <li class="nav-item">
-                        <a href="php/manageuser.php" class="nav-link">Manage Users</a>
-                    </li>
-                    ';
+                if(isset($_SESSION['login'])){
+                    if($_SESSION['admin'] == 1){
+                        echo '
+                        <li class="nav-item">
+                            <a href="php/manageuser.php" class="nav-link">Manage Users</a>
+                        </li>
+                        ';
+                    }
                 }
                 if(isset($_SESSION['vendor'])){
                     echo '

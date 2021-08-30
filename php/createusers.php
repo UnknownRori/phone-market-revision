@@ -9,43 +9,64 @@
     }
 
     if(isset($_POST['signup'])){
-        $_SESSION['preload-create-username'] = $_POST['username_1'];
-        $checkusers = $conn->prepare("SELECT id, username, password FROM users WHERE username=? ");
-        $checkusers->bind_param("s", $username);
-        $username = $_POST['username_1'];
-        $checkusers->execute();
-        $result = $checkusers->get_result();
-        $users = $result->fetch_assoc();
-        $checkusers->close();
-        if(($_POST['username_1']) != $users['username']){
-            if(($_POST['password_1']) == ($_POST['password_2'])){
-                $addusers = $conn->prepare("INSERT INTO users (username, password, admin, vendor) VALUE (?, ?, ?, ?)");
-                $addusers->bind_param("ssbb", $username, $password, $admin, $vendor);
-        
-                $username  = $_POST['username_1'];
-                $password  = password_hash($_POST['password_1'], PASSWORD_DEFAULT);
-                $admin     = false;
-                $vendor    = false;
-        
-                $addusers->execute();
-                $addusers->close();
-                $_SESSION['users_id'] = $users['id'];
-                $_SESSION['username'] = $username;
-                $_SESSION['login'] = 1;
-                sessionStorage.setItem("msg", "Account successfully created!");
-                sessionStorage.setItem("msg_type", "success");
-                echo '<script>window.location = sessionStorage.getItem("last_url");</script>';
+        if($_POST['username_1'] != null){
+            $_SESSION['preload-create-username'] = $_POST['username_1'];
+            $checkusers = $conn->prepare("SELECT id, username, password FROM users WHERE username=? ");
+            $checkusers->bind_param("s", $username);
+            $username = $_POST['username_1'];
+            $checkusers->execute();
+            $result = $checkusers->get_result();
+            $users = $result->fetch_assoc();
+            $checkusers->close();
+            if(($_POST['username_1']) != $users['username']){
+                if($_POST['password_1'] == null){
+                    echo '
+                    <script>
+                    sessionStorage.setItem("msg", "Account Cannot Have Empty Password!");
+                    sessionStorage.setItem("msg_type", "error");
+                    </script>
+                    ';
+                }else if(($_POST['password_1']) == ($_POST['password_2'])){
+                    $addusers = $conn->prepare("INSERT INTO users (username, password, admin, vendor) VALUE (?, ?, ?, ?)");
+                    $addusers->bind_param("ssbb", $username, $password, $admin, $vendor);
+            
+                    $username  = $_POST['username_1'];
+                    $password  = password_hash($_POST['password_1'], PASSWORD_DEFAULT);
+                    $admin     = false;
+                    $vendor    = false;
+            
+                    $addusers->execute();
+                    $addusers->close();
+                    $_SESSION['users_id'] = $users['id'];
+                    $_SESSION['username'] = $username;
+                    $_SESSION['login'] = 1;
+                    $_SESSION['admin'] = 0;
+                    $_SESSION['vendor'] = 0;
+
+                    echo '<script>
+                    sessionStorage.setItem("msg", "Account successfully created!");
+                    sessionStorage.setItem("msg_type", "success");
+                    window.location = sessionStorage.getItem("last_url");
+                    </script>';
+                }else{
+                    echo '<script>
+                        sessionStorage.setItem("msg", "Please re-enter your password correctly!");
+                        sessionStorage.setItem("msg_type", "error");
+                        </script>';
+                }
             }else{
                 echo '<script>
-                    sessionStorage.setItem("msg", "Please re-enter your password correctly!");
-                    sessionStorage.setItem("msg_type", "error");
-                    </script>';
+                sessionStorage.setItem("msg", "Usersname already in use!");
+                sessionStorage.setItem("msg_type", "error");
+                </script>';
             }
         }else{
-            echo '<script>
-            sessionStorage.setItem("msg", "Usersname already in use!");
+            echo '
+            <script>
+            sessionStorage.setItem("msg", "Please fill it properly!");
             sessionStorage.setItem("msg_type", "error");
-            </script>';
+            </script>
+            ';
         }
     }
 
@@ -132,6 +153,6 @@
     </div>
 </body>
 <script>
-    error_msg(2);
+    error_msg();
 </script>
 </html>

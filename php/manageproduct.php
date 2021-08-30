@@ -7,29 +7,23 @@
             window.location = "login.php";
         </script>';
     } 
-    if(isset($_POST['Product_Name'])){
-        if($_POST['Product_Name'] != null){
-            $adddata = $conn->prepare("INSERT INTO product (user_id, product_name, price, stock, description) value (?, ?, ?, ?, ?)");
-            $adddata->bind_param("isiis", $users_id, $product_name, $price, $stock, $desc);
-            $users_id = $_SESSION['users_id'];
-            $product_name = $_POST['Product_Name'];
-            $price = 0;
-            $stock = 0;
-            $desc = "default";
-            $adddata->execute();
-            $adddata->close();
-            echo '<script>
-            window.location = "editproduct.php?id=' . $product_name . '";
-            </script>';
+    if(isset($_POST['search-product'])){
+        if($_POST['search-product'] != null){
+            
         }else{
             echo '<script>
-            sessionStorage.setItem("msg", "Please enter your product name correctly!");
+            sessionStorage.setItem("msg", "Cannot search empty query!");
             sessionStorage.setItem("msg_type", "warning");
             window.location = "manageproduct.php";
             </script>';
         }
     }
-    $preparedata = $conn->prepare("SELECT * FROM product WHERE user_id=?");
+    $preparedata = $conn->prepare("
+        SELECT product.*, buy_history.product_id, SUM(buy_history.total_requested) AS total_requested
+        FROM product
+        LEFT JOIN buy_history ON buy_history.product_id = product.prod_id
+        WHERE product.user_id = ? GROUP BY product.prod_id;"
+    );
     $preparedata->bind_param("i", $id);
     $id = $_SESSION['users_id'];
     $preparedata->execute();
@@ -77,35 +71,25 @@
                     if($_SESSION['admin'] == 1){
                         echo '
                         <li class="nav-item">
-                            <a href="php/manageuser.php" class="nav-link">Manage Users</a>
+                        <a href="php/manageuser.php" class="nav-link">Manage Users</a>
                         </li>
                         ';
                     }
                 }
-                if(isset($_SESSION['vendor'])){
-                    echo '
-                    <li class="nav-item">
-                        <a href="manageproduct.php" class="nav-link active">Manage Product</a>
-                    </li>
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="navbardrop" data-toggle="dropdown">
-                            Page Action
-                        </a>
-                        <div class="dropdown-menu">
-                            <a class="dropdown-item" href="#" id="">Product</a>
-                            <a class="dropdown-item" href="#" id="">Request</a>
-                        </div>
-                    </li>
-                    <li class="nav-item">
-                        <form class="form-inline" action="" method="post">
-                            <div class="form-group">
-                                <input type="text" name="Product_Name" placeholder="Create Product" class="form-control">
-                            </div>
-                        </form>
-                    </li>
-                    ';
-                }
                 ?>
+                <li class="nav-item">
+                    <a href="manageproduct.php" class="nav-link active">Manage Product</a>
+                </li>
+                <li class="nav-item">
+                    <a class="btn btn-primary" href="../contactus.php" class="nav-link">Create Product</a>
+                </li>
+                <li class="nav-item" style="margin-left: 10px;">
+                    <form class="form-inline" action="" method="post">
+                        <div class="form-group">
+                            <input type="text" name="search-product" placeholder="Search" class="form-control">
+                        </div>
+                    </form>
+                </li>
             </ul>
             <ul class="navbar-nav">
                 <?php if(isset($_SESSION['username'])){
@@ -129,14 +113,13 @@
         <table class="table table-hover">
             <tr>
                 <td>#</td>
-                <td>Product ID</td>
+                <td>ID</td>
                 <td>Product Name</td>
                 <td>Photo Availabilty</td>
                 <td>Price</td>
                 <td>Available Stock</td>
                 <td>Request Stock</td>
-                <td>Stock Status</td>
-                <td>Warned Status</td>
+                <td>Status</td>
                 <td>Action</td>
             </tr>
             <?php $i=1; foreach($data as $row):?>
@@ -151,7 +134,12 @@
                     <?php echo $row['product_name']; ?>
                 </td>
                 <td>
-                    <?php echo $row['photo_name']; ?>
+                    <?php
+                    //  echo $row['photo_name'];
+                     if($row['photo_name'] !== NULL){
+                        echo '';
+                     }
+                     ?>
                 </td>
                 <td>
                     <?php echo $row['price']; ?>
@@ -160,13 +148,46 @@
                     <?php echo $row['stock']; ?>
                 </td>
                 <td>
-                    <?php echo $row['stock_request']; ?>
+                    <?php
+                        if($row['total_requested'] > 0){
+                            echo $row['total_requested'];
+                        }else{
+                            echo '0';
+                        }
+                     ?>
                 </td>
                 <td>
-                    Soon!
+                    <?php
+                     if($row['warned_status'] !== 0){
+                        echo '
+                            <b id="warning">Warned</b>
+                        ';
+                     }
+                     if($row['total_requested'] > $row['stock']){
+                        echo '
+                            <b>Not Enough Stock</b>
+                        ';
+                     }else if($row['stock'] > 0){
+                         echo '
+                            <b>Surplus Stock</b>
+                         ';
+                     }else if($row['stock'] == 0){
+                        echo '
+                            <b>Out of Stock</b>
+                        ';
+                     }
+                     
+                    ?>
                 </td>
                 <td>
-                    <?php echo $row['warned_status']; ?>
+                    
+                    <?php
+                      echo '
+                        <a class="btn btn-primary" href="product.php?prod=' . $row['prod_id'] . '" >Detail</a>
+                        <a class="btn btn-warning" href="editproduct.php?prod=' . $row['prod_id'] . '" >Edit</a>
+                        <a class="btn btn-danger" href="deleteproduct.php?id=' . $row['prod_id'] . '">Delete</a>
+                      ';
+                    ?>
                 </td>
             </tr>
             <?php $i++;endforeach;?>
@@ -193,5 +214,11 @@
 </body>
 <script>
     error_msg(2);
+    setInterval(function () {
+        document.getElementById('warning').style.color =  "red";
+    }, 500);
+    setInterval(function () {
+        document.getElementById('warning').style.color =  "black";
+    }, 800);
 </script>
 </html>

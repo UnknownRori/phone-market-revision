@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Aug 20, 2021 at 04:17 AM
+-- Generation Time: Aug 28, 2021 at 12:15 AM
 -- Server version: 10.4.10-MariaDB
 -- PHP Version: 7.3.12
 
@@ -25,12 +25,12 @@ SET time_zone = "+00:00";
 -- --------------------------------------------------------
 
 --
--- Table structure for table `buy_request`
+-- Table structure for table `buy_history`
 --
 
-CREATE TABLE `buy_request` (
+CREATE TABLE `buy_history` (
   `id` int(11) NOT NULL,
-  `user_id` int(11) NOT NULL,
+  `usersid` int(11) NOT NULL,
   `product_id` int(11) NOT NULL,
   `total_requested` int(11) NOT NULL,
   `buy_timestamp` timestamp NOT NULL DEFAULT current_timestamp(),
@@ -38,6 +38,16 @@ CREATE TABLE `buy_request` (
   `vendor_read_status` tinyint(1) NOT NULL,
   `delivery_product_status` tinyint(1) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data for table `buy_history`
+--
+
+INSERT INTO `buy_history` (`id`, `usersid`, `product_id`, `total_requested`, `buy_timestamp`, `delivery_timestamp`, `vendor_read_status`, `delivery_product_status`) VALUES
+(1, 4, 1, 1, '2021-08-26 22:43:22', '2021-08-28 19:00:00', 0, 0),
+(2, 4, 1, 2, '2021-08-26 23:11:04', '2021-08-26 23:11:04', 0, 0),
+(3, 1, 2, 5, '2021-08-27 06:25:17', '2021-08-27 06:25:17', 0, 0),
+(4, 1, 6, 2, '2021-08-27 06:38:41', '2021-08-27 06:38:41', 0, 0);
 
 -- --------------------------------------------------------
 
@@ -68,6 +78,20 @@ CREATE TABLE `feature` (
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `notification`
+--
+
+CREATE TABLE `notification` (
+  `id` int(11) NOT NULL,
+  `fromuser` varchar(255) NOT NULL,
+  `touser` varchar(255) NOT NULL,
+  `notificationtype` int(11) NOT NULL,
+  `content` varchar(255) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `product`
 --
 
@@ -87,14 +111,12 @@ CREATE TABLE `product` (
 --
 
 INSERT INTO `product` (`prod_id`, `user_id`, `product_name`, `photo_name`, `price`, `stock`, `description`, `warned_status`) VALUES
-(1, 1, 'test_product', '', 123, 345, 'asd', 0),
-(2, 4, 'Yolo', '', 0, 0, 'default', 0),
-(3, 4, 'A', '', 0, 0, 'default', 0),
+(1, 1, 'AAAA', '', 123, 1, 'default', 0),
+(2, 4, 'No Phone Air', 'No Phone Air', 0, 0, 'default', 0),
+(3, 4, 'A', '', 0, 0, 'default', 1),
 (5, 4, 'Q', '', 0, 0, 'default', 0),
 (6, 4, 'asd', '', 1, 1, 'as', 0),
-(7, 1, 'as2', '', 1, 1, 'as', 0),
-(8, 1, 'Cat', '', 0, 0, 'default', 0),
-(9, 4, 'urra', '', 0, 0, 'default', 0);
+(10, 1, 'RRRRR', '', 2, 3, '12', 0);
 
 -- --------------------------------------------------------
 
@@ -115,8 +137,8 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`id`, `username`, `password`, `admin`, `vendor`) VALUES
-(1, 'UnknownRori', '$2y$10$qC1QXBxixDaQ.fL6Rmaf.OePOexMWTiXw2Y6q45RVB3xTg5yY85Gu', 1, 1),
-(4, 'Akashi', '$2y$10$tiPFid4Ovw43aJGmwxfUou8wbL6JmJgRZjzE8NJeHtxbGeLG8Wz1K', 0, 1);
+(1, 'UnknownRori', '$2y$10$W2FiMFl6m/nzdJsx8klJZOeuSCzgOVn/AMnRzcecazlz4wNlXzRii', 1, 1),
+(4, 'Akashi', '$2y$10$zNIBHDoLJOTgjc92Ttc0zOnkAzCWXQHhDRJgpMghRTXs/xyAIDwhG', 0, 1);
 
 -- --------------------------------------------------------
 
@@ -136,11 +158,11 @@ CREATE TABLE `view_history` (
 --
 
 --
--- Indexes for table `buy_request`
+-- Indexes for table `buy_history`
 --
-ALTER TABLE `buy_request`
+ALTER TABLE `buy_history`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `users_request` (`user_id`),
+  ADD KEY `users_request` (`usersid`),
   ADD KEY `product_request` (`product_id`);
 
 --
@@ -157,6 +179,12 @@ ALTER TABLE `comment`
 ALTER TABLE `feature`
   ADD PRIMARY KEY (`id`),
   ADD KEY `product_id` (`product_id`);
+
+--
+-- Indexes for table `notification`
+--
+ALTER TABLE `notification`
+  ADD PRIMARY KEY (`id`);
 
 --
 -- Indexes for table `product`
@@ -186,10 +214,10 @@ ALTER TABLE `view_history`
 --
 
 --
--- AUTO_INCREMENT for table `buy_request`
+-- AUTO_INCREMENT for table `buy_history`
 --
-ALTER TABLE `buy_request`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+ALTER TABLE `buy_history`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `comment`
@@ -204,10 +232,16 @@ ALTER TABLE `feature`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
+-- AUTO_INCREMENT for table `notification`
+--
+ALTER TABLE `notification`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
 -- AUTO_INCREMENT for table `product`
 --
 ALTER TABLE `product`
-  MODIFY `prod_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+  MODIFY `prod_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- AUTO_INCREMENT for table `users`
@@ -226,11 +260,11 @@ ALTER TABLE `view_history`
 --
 
 --
--- Constraints for table `buy_request`
+-- Constraints for table `buy_history`
 --
-ALTER TABLE `buy_request`
+ALTER TABLE `buy_history`
   ADD CONSTRAINT `product_request` FOREIGN KEY (`product_id`) REFERENCES `product` (`prod_id`),
-  ADD CONSTRAINT `users_request` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`);
+  ADD CONSTRAINT `users_request` FOREIGN KEY (`usersid`) REFERENCES `users` (`id`);
 
 --
 -- Constraints for table `comment`

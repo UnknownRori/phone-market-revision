@@ -3,7 +3,7 @@
     if(isset($_SESSION['login'])){
         echo '<script>
             sessionStorage.setItem("msg", "User already log in!");
-            sessionStorage.setItem("msg_type", "warning");
+            sessionStorage.setItem("msg_type", "error");
             window.location = sessionStorage.getItem("last_url");
         </script>';
     }
@@ -137,6 +137,6 @@
     </div>
 </body>
 <script>
-    error_msg(2);
+    error_msg();
 </script>
 </html>

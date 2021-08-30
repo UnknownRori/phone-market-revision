@@ -56,13 +56,13 @@
                         </li>
                         ';
                     }
-                }
-                if(isset($_SESSION['vendor'])){
+                    if(($_SESSION['vendor'])){
                     echo '
                     <li class="nav-item">
                         <a href="php/manageproduct.php" class="nav-link">Manage Product</a>
                     </li>
                     ';
+                    }
                 }
                 ?>
             </ul>
@@ -85,19 +85,19 @@
             </ul>
         </div>
     </nav>
-    <div class="container" style="background-color: #ffffffa6; height:100vh;">
-    <div class="" style="padding-top: 150px;">
-        <h1 class="text-center" id="learnmore"></h1>
-            <div class="text-center">
-                <a href="https://twitter.com/UnknownRori" target="_blank">
-                    <img src="resource/image/contactus/twitter.png" alt="twitter" class="img-fluid" style=" height: 150px;">
-                </a>
-                <a href="https://github.com/UnknownRori/" target="_blank">
-                    <img src="resource/image/contactus/github.png" alt="github" class="img-fluid" style=" height: 150px;">
-                </a>
-            </div>
-    </div>
-    </div>
+    <!-- <div class="container" style="background-color: #ffffffa6; height:100vh;">
+        <div class="" style="padding-top: 150px;">
+            <h1 class="text-center" id="learnmore"></h1>
+                <div class="text-center">
+                    <a href="https://twitter.com/UnknownRori" target="_blank">
+                        <img src="resource/image/contactus/twitter.png" alt="twitter" class="img-fluid" style=" height: 150px;">
+                    </a>
+                    <a href="https://github.com/UnknownRori/" target="_blank">
+                        <img src="resource/image/contactus/github.png" alt="github" class="img-fluid" style=" height: 150px;">
+                    </a>
+                </div>
+        </div>
+    </div> -->
     <div class="footer fixed-bottom img-small-opacity floating-bottom">
         <a href="https://github.com/UnknownRori/phone-market-revision" target="_blank" title="Source Code">
             <img src="resource/image/contactus/github.png" alt="github">
@@ -118,8 +118,8 @@
     </div>
 </body>
 <script>
-    error_msg(2);
+    error_msg();
     getcurrentpage();
-    printLetterByLetter("learnmore", "Learn more about me?", 100);
+    // printLetterByLetter("learnmore", "Learn more about me?", 100);
 </script>
 </html>

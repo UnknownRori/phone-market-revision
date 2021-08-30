@@ -65,7 +65,7 @@
                 <li class="nav-item">
                     <a href="contactus.php" class="nav-link">Contact us</a>
                 </li>
-                <li class="nav-item dropdown">
+                <!-- <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" id="navbardrop" data-toggle="dropdown">
                         Display
                     </a>
@@ -73,7 +73,7 @@
                         <a class="dropdown-item nav-link active" href="#" id="detailed">Grid</a>
                         <a class="dropdown-item nav-link" href="#" id="list">List</a>
                     </div>
-                </li>
+                </li> -->
                 <?php
                 if(isset($_SESSION['login'])){
                     if($_SESSION['admin'] == 1){
@@ -83,13 +83,13 @@
                         </li>
                         ';
                     }
-                }
-                if(isset($_SESSION['vendor'])){
+                    if(($_SESSION['vendor'])){
                     echo '
                     <li class="nav-item">
                         <a href="php/manageproduct.php" class="nav-link">Manage Product</a>
                     </li>
                     ';
+                    }
                 }
                 ?>
                 <li class="nav-item">
@@ -162,7 +162,7 @@
                                 </b>
                             </td>
                         </tr>
-                        <tr>
+                        <!-- <tr>
                             <td>
                                 <b>Vendor</b>
                             </td>
@@ -174,24 +174,23 @@
                                     <?php echo $row['username'] ?>
                                 </b>
                             </td>
-                        </tr>
+                        </tr> -->
                     </table>
                 </div>
                 <div style="margin-top: 10px; padding: 5px;">
                     <?php
-                        echo '<a class="btn btn-primary" href="#" style="margin-right: 4px; margin-left: 4px; margin-top: 2px; margin-bottom: 2px;" href="#.php?id=' . $row['prod_id'] .'">Detail</a>';
+                        echo '<a class="btn btn-primary" href="#" style="margin-right: 4px; margin-left: 4px; margin-top: 2px; margin-bottom: 2px;" href="/php/product.php?id=' . $row['prod_id'] .'">Detail</a>';
                         if(isset($_SESSION['login'])){
                             if(($_SESSION['admin'])){
                                 if($row['warned_status'] == 1){
                                     echo '<button title="Already Warned!"  class="btn btn-warning" style="margin-right: 4px; margin-left: 4px; margin-top: 2px; margin-bottom: 2px;" disabled>Issue Warning</button>';
                                 }else{
-                                    echo '<a class="btn btn-warning" style="margin-right: 4px; margin-left: 4px; margin-top: 2px; margin-bottom: 2px;" href="./php/#.php?id='. $row['prod_id'] . '">Issue Warning</a>';
+                                    if($row['username'] == $_SESSION['username']){
+                                        echo '<button title="Cannot Send Warning to Yourself"  class="btn btn-warning" style="margin-right: 4px; margin-left: 4px; margin-top: 2px; margin-bottom: 2px;" disabled>Issue Warning</button>';
+                                    }else{
+                                        echo '<a class="btn btn-warning" style="margin-right: 4px; margin-left: 4px; margin-top: 2px; margin-bottom: 2px;" href="./php/#.php?id='. $row['prod_id'] . '">Issue Warning</a>';
+                                    }
                                 }
-                            }
-                            if(($_SESSION['users_id']) == $row['user_id'] || $_SESSION['admin']){
-                                echo '<a class="btn btn-danger" style="margin-right: 4px; margin-left: 4px; margin-top: 2px; margin-bottom: 2px;" href="./php/deleteproduct.php?id=' . $row['prod_id'] . '">Delete</a>';
-                            }else if($_SESSION['vendor']){
-                                echo '<a class="btn btn-danger disabled" style="margin-right: 4px; margin-left: 4px; margin-top: 2px; margin-bottom: 2px;" href="./php/deleteproduct.php?id=' . $row['prod_id'] . '">Delete</a>';
                             }
                         }
                     ?>
@@ -219,7 +218,7 @@
     </div>
 </body>
 <script>
-    error_msg(2);
+    error_msg();
     getcurrentpage();
 </script>
 </html>

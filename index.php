@@ -20,7 +20,7 @@
     <div class="msg fixed-top text-center">
         <span id="msg"></span>
     </div>
-    <nav class="navbar navbar-expand-sm bg-light navbar-light fixed-top  hidnavbar">
+    <nav class="navbar navbar-expand-sm bg-light navbar-light fixed-top">
         <a class="navbar-brand" href="#home">
             <img src="resource\image\Apple.png" class="navbar-brand-image" alt="Brand"> Store
         </a>
@@ -47,13 +47,13 @@
                         </li>
                         ';
                     }
-                }
-                if(isset($_SESSION['vendor'])){
+                    if(($_SESSION['vendor'])){
                     echo '
                     <li class="nav-item">
                         <a href="php/manageproduct.php" class="nav-link">Manage Product</a>
                     </li>
                     ';
+                    }
                 }
                 ?>
                 <li class="nav-item">
@@ -151,7 +151,7 @@
             printLetterByLetter("intro", "A Fake Apple Store", 100);
             printLetterByLetter("intro-secondary", "by UnknownRori", 100);
         });
-        error_msg(1);
+        error_msg();
         getcurrentpage();
         // review this
         $(document).ready(function () {
@@ -166,10 +166,8 @@
         $(window).scroll(function(){
             wScroll = $(this).scrollTop();
             if(wScroll > 220){
-                $('.hidnavbar').addClass('show');
                 $('.about').addClass('show');
             }else{
-                $('.hidnavbar').removeClass('show');
                 $('.about').removeClass('show');
                 $('.preview').removeClass('show');
             }if(wScroll > 260){

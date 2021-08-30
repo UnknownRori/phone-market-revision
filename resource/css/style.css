@@ -11,17 +11,7 @@
 .navbar{
   height: 60px;
 }
-.hidnavbar {
-  opacity: 0;
-  height: 0px;
-  transition: 1s;
-}
 
-.hidnavbar.show {
-  opacity: 0.95;
-  height: 60px;
-  transition: 1s;
-}
 .navbar.navmsg{
   transition: 1s;
   margin-top: 30px;

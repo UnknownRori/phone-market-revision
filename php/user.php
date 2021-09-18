@@ -45,20 +45,20 @@
         <div class="collapse navbar-collapse justify-content-between" id="collapsibleNavbar">
             <ul class="navbar-nav mr-auto">
                 <li class="nav-item">
-                    <a href="../phone-market-revision" class="nav-link">Home</a>
+                    <a href="../../phone-market-revision" class="nav-link">Home</a>
                 </li>
                 <li class="nav-item">
-                    <a href="../product.php" class="nav-link">Product</a>
+                    <a href="../../product.php" class="nav-link">Product</a>
                 </li>
                 <li class="nav-item">
-                    <a href="../contactus.php" class="nav-link">Contact us</a>
+                    <a href="../../contactus.php" class="nav-link">Contact us</a>
                 </li>
                 <?php
                 if(isset($_SESSION['login'])){
                     if($_SESSION['admin'] == 1){
                         echo '
                         <li class="nav-item">
-                            <a href="php/manageuser.php" class="nav-link">Manage Users</a>
+                            <a href="manageuser.php" class="nav-link">Manage Users</a>
                         </li>
                         ';
                     }

@@ -11,12 +11,9 @@
         if($_SESSION['users_id'] == $data['user_id']){
             
         }else if($_SESSION['admin'] == 1){
-            echo '
-            <script>
-            sessionStorage.setItem("msg", "Make sure you already issue warning to owner product!");
-            sessionStorage.setItem("msg_type", "warning");
-            </script>
-            ';
+            if($data['warned_status'] === 0){
+                MsgReport("Make sure you already issue warning to owner of the product!", "warning", "msgonly");
+            }
         }else{
             echo '
             <script>
@@ -25,6 +22,7 @@
             window.location = sessionStorage.getItem("last_url");
             </script>
             ';
+            MsgReport("You do not have privilege over this product!", "error", "");
         }
 
         if(isset($_POST['delete'])){
@@ -32,18 +30,11 @@
             $deletecommand->bind_param("i", $prodid);
             $prodid = $_GET['id'];
             $deletecommand->execute();
-            echo '<script>
-            sessionStorage.setItem("msg", "Product Successfully Deleted!");
-            sessionStorage.setItem("msg_type", "success");
-            window.location="../product.php"</script>';
             $deletecommand->close();
+            MsgReport("Product successfully deleted", "success", "");
         }
     }else{
-        echo '<script>
-            sessionStorage.setItem("msg", "User must log in first!");
-            sessionStorage.setItem("msg_type", "warning");
-            window.location = "login.php";
-        </script>';
+        MsgReport("User must log in first!", "warning", "login.php");
     }
 ?>
 <!DOCTYPE html>
@@ -56,9 +47,15 @@
     <script src="../resource/js/main.js"></script>
     <script src="../resource/js/bootstrap.min.js"></script>
     <link rel="stylesheet" href="../resource/css/style.css">
+    <link rel="stylesheet" href="../resource/css/style-profile.css">
     <link rel="stylesheet" href="../resource/css/bootstrap.min.css">
     <link rel="icon" href="../resource/image/favicon.jpg">
-    <title>Delete Confirmation</title>
+    <title>
+        <?php
+            echo $data['product_name'];
+        ?>
+        Delete Confirmation
+    </title>
 </head>
 <body id="home">
     <div class="msg fixed-top text-center">
@@ -77,7 +74,7 @@
                     <a href="../../phone-market-revision" class="nav-link">Home</a>
                 </li>
                 <li class="nav-item">
-                    <a href="../product.php" class="nav-link active">Product</a>
+                    <a href="../product.php" class="nav-link">Product</a>
                 </li>
                 <li class="nav-item">
                     <a href="../contactus.php" class="nav-link">Contact us</a>
@@ -86,14 +83,14 @@
                 if(isset($_SESSION['admin'])){
                     echo '
                     <li class="nav-item">
-                        <a href="php/manageuser.php" class="nav-link">Manage Users</a>
+                        <a href="manageuser.php" class="nav-link">Manage Users</a>
                     </li>
                     ';
                 }
                 if(isset($_SESSION['vendor'])){
                     echo '
                     <li class="nav-item">
-                        <a href="php/manageproduct.php" class="nav-link">Manage Product</a>
+                        <a href="manageproduct.php" class="nav-link">Manage Product</a>
                     </li>
                     ';
                 }

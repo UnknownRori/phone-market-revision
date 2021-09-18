@@ -190,6 +190,7 @@
                         echo '<a class="btn btn-primary spacing" href="/php/product.php?id=' . $row['prod_id'] .'">Detail</a>';
                         if(isset($_SESSION['login'])){
                             if(($_SESSION['admin'])){
+                                echo '<a class="btn btn-danger spacing" href="./php/deleteproduct.php?id='. $row['prod_id'] . '">Delete</a>';
                                 if($row['warned_status'] == 1){
                                     echo '<button title="Already Warned!"  class="btn btn-warning spacing" disabled>Issue Warning</button>';
                                 }else{

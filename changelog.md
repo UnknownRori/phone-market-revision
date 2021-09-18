@@ -1,3 +1,11 @@
+### Minor Update 0.8.1
+
+##### Change
+
+<ul>
+    <li>Adding Delete button</li>
+    <li>Optimize main.js</li>
+</ul>
 
 ### Major Update 0.8
 
@@ -12,5 +20,4 @@
     <li>switching `msg reporting` to using php function version</li>
     <li>Working Edit & Create Product Form</li>
     <li>Update Database</li>
-    <li></li>
 </ul>

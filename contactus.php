@@ -11,6 +11,7 @@
     <script src="resource/js/main.js"></script>
     <script src="resource/js/bootstrap.min.js"></script>
     <link rel="stylesheet" href="resource/css/style.css">
+    <link rel="stylesheet" href="resource/css/style-profile.css">
     <link rel="stylesheet" href="resource/css/bootstrap.min.css">
     <link rel="icon" href="resource/image/favicon.jpg">
     <title>Contact us</title>
@@ -70,15 +71,15 @@
                 <?php if(isset($_SESSION['username'])){
                     echo '
                     <div>
-                        <a href="notification.php" id="notification">
+                        <a href="php/notification.php" id="notification">
                             <span class="glyphicon">&#x2709;</span>
                         </a>
-                        <a class="navbar-brand" href="/php/user.php?users=' . $_SESSION['username'] . '">' . $_SESSION['username'] . '
+                        <a class="navbar-brand" href="php/user.php?users=' . $_SESSION['username'] . '">' . $_SESSION['username'] . '
                             <img class="profile" src="resource/image/profile/' . $_SESSION['username'] . '.jpg" alt="">
                         </a>
+                        <a href=".\php\logout.php" class="btn btn-danger">Log out</a>
                     </div>
                     ';
-                    echo '<a href=".\php\logout.php" class="btn btn-danger">Log out</a>';
                 }else{
                     echo '<a href=".\php\login.php" class="btn btn-info">Log in</a>';
                 }?>

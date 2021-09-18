@@ -1,19 +1,9 @@
 <?php
     require_once 'php\connect.php';
-    // this is only reserved for preview
-    try{
-        $getpreview = $conn->prepare("SELECT product.*, users.id, users.username FROM product INNER JOIN users ON product.user_id = users.id LIMIT 4");
-        $getpreview->execute();
-        $data = $getpreview->get_result();
-        $getpreview->close();
-    }catch(Exception $e){
-        echo '
-            <script>
-                sessionStorage.setItem("msg", ' . $e->getMessage() . ');
-                sessionStorage.setItem("msg_type", "error");
-            </script>
-            ';
-}
+    $getpreview = $conn->prepare("SELECT product.*, users.id, users.username FROM product INNER JOIN users ON product.user_id = users.id LIMIT 4");
+    $getpreview->execute();
+    $data = $getpreview->get_result();
+    $getpreview->close();
 ?>
 
 <!DOCTYPE html>
@@ -139,16 +129,34 @@
             </div>
         </section>
         <section id="preview">
-            
+            <div class="container text-center">
+                <h2>Newest Product</h2>
+                <div class="row">
+                    <?php foreach($data as $row):?>
+                    <div class="col-3 item-img mobile">
+                        <a href="product.php" style="text-decoration: none;">
+                            <div style="border: 1px solid black;">
+                                <?php
+                                    if($row['photo_name']){
+                                        echo '
+                                        <img src="resource/image/product/' . $row['photo_name'] .'" alt=""class="img img-fluid">
+                                        ';
+                                    }else{
+                                        echo '
+                                        <img src="resource/image/404imgnotfound.png" alt=""class="img img-fluid">
+                                        ';
+                                    }
+                                ?>
+                            </div>
+                            <p class="text-primary"><?=$row['product_name']?></p>
+                            <p class="text-danger"><?= $row['price']?></p>
+                        </a>
+                    </div>
+                    <?php endforeach;?>
+                </div>
+            </div>
         </section>
-    </div>
-    <div class="footer fixed-bottom img-small-opacity hidden floating-bottom">
-        <a href="https://github.com/UnknownRori/phone-market-revision" target="_blank" title="Source Code">
-            <img src="resource/image/contactus/github.png" alt="github">
-        </a>
-    </div>
-    <div class="footer bg-light">
-        <div class="container">
+        <div class="footer bg-light">
             <div class="text-center">
                 <p class="text-muted">
                 <script>
@@ -159,6 +167,11 @@
                 </p>
             </div>
         </div>
+    </div>
+    <div class="footer fixed-bottom img-small-opacity hidden floating-bottom">
+        <a href="https://github.com/UnknownRori/phone-market-revision" target="_blank" title="Source Code">
+            <img src="resource/image/contactus/github.png" alt="github">
+        </a>
     </div>
     <script>
         error_msg();

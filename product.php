@@ -1,5 +1,5 @@
 <?php
-    require_once 'php/connect.php';
+    require_once 'php\connect.php';
     $preparedata = $conn->prepare("SELECT product.*, users.id, users.username FROM product INNER JOIN users ON product.user_id = users.id");
     $preparedata->execute();
     $data = $preparedata->get_result();
@@ -17,10 +17,7 @@
             //AdvancedSearchEngineAlgorithm:
             //Todo: add ProductNameOnly Tag, VendorOnly Tag, SpecificCharacter Tag
         }else{
-            echo '<script>
-            sessionStorage.setItem("msg", "Cannot search empty query!");
-            sessionStorage.setItem("msg_type", "error");
-            </script>';
+            MsgReport("Cannot search empty query!", "error", "msgonly");
         }
     }
 ?>
@@ -30,16 +27,18 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product</title>
     <script src="resource/js/jquery-3.5.1.js"></script>
     <script src="resource/js/main.js"></script>
     <script src="resource/js/bootstrap.min.js"></script>
     <link rel="stylesheet" href="resource/css/style.css">
+    <link rel="stylesheet" href="resource/css/style-profile.css">
+    <link rel="stylesheet" href="resource/css/style-product.css">
     <link rel="stylesheet" href="resource/css/bootstrap.min.css">
     <link rel="icon" href="resource/image/favicon.jpg">
-    <title>Product</title>
     <style>
         p {
-            margin: 0;
+            margin: 0 !important;
         }
     </style>
 </head>
@@ -88,6 +87,9 @@
                     <li class="nav-item">
                         <a href="php/manageproduct.php" class="nav-link">Manage Product</a>
                     </li>
+                    <li class="nav-item spacing">
+                        <a class="btn btn-primary" href="php/editproduct.php" class="nav-link">Create Product</a>
+                    </li>
                     ';
                     }
                 }
@@ -96,7 +98,7 @@
                     <!-- search engine input -->
                     <form class="form-inline" action="" method="post">
                         <div class="form-group">
-                            <input type="text" name="search_product" placeholder="Search Product" class="form-control">
+                            <input type="text" name="search_product" placeholder="Search Product" class="form-control spacing">
                         </div>
                     </form>
                 </li>
@@ -108,33 +110,39 @@
                         <a href="php/notification.php" id="notification">
                             <span class="glyphicon">&#x2709;</span>
                         </a>
-                        <a class="navbar-brand" href="./php/user.php?users=' . $_SESSION['username'] . '">' . $_SESSION['username'] . '
+                        <a class="navbar-brand" href="php/user.php?users=' . $_SESSION['username'] . '">' . $_SESSION['username'] . '
                             <img class="profile" src="resource/image/profile/' . $_SESSION['username'] . '.jpg" alt="">
                         </a>
+                        <a href=".\php\logout.php" class="btn btn-danger">Log out</a>
                     </div>
                     ';
-                    echo '<a href=".\php\logout.php" class="btn btn-danger">Log out</a>';
                 }else{
                     echo '<a href=".\php\login.php" class="btn btn-info">Log in</a>';
                 }?>
             </ul>
         </div>
     </nav>
-    <div id="extend" class="container" style="margin-top: 90px; height: 100vh;">
+    <div id="extend" class="container height-100vh">
         <?php foreach($data as $row):?>
-            <div style="width: 300px; float:left; margin: 20px">
-                <?php
-                    if($row['photo_name']){
-                        echo '
-                        <img src="resource/image/product/' . $row['photo_name'] .'.png" alt=""class="img img-fluid">
-                        ';
-                    }else{
-                        echo '
-                        <img src="resource/image/404imgnotfound.png" alt=""class="img img-fluid">
-                        ';
-                    }
-                ?>
-                <div style="margin-top: 10px; float: unset;">
+            <div style="width: 300px; float:left; margin: 20px;">
+                <div style="border: 1px solid black;">
+                    <?php
+                        if($row['photo_name']){
+                            echo '
+                            <a href="/php/product.php?id=' . $row['prod_id'] .'">
+                                <img src="resource/image/product/' . $row['photo_name'] .'" alt=""class="img img-fluid">
+                            </a>
+                            ';
+                        }else{
+                            echo '
+                            <a href="/php/product.php?id=' . $row['prod_id'] .'">
+                                <img src="resource/image/404imgnotfound.png" alt=""class="img img-fluid">
+                            </a>
+                            ';
+                        }
+                    ?>
+                </div>
+                <div>
                     <table class="table" style="margin-top: 10px;">
                         <tr>
                             <td>
@@ -179,16 +187,16 @@
                 </div>
                 <div style="margin-top: 10px; padding: 5px;">
                     <?php
-                        echo '<a class="btn btn-primary" href="#" style="margin-right: 4px; margin-left: 4px; margin-top: 2px; margin-bottom: 2px;" href="/php/product.php?id=' . $row['prod_id'] .'">Detail</a>';
+                        echo '<a class="btn btn-primary spacing" href="/php/product.php?id=' . $row['prod_id'] .'">Detail</a>';
                         if(isset($_SESSION['login'])){
                             if(($_SESSION['admin'])){
                                 if($row['warned_status'] == 1){
-                                    echo '<button title="Already Warned!"  class="btn btn-warning" style="margin-right: 4px; margin-left: 4px; margin-top: 2px; margin-bottom: 2px;" disabled>Issue Warning</button>';
+                                    echo '<button title="Already Warned!"  class="btn btn-warning spacing" disabled>Issue Warning</button>';
                                 }else{
                                     if($row['username'] == $_SESSION['username']){
-                                        echo '<button title="Cannot Send Warning to Yourself"  class="btn btn-warning" style="margin-right: 4px; margin-left: 4px; margin-top: 2px; margin-bottom: 2px;" disabled>Issue Warning</button>';
+                                        echo '<button title="Cannot Send Warning to Yourself"  class="btn btn-warning spacing" disabled>Issue Warning</button>';
                                     }else{
-                                        echo '<a class="btn btn-warning" style="margin-right: 4px; margin-left: 4px; margin-top: 2px; margin-bottom: 2px;" href="./php/#.php?id='. $row['prod_id'] . '">Issue Warning</a>';
+                                        echo '<a class="btn btn-warning spacing" href="./php/warnproduct.php?id='. $row['prod_id'] . '">Issue Warning</a>';
                                     }
                                 }
                             }

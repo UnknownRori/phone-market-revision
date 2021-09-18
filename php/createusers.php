@@ -1,11 +1,7 @@
 <?php
     require_once 'connect.php';
     if(isset($_SESSION['login'])){
-        echo '<script>
-            sessionStorage.setItem("msg", "User already log in!");
-            sessionStorage.setItem("msg_type", "warning");
-            window.location = sessionStorage.getItem("last_url");
-        </script>';
+        MsgReport("User Already log in!", "warning", "");
     }
 
     if(isset($_POST['signup'])){
@@ -20,12 +16,7 @@
             $checkusers->close();
             if(($_POST['username_1']) != $users['username']){
                 if($_POST['password_1'] == null){
-                    echo '
-                    <script>
-                    sessionStorage.setItem("msg", "Account Cannot Have Empty Password!");
-                    sessionStorage.setItem("msg_type", "error");
-                    </script>
-                    ';
+                    MsgReport("Account cannot have empty password", "error", "msgonly");
                 }else if(($_POST['password_1']) == ($_POST['password_2'])){
                     $addusers = $conn->prepare("INSERT INTO users (username, password, admin, vendor) VALUE (?, ?, ?, ?)");
                     $addusers->bind_param("ssbb", $username, $password, $admin, $vendor);
@@ -42,12 +33,8 @@
                     $_SESSION['login'] = 1;
                     $_SESSION['admin'] = 0;
                     $_SESSION['vendor'] = 0;
-
-                    echo '<script>
-                    sessionStorage.setItem("msg", "Account successfully created!");
-                    sessionStorage.setItem("msg_type", "success");
-                    window.location = sessionStorage.getItem("last_url");
-                    </script>';
+                    
+                    MsgReport("Account successfully created!", "success", "");
                 }else{
                     echo '<script>
                         sessionStorage.setItem("msg", "Please re-enter your password correctly!");

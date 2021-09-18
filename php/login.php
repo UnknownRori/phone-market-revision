@@ -1,11 +1,7 @@
 <?php
     require_once 'connect.php';
     if(isset($_SESSION['login'])){
-        echo '<script>
-            sessionStorage.setItem("msg", "User already log in!");
-            sessionStorage.setItem("msg_type", "error");
-            window.location = sessionStorage.getItem("last_url");
-        </script>';
+        MsgReport("User already log in!", "error", "");
     }
     if(isset($_POST['login'])){
         $_SESSION['preload-login-username'] = $_POST['username_1'];
@@ -19,11 +15,7 @@
         $users = $result->fetch_assoc();
         $prepare->close();
         if($users['username'] == null){
-            echo '<script>
-                sessionStorage.setItem("msg", "Incorrect Username!");
-                sessionStorage.setItem("msg_type", "error");
-                window.location="login.php";
-                </script>';
+            MsgReport("Incorrect Username!", "error", "login.php");
         }
         if($prepare == TRUE){
             $password = $_POST['password_1'];
@@ -39,22 +31,15 @@
                 $_SESSION['admin'] = $users['admin'];
                 $_SESSION['vendor'] = $users['vendor'];
                 $_SESSION['login'] = 1;
-                echo '<script>
-                sessionStorage.setItem("msg", "Log in successfully!");
-                sessionStorage.setItem("msg_type", "success");
-                window.location = sessionStorage.getItem("last_url");
-                </script>';
+                if(isset($_POST["remember_me"])){
+                    // cache login
+                }
+                MsgReport("Log in successfully!", "success", "");
             }else{
-                echo '<script>
-                sessionStorage.setItem("msg", "Incorrect password!");
-                sessionStorage.setItem("msg_type", "error");
-                </script>';
+                MsgReport("Incorrect Password!", "error", "login.php");
             }
         }else{
-            echo '<script>
-                sessionStorage.setItem("msg", "Fatal Error!");
-                sessionStorage.setItem("msg_type", "error");
-                </script>';
+            MsgReport("Fatal Error!", "error", "msgonly");
         }
     }
 ?>
@@ -103,12 +88,16 @@
         <div class="row">
             <div class="col-9" style="margin-left: 13%;">
                 <h3 class="text-center">Login</h3>
-                <form action="" method="POST">
+                <form method="POST">
                     <div class="form-group">
                         <input type="text" name="username_1" class="form-control" placeholder="Enter Username" value="<?php if(isset($_SESSION['preload-login-username'])){echo $_SESSION['preload-login-username'];} ?>">
                     </div>
                     <div class="form-group">
                         <input type="password" name="password_1" class="form-control" placeholder="Enter Password">
+                    </div>
+                    <div class="form-group">
+                        <input type="checkbox" name="remember_me" id="remember_me">
+                        <label for="#remember_me">Remember me!</label>
                     </div>
                     <div class="form-group float-left">
                         <input type="submit" class="btn btn-primary" value="Log in" name="login">

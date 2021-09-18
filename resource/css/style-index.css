@@ -1,0 +1,52 @@
+/* about style class */
+
+.about{
+  opacity: 0;
+  transition: 2s;
+}
+.about.show{
+  opacity: 1;
+  transition: 2s;
+}
+
+.about .img-hover{
+  transition: 2s;
+  overflow: hidden;
+}
+
+.about .img-hover:hover{
+  transform: scale(1.2)!important;
+  filter: brightness(100%);
+  transition: 2s;
+}
+
+/* preview style class */
+
+.preview {
+  opacity: 0;
+  transition: 2s;
+}
+
+.preview.show {
+  opacity: 1;
+  transition: 2s;
+}
+
+/* other style class */
+
+.intro {
+    min-height: 100vh;
+    padding-top:150px;
+    background-image: url(../image/background.jpg);
+  	background-attachment:fixed;
+  	background-size:cover;
+  	color:white;
+  	text-shadow:2px 2px 10px black;
+  	overflow:hidden;
+    background-size:no-repeat;
+    transition: 1s;
+}
+.color-custom-1{
+  background-color:rgba(255, 255, 255, 0.527);
+  color: black;
+}

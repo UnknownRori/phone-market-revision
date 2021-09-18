@@ -1,21 +1,13 @@
 <?php
     require_once 'connect.php';
     if(isset($_SESSION['vendor']) == 0){
-        echo '<script>
-            sessionStorage.setItem("msg", "User must log in first!");
-            sessionStorage.setItem("msg_type", "warning");
-            window.location = "login.php";
-        </script>';
+        MsgReport("User must log in first", "warning", "login.php");
     } 
     if(isset($_POST['search-product'])){
         if($_POST['search-product'] != null){
             
         }else{
-            echo '<script>
-            sessionStorage.setItem("msg", "Cannot search empty query!");
-            sessionStorage.setItem("msg_type", "warning");
-            window.location = "manageproduct.php";
-            </script>';
+            MsgReport("Cannot search empty query!", "warning", "manageproduct.php");
         }
     }
     $preparedata = $conn->prepare("
@@ -29,6 +21,7 @@
     $preparedata->execute();
     $data = $preparedata->get_result();
     $preparedata->close();
+    
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -40,6 +33,7 @@
     <script src="../resource/js/main.js"></script>
     <script src="../resource/js/bootstrap.min.js"></script>
     <link rel="stylesheet" href="../resource/css/style.css">
+    <link rel="stylesheet" href="../resource/css/style-profile.css">
     <link rel="stylesheet" href="../resource/css/bootstrap.min.css">
     <link rel="icon" href="../resource/image/favicon.jpg">
     <title>Manage Product</title>
@@ -81,7 +75,7 @@
                     <a href="manageproduct.php" class="nav-link active">Manage Product</a>
                 </li>
                 <li class="nav-item">
-                    <a class="btn btn-primary" href="../contactus.php" class="nav-link">Create Product</a>
+                    <a class="btn btn-primary" href="editproduct.php" class="nav-link">Create Product</a>
                 </li>
                 <li class="nav-item" style="margin-left: 10px;">
                     <form class="form-inline" action="" method="post">
@@ -136,8 +130,14 @@
                 <td>
                     <?php
                     //  echo $row['photo_name'];
-                     if($row['photo_name'] !== NULL){
-                        echo '';
+                     if($row['photo_name'] !== ""){
+                        echo '
+                            <a href="../resource/image/product/' . $row['photo_name'] .'" target="_blank">' . $row['photo_name'] . '</a>
+                        ';
+                     }else{
+                         echo '
+                            
+                         ';
                      }
                      ?>
                 </td>
@@ -160,7 +160,7 @@
                     <?php
                      if($row['warned_status'] !== 0){
                         echo '
-                            <b id="warning">Warned</b>
+                            <b>Warned</b>
                         ';
                      }
                      if($row['total_requested'] > $row['stock']){
@@ -183,8 +183,8 @@
                     
                     <?php
                       echo '
-                        <a class="btn btn-primary" href="product.php?prod=' . $row['prod_id'] . '" >Detail</a>
-                        <a class="btn btn-warning" href="editproduct.php?prod=' . $row['prod_id'] . '" >Edit</a>
+                        <a class="btn btn-primary" href="product.php?id=' . $row['prod_id'] . '" >Detail</a>
+                        <a class="btn btn-warning" href="editproduct.php?id=' . $row['prod_id'] . '" >Edit</a>
                         <a class="btn btn-danger" href="deleteproduct.php?id=' . $row['prod_id'] . '">Delete</a>
                       ';
                     ?>
@@ -214,11 +214,5 @@
 </body>
 <script>
     error_msg(2);
-    setInterval(function () {
-        document.getElementById('warning').style.color =  "red";
-    }, 500);
-    setInterval(function () {
-        document.getElementById('warning').style.color =  "black";
-    }, 800);
 </script>
 </html>

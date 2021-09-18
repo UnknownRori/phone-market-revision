@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Aug 28, 2021 at 12:15 AM
+-- Generation Time: Sep 08, 2021 at 12:29 AM
 -- Server version: 10.4.10-MariaDB
 -- PHP Version: 7.3.12
 
@@ -115,8 +115,7 @@ INSERT INTO `product` (`prod_id`, `user_id`, `product_name`, `photo_name`, `pric
 (2, 4, 'No Phone Air', 'No Phone Air', 0, 0, 'default', 0),
 (3, 4, 'A', '', 0, 0, 'default', 1),
 (5, 4, 'Q', '', 0, 0, 'default', 0),
-(6, 4, 'asd', '', 1, 1, 'as', 0),
-(10, 1, 'RRRRR', '', 2, 3, '12', 0);
+(6, 4, 'asd', '', 1, 1, 'as', 0);
 
 -- --------------------------------------------------------
 
@@ -137,8 +136,11 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`id`, `username`, `password`, `admin`, `vendor`) VALUES
-(1, 'UnknownRori', '$2y$10$W2FiMFl6m/nzdJsx8klJZOeuSCzgOVn/AMnRzcecazlz4wNlXzRii', 1, 1),
-(4, 'Akashi', '$2y$10$zNIBHDoLJOTgjc92Ttc0zOnkAzCWXQHhDRJgpMghRTXs/xyAIDwhG', 0, 1);
+(1, 'UnknownRori', '$2y$10$Krxr1prK9tGOG4gXDstXkOKdEXwDH5ntoj2b0QxxqQnNM0ZNaSPyq', 1, 1),
+(4, 'Akashi', '$2y$10$kFFx6f40Sq4FvTqJie26WerNypEtTd7/rPEcMprYTSWMxGoDRm2OK', 0, 1),
+(5, 'a', '$2y$10$sCVIA3UqHGsQSUgO/f890e5g5qZiIQavAptp0/2twIFNDnqfsvi72', 0, 0),
+(6, 'w', '$2y$10$z0d2EyTwZn.ziCC24g2CDO3FoxYUxgdPluMwGq15qpQVM3O74Lj5S', 0, 0),
+(7, 'q', '$2y$10$yT7byvvZTl6yftvuB1NVeehp9BBthsU.bfzq4jimYOG0kfNzrKV1S', 0, 0);
 
 -- --------------------------------------------------------
 
@@ -162,16 +164,16 @@ CREATE TABLE `view_history` (
 --
 ALTER TABLE `buy_history`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `users_request` (`usersid`),
-  ADD KEY `product_request` (`product_id`);
+  ADD KEY `product_request` (`product_id`),
+  ADD KEY `users_request` (`usersid`);
 
 --
 -- Indexes for table `comment`
 --
 ALTER TABLE `comment`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `user_id` (`users_id`),
-  ADD KEY `products_id` (`product_id`);
+  ADD KEY `products_id` (`product_id`),
+  ADD KEY `user_id` (`users_id`);
 
 --
 -- Indexes for table `feature`
@@ -206,8 +208,8 @@ ALTER TABLE `users`
 --
 ALTER TABLE `view_history`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `users` (`user_id`),
-  ADD KEY `product` (`product_id`);
+  ADD KEY `product` (`product_id`),
+  ADD KEY `users` (`user_id`);
 
 --
 -- AUTO_INCREMENT for dumped tables
@@ -217,7 +219,7 @@ ALTER TABLE `view_history`
 -- AUTO_INCREMENT for table `buy_history`
 --
 ALTER TABLE `buy_history`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT for table `comment`
@@ -247,7 +249,7 @@ ALTER TABLE `product`
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- AUTO_INCREMENT for table `view_history`
@@ -263,34 +265,34 @@ ALTER TABLE `view_history`
 -- Constraints for table `buy_history`
 --
 ALTER TABLE `buy_history`
-  ADD CONSTRAINT `product_request` FOREIGN KEY (`product_id`) REFERENCES `product` (`prod_id`),
-  ADD CONSTRAINT `users_request` FOREIGN KEY (`usersid`) REFERENCES `users` (`id`);
+  ADD CONSTRAINT `product_request` FOREIGN KEY (`product_id`) REFERENCES `product` (`prod_id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `users_request` FOREIGN KEY (`usersid`) REFERENCES `users` (`id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `comment`
 --
 ALTER TABLE `comment`
-  ADD CONSTRAINT `products_id` FOREIGN KEY (`product_id`) REFERENCES `product` (`prod_id`),
-  ADD CONSTRAINT `user_id` FOREIGN KEY (`users_id`) REFERENCES `users` (`id`);
+  ADD CONSTRAINT `products_id` FOREIGN KEY (`product_id`) REFERENCES `product` (`prod_id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `user_id` FOREIGN KEY (`users_id`) REFERENCES `users` (`id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `feature`
 --
 ALTER TABLE `feature`
-  ADD CONSTRAINT `product_id` FOREIGN KEY (`product_id`) REFERENCES `product` (`prod_id`);
+  ADD CONSTRAINT `product_id` FOREIGN KEY (`product_id`) REFERENCES `product` (`prod_id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `product`
 --
 ALTER TABLE `product`
-  ADD CONSTRAINT `users_id` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`);
+  ADD CONSTRAINT `users_id` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `view_history`
 --
 ALTER TABLE `view_history`
-  ADD CONSTRAINT `product` FOREIGN KEY (`product_id`) REFERENCES `product` (`prod_id`),
-  ADD CONSTRAINT `users` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`);
+  ADD CONSTRAINT `product` FOREIGN KEY (`product_id`) REFERENCES `product` (`prod_id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `users` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

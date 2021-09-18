@@ -11,6 +11,7 @@
     <script src="../resource/js/main.js"></script>
     <script src="../resource/js/bootstrap.min.js"></script>
     <link rel="stylesheet" href="../resource/css/style.css">
+    <link rel="stylesheet" href="../resource/css/style-profile.css">
     <link rel="stylesheet" href="../resource/css/bootstrap.min.css">
     <title>Notification</title>
 </head>
@@ -37,12 +38,14 @@
                     <a href="../contactus.php" class="nav-link">Contact us</a>
                 </li>
                 <?php
-                if(isset($_SESSION['admin'])){
-                    echo '
-                    <li class="nav-item">
-                        <a href="manageuser.php" class="nav-link">Manage Users</a>
-                    </li>
-                    ';
+                if(isset($_SESSION['login'])){
+                    if($_SESSION['admin'] == 1){
+                        echo '
+                        <li class="nav-item">
+                            <a href="php/manageuser.php" class="nav-link">Manage Users</a>
+                        </li>
+                        ';
+                    }
                 }
                 if(isset($_SESSION['vendor'])){
                     echo '

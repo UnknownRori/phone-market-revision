@@ -1,3 +1,21 @@
+### Minor Update 0.8.1.2
+
+##### Change
+
+<ul>
+    <li>Bugfix cannot create product continuation</li>
+    <li>Bugfix Product</li>
+    <li>Optimize manageproduct.php</li>
+</ul>
+
+### Minor Update 0.8.1.1
+
+##### Change
+
+<ul>
+    <li>Bugfix cannot create product</li>
+</ul>
+
 ### Minor Update 0.8.1
 
 ##### Change

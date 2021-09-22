@@ -102,8 +102,7 @@
             </ul>
         </div>
     </nav>
-    <div class="container" style="margin-top:90px;">
-        
+    <div class="container extend">
         <table class="table table-hover">
             <tr>
                 <td>#</td>
@@ -129,7 +128,6 @@
                 </td>
                 <td>
                     <?php
-                    //  echo $row['photo_name'];
                      if($row['photo_name'] !== ""){
                         echo '
                             <a href="../resource/image/product/' . $row['photo_name'] .'" target="_blank">' . $row['photo_name'] . '</a>

@@ -125,18 +125,18 @@
     <div id="extend" class="container height-100vh">
         <?php foreach($data as $row):?>
             <div style="width: 300px; float:left; margin: 20px;">
-                <div style="border: 1px solid black;">
+                <div class="text-center" style="border: 1px solid black">
                     <?php
                         if($row['photo_name']){
                             echo '
-                            <a href="/php/product.php?id=' . $row['prod_id'] .'">
-                                <img src="resource/image/product/' . $row['photo_name'] .'" alt=""class="img img-fluid">
+                            <a href="php/product.php?id=' . $row['prod_id'] .'">
+                                <img src="resource/image/product/' . $row['photo_name'] .'" alt="ERROR" class="img img-fluid">
                             </a>
                             ';
                         }else{
                             echo '
-                            <a href="/php/product.php?id=' . $row['prod_id'] .'">
-                                <img src="resource/image/404imgnotfound.png" alt=""class="img img-fluid">
+                            <a href="php/product.php?id=' . $row['prod_id'] .'">
+                                <img src="resource/image/404imgnotfound.png" alt="ERROR" class="img img-fluid">
                             </a>
                             ';
                         }
@@ -170,34 +170,21 @@
                                 </b>
                             </td>
                         </tr>
-                        <!-- <tr>
-                            <td>
-                                <b>Vendor</b>
-                            </td>
-                            <td>
-                                :
-                            </td>
-                            <td>
-                                <b>
-                                    <?php echo $row['username'] ?>
-                                </b>
-                            </td>
-                        </tr> -->
                     </table>
                 </div>
                 <div style="margin-top: 10px; padding: 5px;">
                     <?php
-                        echo '<a class="btn btn-primary spacing" href="/php/product.php?id=' . $row['prod_id'] .'">Detail</a>';
+                        echo '<a class="btn btn-primary spacing" href="php/product.php?id=' . $row['prod_id'] .'">Detail</a>';
                         if(isset($_SESSION['login'])){
                             if(($_SESSION['admin'])){
-                                echo '<a class="btn btn-danger spacing" href="./php/deleteproduct.php?id='. $row['prod_id'] . '">Delete</a>';
+                                echo '<a class="btn btn-danger spacing" href="php/deleteproduct.php?id='. $row['prod_id'] . '">Delete</a>';
                                 if($row['warned_status'] == 1){
                                     echo '<button title="Already Warned!"  class="btn btn-warning spacing" disabled>Issue Warning</button>';
                                 }else{
                                     if($row['username'] == $_SESSION['username']){
                                         echo '<button title="Cannot Send Warning to Yourself"  class="btn btn-warning spacing" disabled>Issue Warning</button>';
                                     }else{
-                                        echo '<a class="btn btn-warning spacing" href="./php/warnproduct.php?id='. $row['prod_id'] . '">Issue Warning</a>';
+                                        echo '<a class="btn btn-warning spacing" href="php/warnproduct.php?id='. $row['prod_id'] . '">Issue Warning</a>';
                                     }
                                 }
                             }

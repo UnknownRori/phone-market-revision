@@ -31,7 +31,7 @@
             if(isset($_POST['create'])){
                 if($_POST['product_name'] == null){
                     MsgReport("Product must have name!", "warning", "msgonly");
-                }else if(isset($_POST['product_price']) == null){
+                }else if($_POST['price'] == null){
                     MsgReport("Product must have price!", "warning", "msgonly");
                 }else{
                     $createdata = $conn->prepare("INSERT INTO product (user_id, product_name, photo_name, price, stock, description) value (?, ?, ?, ?, ?, ?)");
@@ -39,12 +39,16 @@
                     $prod_userid = $_SESSION['users_id'];
                     $prod_name = $_POST['product_name'];
                     $prod_photo = $_POST['product_photo'];
-                    $prod_price = $_POST['product_price'];
-                    $prod_stock = $_POST['product_stock'];
+                    $prod_price = $_POST['price'];
+                    $prod_stock = $_POST['stock'];
                     $prod_desc = $_POST['product_description'];
                     $createdata->execute();
                     $createdata->close();
-                    MsgReport("Product successfully created!", "success", "manageproduct.php");
+                    if($createdata == true){
+                        MsgReport("Product successfully created!", "success", "manageproduct.php");
+                    }else{
+                        MsgReport("Product failed created!", "success", "manageproduct.php");
+                    }
                 }
             }
         }
@@ -190,11 +194,11 @@
                                     <?php
                                         if(isset($_GET['id'])){
                                             echo '
-                                                <input type="number" class="form-control" name="product_price" placeholder="Please Enter Product Price" value="' . $result['price'] .'">
+                                                <input type="number" class="form-control" name="price" placeholder="Please Enter Product Price" value="' . $result['price'] .'">
                                             ';
                                         }else{
                                             echo '
-                                                <input type="number" class="form-control" name="product_price" placeholder="Please Enter Product Price">
+                                                <input type="number" class="form-control" name="price" placeholder="Please Enter Product Price">
                                             ';
                                         }
                                     ?>

@@ -31,8 +31,8 @@
             if(isset($_POST['create'])){
                 if($_POST['product_name'] == null){
                     MsgReport("Product must have name!", "warning", "msgonly");
-                }else if($_POST['product_price'] == null){
-                    MsgReport("Product must have price!", "warning", "editproduct.php");
+                }else if(isset($_POST['product_price']) == null){
+                    MsgReport("Product must have price!", "warning", "msgonly");
                 }else{
                     $createdata = $conn->prepare("INSERT INTO product (user_id, product_name, photo_name, price, stock, description) value (?, ?, ?, ?, ?, ?)");
                     $createdata->bind_param("issiis", $prod_userid, $prod_name, $prod_photo, $prod_price, $prod_stock, $prod_desc);
@@ -190,11 +190,11 @@
                                     <?php
                                         if(isset($_GET['id'])){
                                             echo '
-                                                <input type="number" class="form-control" name="price" placeholder="Please Enter Product Price" value="' . $result['price'] .'">
+                                                <input type="number" class="form-control" name="product_price" placeholder="Please Enter Product Price" value="' . $result['price'] .'">
                                             ';
                                         }else{
                                             echo '
-                                                <input type="number" class="form-control" name="price" placeholder="Please Enter Product Price">
+                                                <input type="number" class="form-control" name="product_price" placeholder="Please Enter Product Price">
                                             ';
                                         }
                                     ?>

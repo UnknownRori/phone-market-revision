@@ -1,19 +1,10 @@
 <?php
     require_once 'php\connect.php';
     // this is only reserved for preview
-    try{
-        $getpreview = $conn->prepare("SELECT product.*, users.id, users.username FROM product INNER JOIN users ON product.user_id = users.id LIMIT 4");
-        $getpreview->execute();
-        $data = $getpreview->get_result();
-        $getpreview->close();
-    }catch(Exception $e){
-        echo '
-            <script>
-                sessionStorage.setItem("msg", ' . $e->getMessage() . ');
-                sessionStorage.setItem("msg_type", "error");
-            </script>
-            ';
-}
+    $getpreview = $conn->prepare("SELECT product.*, users.id, users.username FROM product INNER JOIN users ON product.user_id = users.id LIMIT 4");
+    $getpreview->execute();
+    $data = $getpreview->get_result();
+    $getpreview->close();
 ?>
 
 <!DOCTYPE html>

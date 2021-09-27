@@ -15,8 +15,29 @@
                 $editdata->bind_param("ssiisi", $product_name, $photo_name, $price, $stock, $description, $prod_id);
                 $prod_id = $_GET['id'];
                 $product_name = $_POST['product_name'];
-                if($_POST['product_photo'] !== ""){
-                    $photo_name = $_POST['product_photo'];
+                if(basename($_FILES["product_photo"]["name"]) !== ""){
+                    $target_dir = "../resource/image/product/";
+                    $target_file = $target_dir . basename($_FILES["product_photo"]["name"]);
+                    $filetype = strtolower(pathinfo($target_file, PATHINFO_EXTENSION));
+                    if(!file_exists($target_file)){
+                        if ($_FILES["product_photo"]["size"] > 500000) {
+                            MsgReport("Error : File size too large! size must below 500kb", "error", "editproduct.php?id=" . $_GET['id']);
+                        }else{
+                            // bug : image type file cannot upload
+                            if($filetype === "jpg" || $filetype === "png" || $filetype === "jpeg"){
+                                if(copy($_FILES["product_photo"]["tmp_name"],$target_file)){
+                                    $photo_name = basename($_FILES["product_photo"]["name"]);
+                                }else{
+                                    MsgReport("Error : File failed upload!", "error", "editproduct.php?id=" . $_GET['id']);
+                                }
+                            }else{
+                                MsgReport("Error : File must be an image!", "error", "editproduct.php?id=" . $_GET['id']);
+                            }
+                        }
+                    }else{
+                        MsgReport("Warning : File already exist!", "warning", "msgonly");
+                        $photo_name = basename($_FILES["product_photo"]["name"]);
+                    }
                 }else{
                     $photo_name = $result['photo_name'];
                 }
@@ -25,7 +46,19 @@
                 $description = $_POST['product_description'];
                 $editdata->execute();
                 $editdata->close();
-                MsgReport("Product successfully edited!", "success", "manageproduct.php");
+
+                $checkdata = $conn->prepare("SELECT * FROM product WHERE prod_id=?");
+                $checkdata->bind_param("i", $id);
+                $id = $_GET['id'];
+                $checkdata->execute();
+                $data = $checkdata->get_result();
+                $result = $data->fetch_assoc();
+                $checkdata->close();
+                if($result['product_name'] === $_POST['product_name'] && $result['photo_name'] === basename($_FILES["product_photo"]["name"])){
+                    MsgReport("Product successfully edited!", "success", "manageproduct.php");
+                }else{
+                    MSgReport("Product failed to update!", "error", "manageproduct.php");
+                }
             }
         }else{
             if(isset($_POST['create'])){
@@ -38,16 +71,48 @@
                     $createdata->bind_param("issiis", $prod_userid, $prod_name, $prod_photo, $prod_price, $prod_stock, $prod_desc);
                     $prod_userid = $_SESSION['users_id'];
                     $prod_name = $_POST['product_name'];
-                    $prod_photo = $_POST['product_photo'];
+                    
+                    $target_dir = "../resource/image/product/";
+                    $target_file = $target_dir . basename($_FILES["product_photo"]["name"]);
+                    $filetype = strtolower(pathinfo($target_file, PATHINFO_EXTENSION));
+                    if(!file_exists($target_file)){
+                        if ($_FILES["product_photo"]["size"] > 500000) {
+                            MsgReport("Error : File size too large! size must below 500kb", "error", "editproduct.php?id=" . $_GET['id']);
+                        }else{
+                            // bug : image type file cannot upload
+                            if($filetype === "jpg" || $filetype === "png" || $filetype === "jpeg"){
+                                if(copy($_FILES["product_photo"]["tmp_name"],$target_file)){
+                                    $photo_name = basename($_FILES["product_photo"]["name"]);
+                                }else{
+                                    MsgReport("Error : File failed upload!", "error", "editproduct.php?id=" . $_GET['id']);
+                                }
+                            }else{
+                                MsgReport("Error : File must be an image!", "error", "editproduct.php?id=" . $_GET['id']);
+                            }
+                        }
+                    }else{
+                        MsgReport("Warning : File already exist!", "warning", "msgonly");
+                        $photo_name = basename($_FILES["product_photo"]["name"]);
+                    }
+                    
+                    $prod_photo = basename($_FILES["product_photo"]["name"]);
                     $prod_price = $_POST['price'];
                     $prod_stock = $_POST['stock'];
                     $prod_desc = $_POST['product_description'];
                     $createdata->execute();
                     $createdata->close();
-                    if($createdata == true){
+                    
+                    $checkdata = $conn->prepare("SELECT * FROM product WHERE product_name=?");
+                    $checkdata->bind_param("s", $product_name);
+                    $product_name = $_POST['product_name'];
+                    $checkdata->execute();
+                    $data = $checkdata->get_result();
+                    $resultdata = $data->fetch_assoc();
+                    $checkdata->close();
+                    if($resultdata['prod_id'] !== null){
                         MsgReport("Product successfully created!", "success", "manageproduct.php");
                     }else{
-                        MsgReport("Product failed created!", "success", "manageproduct.php");
+                        MsgReport("Product failed created!", "error", "manageproduct.php");
                     }
                 }
             }
@@ -73,7 +138,7 @@
         <title>
             <?php
                 if(isset($result['product_name'])){
-                    echo "Editing Product" . "&nbsp" . $result['product_name'];
+                    echo "Editing Product" . "&nbsp" . htmlspecialchars($result['product_name']);
                 }else{
                     echo "Creating New Product";
                 }
@@ -143,13 +208,13 @@
                 <h3 class="text-center">
                     <?php
                         if(isset($_GET['id'])){
-                            echo 'Editing' . "&nbsp" . $result['product_name'];
+                            echo 'Editing' . "&nbsp" . htmlspecialchars($result['product_name']);
                         }else{
                             echo 'Creating New Product';
                         }
                         ?>
                 </h3>
-                <form method="POST" action="">
+                <form method="POST" action="" enctype="multipart/form-data">
                     <table class="table table-hover">
                         <tr>
                             <td>Product Name</td>

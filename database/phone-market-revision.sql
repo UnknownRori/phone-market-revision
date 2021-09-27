@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Sep 08, 2021 at 12:29 AM
+-- Generation Time: Sep 24, 2021 at 12:26 AM
 -- Server version: 10.4.10-MariaDB
 -- PHP Version: 7.3.12
 
@@ -44,8 +44,6 @@ CREATE TABLE `buy_history` (
 --
 
 INSERT INTO `buy_history` (`id`, `usersid`, `product_id`, `total_requested`, `buy_timestamp`, `delivery_timestamp`, `vendor_read_status`, `delivery_product_status`) VALUES
-(1, 4, 1, 1, '2021-08-26 22:43:22', '2021-08-28 19:00:00', 0, 0),
-(2, 4, 1, 2, '2021-08-26 23:11:04', '2021-08-26 23:11:04', 0, 0),
 (3, 1, 2, 5, '2021-08-27 06:25:17', '2021-08-27 06:25:17', 0, 0),
 (4, 1, 6, 2, '2021-08-27 06:38:41', '2021-08-27 06:38:41', 0, 0);
 
@@ -83,11 +81,19 @@ CREATE TABLE `feature` (
 
 CREATE TABLE `notification` (
   `id` int(11) NOT NULL,
-  `fromuser` varchar(255) NOT NULL,
-  `touser` varchar(255) NOT NULL,
-  `notificationtype` int(11) NOT NULL,
-  `content` varchar(255) NOT NULL
+  `fromuser` int(11) NOT NULL,
+  `touser` int(11) NOT NULL,
+  `notificationtype` varchar(64) NOT NULL,
+  `topic` varchar(128) NOT NULL,
+  `content` varchar(1024) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data for table `notification`
+--
+
+INSERT INTO `notification` (`id`, `fromuser`, `touser`, `notificationtype`, `topic`, `content`) VALUES
+(1, 8, 4, 'info', 'testing notification', 'test 123 ');
 
 -- --------------------------------------------------------
 
@@ -98,11 +104,11 @@ CREATE TABLE `notification` (
 CREATE TABLE `product` (
   `prod_id` int(11) NOT NULL,
   `user_id` int(11) NOT NULL,
-  `product_name` varchar(255) NOT NULL,
-  `photo_name` varchar(255) NOT NULL,
+  `product_name` varchar(32) NOT NULL,
+  `photo_name` varchar(36) NOT NULL,
   `price` int(11) NOT NULL,
   `stock` int(11) NOT NULL,
-  `description` varchar(255) NOT NULL,
+  `description` varchar(144) NOT NULL,
   `warned_status` tinyint(1) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
@@ -111,11 +117,24 @@ CREATE TABLE `product` (
 --
 
 INSERT INTO `product` (`prod_id`, `user_id`, `product_name`, `photo_name`, `price`, `stock`, `description`, `warned_status`) VALUES
-(1, 1, 'AAAA', '', 123, 1, 'default', 0),
-(2, 4, 'No Phone Air', 'No Phone Air', 0, 0, 'default', 0),
+(2, 4, 'No Phone Air', 'No Phone Air.png', 0, 0, 'default', 0),
 (3, 4, 'A', '', 0, 0, 'default', 1),
 (5, 4, 'Q', '', 0, 0, 'default', 0),
-(6, 4, 'asd', '', 1, 1, 'as', 0);
+(6, 4, 'asd', '', 1, 1, 'as', 0),
+(12, 1, 'No Phone Selfie', 'No Phone Selfie.png', 1000000, 5, 'urraaa', 0),
+(13, 1, 'No Phone Employee ', 'No Phone Employee Pack.png', 4000000, 1, 'The no phone employee pack\r\n', 0),
+(14, 1, 'No Phone', 'No Phone.png', 50000, 10, '', 0),
+(15, 4, '123', 'No Phone Family Pack.png', 50, 1, '', 0),
+(17, 8, 'row[\'stock\']//', '', 2, 5000, 'r', 0),
+(18, 8, 'cat', '', 2, 0, '', 0),
+(19, 8, '123123123123', '', 1231231, 1111, '', 0),
+(20, 4, 'catpitalism', 'No Phone Air.png', 50000, 0, '', 0),
+(21, 4, 'aaaaaaaaaaaaaaaaaa', 'No Phone.png', 2, 0, '', 0),
+(22, 4, 'E', '', 1, 0, '', 0),
+(23, 4, 'U', '', 1, 0, '', 0),
+(24, 4, 'ree', '', 11, 0, '', 0),
+(26, 4, '<script>alert(\'Cat\')</script>', '', 2, 0, '', 0),
+(27, 4, 'ret', 'No Phone Employee Pack.png', 123, 1, '', 0);
 
 -- --------------------------------------------------------
 
@@ -136,11 +155,12 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`id`, `username`, `password`, `admin`, `vendor`) VALUES
-(1, 'UnknownRori', '$2y$10$Krxr1prK9tGOG4gXDstXkOKdEXwDH5ntoj2b0QxxqQnNM0ZNaSPyq', 1, 1),
-(4, 'Akashi', '$2y$10$kFFx6f40Sq4FvTqJie26WerNypEtTd7/rPEcMprYTSWMxGoDRm2OK', 0, 1),
+(1, 'UnknownRori', '$2y$10$IljSgc5IKyNG1guC5LefRepHfr7tkrsw.IcDrqSHEV62Y.b6HwgRa', 1, 1),
+(4, 'Akashi', '$2y$10$ysoqrHnWjfUFMm/V.U7Zr.oeqDdzjTTutAdLa4d6hx.dAfylONZCG', 0, 1),
 (5, 'a', '$2y$10$sCVIA3UqHGsQSUgO/f890e5g5qZiIQavAptp0/2twIFNDnqfsvi72', 0, 0),
 (6, 'w', '$2y$10$z0d2EyTwZn.ziCC24g2CDO3FoxYUxgdPluMwGq15qpQVM3O74Lj5S', 0, 0),
-(7, 'q', '$2y$10$yT7byvvZTl6yftvuB1NVeehp9BBthsU.bfzq4jimYOG0kfNzrKV1S', 0, 0);
+(7, 'q', '$2y$10$yT7byvvZTl6yftvuB1NVeehp9BBthsU.bfzq4jimYOG0kfNzrKV1S', 0, 0),
+(8, 'Super Admin', '$2y$10$RiVy5FYUPeoH.OlSk7Ozb.lTRngTbSzCmnhOOsJ5kDZLrjbCmIFW6', 1, 1);
 
 -- --------------------------------------------------------
 
@@ -186,7 +206,9 @@ ALTER TABLE `feature`
 -- Indexes for table `notification`
 --
 ALTER TABLE `notification`
-  ADD PRIMARY KEY (`id`);
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `users_sent` (`fromuser`),
+  ADD KEY `users_receive` (`touser`);
 
 --
 -- Indexes for table `product`
@@ -237,19 +259,19 @@ ALTER TABLE `feature`
 -- AUTO_INCREMENT for table `notification`
 --
 ALTER TABLE `notification`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `product`
 --
 ALTER TABLE `product`
-  MODIFY `prod_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `prod_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=28;
 
 --
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- AUTO_INCREMENT for table `view_history`
@@ -265,15 +287,15 @@ ALTER TABLE `view_history`
 -- Constraints for table `buy_history`
 --
 ALTER TABLE `buy_history`
-  ADD CONSTRAINT `product_request` FOREIGN KEY (`product_id`) REFERENCES `product` (`prod_id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `users_request` FOREIGN KEY (`usersid`) REFERENCES `users` (`id`) ON DELETE CASCADE;
+  ADD CONSTRAINT `product_request` FOREIGN KEY (`product_id`) REFERENCES `product` (`prod_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `users_request` FOREIGN KEY (`usersid`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Constraints for table `comment`
 --
 ALTER TABLE `comment`
-  ADD CONSTRAINT `products_id` FOREIGN KEY (`product_id`) REFERENCES `product` (`prod_id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `user_id` FOREIGN KEY (`users_id`) REFERENCES `users` (`id`) ON DELETE CASCADE;
+  ADD CONSTRAINT `products_id` FOREIGN KEY (`product_id`) REFERENCES `product` (`prod_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `user_id` FOREIGN KEY (`users_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Constraints for table `feature`
@@ -282,17 +304,24 @@ ALTER TABLE `feature`
   ADD CONSTRAINT `product_id` FOREIGN KEY (`product_id`) REFERENCES `product` (`prod_id`) ON DELETE CASCADE;
 
 --
+-- Constraints for table `notification`
+--
+ALTER TABLE `notification`
+  ADD CONSTRAINT `users_receive` FOREIGN KEY (`touser`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `users_sent` FOREIGN KEY (`fromuser`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
 -- Constraints for table `product`
 --
 ALTER TABLE `product`
-  ADD CONSTRAINT `users_id` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE;
+  ADD CONSTRAINT `users_id` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Constraints for table `view_history`
 --
 ALTER TABLE `view_history`
-  ADD CONSTRAINT `product` FOREIGN KEY (`product_id`) REFERENCES `product` (`prod_id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `users` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE;
+  ADD CONSTRAINT `product` FOREIGN KEY (`product_id`) REFERENCES `product` (`prod_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `users` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

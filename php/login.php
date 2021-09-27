@@ -27,7 +27,7 @@
                 $updatepassword->execute(); 
                 $updatepassword->close();
                 $_SESSION['users_id'] = $users['id'];
-                $_SESSION['username'] = $users['username'];
+                $_SESSION['username'] = htmlspecialchars($users['username']);
                 $_SESSION['admin'] = $users['admin'];
                 $_SESSION['vendor'] = $users['vendor'];
                 $_SESSION['login'] = 1;

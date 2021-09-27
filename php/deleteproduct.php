@@ -15,13 +15,6 @@
                 MsgReport("Make sure you already issue warning to owner of the product!", "warning", "msgonly");
             }
         }else{
-            echo '
-            <script>
-            sessionStorage.setItem("msg", "You do not have privilege over this product!");
-            sessionStorage.setItem("msg_type", "error");
-            window.location = sessionStorage.getItem("last_url");
-            </script>
-            ';
             MsgReport("You do not have privilege over this product!", "error", "");
         }
 

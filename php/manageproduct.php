@@ -3,24 +3,40 @@
     if(isset($_SESSION['vendor']) == 0){
         MsgReport("User must log in first", "warning", "login.php");
     } 
-    if(isset($_POST['search-product'])){
-        if($_POST['search-product'] != null){
-            
-        }else{
-            MsgReport("Cannot search empty query!", "warning", "manageproduct.php");
-        }
-    }
     $preparedata = $conn->prepare("
         SELECT product.*, buy_history.product_id, SUM(buy_history.total_requested) AS total_requested
         FROM product
         LEFT JOIN buy_history ON buy_history.product_id = product.prod_id
-        WHERE product.user_id = ? GROUP BY product.prod_id;"
+        WHERE product.user_id = ? GROUP BY product.prod_id;
+        "
     );
     $preparedata->bind_param("i", $id);
     $id = $_SESSION['users_id'];
     $preparedata->execute();
     $data = $preparedata->get_result();
     $preparedata->close();
+    if(isset($_POST['search-product'])){
+        if($_POST['search-product'] != null){
+            $data = NULL;
+            // $searchengine = $conn->prepare("SELECT product.*, users.id FROM product INNER JOIN users ON product.user_id = users.id WHERE product.product_name LIKE ? OR product.user_id LIKE ?");
+            $searchengine = $conn->prepare("
+            SELECT product.*,users.id , buy_history.product_id, SUM(buy_history.total_requested) AS total_requested
+            FROM product
+            LEFT JOIN buy_history ON buy_history.product_id = product.prod_id
+            RIGHT JOIN users ON users.id = product.user_id
+            WHERE users.id=? AND product.product_name LIKE ? OR product.prod_id LIKE ? GROUP BY product.prod_id
+            "
+            );
+            $searchengine->bind_param("iss", $user_id, $searchterm, $searchterm);
+            $user_id = $_SESSION['users_id'];
+            $searchterm = '%' . $_POST['search-product'] . '%';
+            $searchengine->execute();
+            $data = $searchengine->get_result();
+            $searchengine->close();
+        }else{
+            MsgReport("Cannot search empty query!", "warning", "msgonly");
+        }
+    }
     
 ?>
 <!DOCTYPE html>
@@ -102,29 +118,29 @@
             </ul>
         </div>
     </nav>
-    <div class="container extend">
+    <div class="container extend" style="margin-bottom: 50px;">
         <table class="table table-hover">
             <tr>
-                <td>#</td>
+                <!-- <td>#</td> -->
                 <td>ID</td>
-                <td>Product Name</td>
-                <td>Photo Availabilty</td>
+                <td>Name</td>
+                <td>Photo</td>
                 <td>Price</td>
-                <td>Available Stock</td>
-                <td>Request Stock</td>
+                <td>Available</td>
+                <td>Request</td>
                 <td>Status</td>
                 <td>Action</td>
             </tr>
-            <?php $i=1; foreach($data as $row):?>
+            <?php foreach($data as $row):?>
             <tr>
-                <td>
+                <!-- <td>
                     <?php echo $i;  ?>
-                </td>
+                </td> -->
                 <td>
                     <?php echo $row['prod_id']; ?>
                 </td>
                 <td>
-                    <?php echo $row['product_name']; ?>
+                    <?php echo htmlspecialchars($row['product_name']); ?>
                 </td>
                 <td>
                     <?php
@@ -140,7 +156,7 @@
                      ?>
                 </td>
                 <td>
-                    <?php echo $row['price']; ?>
+                    <?php echo '$' . $row['price']; ?>
                 </td>
                 <td>
                     <?php echo $row['stock']; ?>
@@ -181,14 +197,14 @@
                     
                     <?php
                       echo '
-                        <a class="btn btn-primary" href="product.php?id=' . $row['prod_id'] . '" >Detail</a>
-                        <a class="btn btn-warning" href="editproduct.php?id=' . $row['prod_id'] . '" >Edit</a>
-                        <a class="btn btn-danger" href="deleteproduct.php?id=' . $row['prod_id'] . '">Delete</a>
+                        <a class="btn btn-primary spacing" href="product.php?id=' . $row['prod_id'] . '" >Detail</a>
+                        <a class="btn btn-warning spacing" href="editproduct.php?id=' . $row['prod_id'] . '" >Edit</a>
+                        <a class="btn btn-danger spacing" href="deleteproduct.php?id=' . $row['prod_id'] . '">Delete</a>
                       ';
                     ?>
                 </td>
             </tr>
-            <?php $i++;endforeach;?>
+            <?php endforeach;?>
         </table>
     </div>
     <div class="footer fixed-bottom img-small-opacity floating-bottom">

@@ -8,8 +8,12 @@
         if($_POST['search_product'] != null){
             // BasicSearchEngineAlgorithm:
             $data = NULL;
-            $searchengine = $conn->prepare("SELECT product.*, users.id, users.username FROM product INNER JOIN users ON product.user_id = users.id WHERE product.product_name LIKE ?  OR users.username LIKE ? ");
-            $searchengine->bind_param("ss", $searchterm, $searchterm);
+            $searchengine = $conn->prepare("
+            SELECT product.*, users.id, users.username FROM product
+            INNER JOIN users ON product.user_id = users.id
+            WHERE product.product_name LIKE ?  OR users.username LIKE ? OR product.prod_id LIKE ?
+            ");
+            $searchengine->bind_param("sss", $searchterm, $searchterm, $searchterm);
             $searchterm = '%' . $_POST['search_product'] . '%';
             $searchengine->execute();
             $data = $searchengine->get_result();
@@ -124,7 +128,7 @@
     </nav>
     <div id="extend" class="container height-100vh">
         <?php foreach($data as $row):?>
-            <div style="width: 300px; float:left; margin: 20px;">
+            <div style="width: 300px!important; float:left; margin: 20px;">
                 <div class="text-center" style="border: 1px solid black">
                     <?php
                         if($row['photo_name']){
@@ -147,13 +151,13 @@
                         <tr>
                             <td>
                                 <b>
-                                    Product Name
+                                    Product
                                 </b>
                             </td>
                             <td>:</td>
                             <td>
                                 <b>
-                                    <?php echo $row['product_name']; ?>
+                                    <?php echo htmlspecialchars($row['product_name']); ?>
                                 </b>
                             </td>
                         </tr>

@@ -1,43 +1,21 @@
 <?php
     require_once 'connect.php';
-    if(isset($_SESSION['vendor']) == 0){
+    if(isset($_SESSION['login']) == 0){
         MsgReport("User must log in first", "warning", "login.php");
     } 
     $preparedata = $conn->prepare("
-        SELECT product.*, buy_history.product_id, SUM(buy_history.total_requested) AS total_requested
-        FROM product
-        LEFT JOIN buy_history ON buy_history.product_id = product.prod_id
-        WHERE product.user_id = ? GROUP BY product.prod_id;
-        "
-    );
+    SELECT notification.*, users.id, users.username FROM notification
+    INNER JOIN users on notification.fromuser = users.id
+    WHERE notification.touser = ?;
+    ");
     $preparedata->bind_param("i", $id);
     $id = $_SESSION['users_id'];
     $preparedata->execute();
     $data = $preparedata->get_result();
     $preparedata->close();
-    if(isset($_GET['search'])){
-        if($_GET['search'] != null){
-            $data = NULL;
-            // $searchengine = $conn->prepare("SELECT product.*, users.id FROM product INNER JOIN users ON product.user_id = users.id WHERE product.product_name LIKE ? OR product.user_id LIKE ?");
-            $searchengine = $conn->prepare("
-            SELECT product.*,users.id , buy_history.product_id, SUM(buy_history.total_requested) AS total_requested
-            FROM product
-            LEFT JOIN buy_history ON buy_history.product_id = product.prod_id
-            RIGHT JOIN users ON users.id = product.user_id
-            WHERE users.id=? AND product.product_name LIKE ? OR product.prod_id LIKE ? GROUP BY product.prod_id
-            "
-            );
-            $searchengine->bind_param("iss", $user_id, $searchterm, $searchterm);
-            $user_id = $_SESSION['users_id'];
-            $searchterm = '%' . $_GET['search-product'] . '%';
-            $searchengine->execute();
-            $data = $searchengine->get_result();
-            $searchengine->close();
-        }else{
-            MsgReport("Cannot search empty query!", "warning", "msgonly");
-        }
+    if(isset($_POST['delete'])){
+        echo '<script>alert("cat")</script>';
     }
-    
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -81,18 +59,31 @@
                     if($_SESSION['admin'] == 1){
                         echo '
                         <li class="nav-item">
-                        <a href="php/manageuser.php" class="nav-link">Manage Users</a>
+                            <a href="manageuser.php" class="nav-link">Manage Users</a>
+                        </li>
+                        ';
+                    }
+                    if(($_SESSION['vendor'])){
+                    echo '
+                    <li class="nav-item">
+                        <a href="manageproduct.php" class="nav-link">Manage Product</a>
+                    </li>
+                    <li class="nav-item spacing">
+                        <a class="btn btn-primary" href="editproduct.php" class="nav-link">Create Product</a>
+                    </li>
+                    ';
+                    }
+                    if($_SESSION['admin'] == 1){
+                        echo '
+                        <li class="nav-item">
+                            <a href="sendnotificationform.php" title="Send notification to another user" class="btn btn-primary spacing">
+                                <span class="glyphicon glyphicon-envelope">&#x25b6</span>
+                            </a>
                         </li>
                         ';
                     }
                 }
                 ?>
-                <li class="nav-item">
-                    <a href="manageproduct.php" class="nav-link active">Manage Product</a>
-                </li>
-                <li class="nav-item spacing">
-                    <a class="btn btn-primary" href="editproduct.php" class="nav-link">Create Product</a>
-                </li>
                 <li class="nav-item">
                     <!-- search engine input -->
                     <form class="form-inline" action="" method="get">
@@ -119,88 +110,40 @@
             </ul>
         </div>
     </nav>
-    <div class="container extend" style="margin-bottom: 50px;">
+    <div class="container extend">
         <table class="table table-hover">
             <tr>
-                <td>ID</td>
-                <td>Name</td>
-                <td>Photo</td>
-                <td>Price</td>
-                <td>Available</td>
-                <td>Request</td>
-                <td>Status</td>
+                <td>Notification Type</td>
+                <td>Topic</td>
+                <td>Content</td>
+                <td>From</td>
                 <td>Action</td>
             </tr>
-            <?php foreach($data as $row):?>
-            <tr>
+            <?php foreach($data as $row): ?>
+            <tr id="contentTable">
                 <td>
-                    <?php echo $row['prod_id']; ?>
+                    <?php echo htmlspecialchars($row['notificationtype']); ?>
                 </td>
                 <td>
-                    <?php echo htmlspecialchars($row['product_name']); ?>
+                    <?php echo htmlspecialchars($row['topic']); ?>
                 </td>
                 <td>
-                    <?php
-                     if($row['photo_name'] !== ""){
-                        echo '
-                            <a href="../resource/image/product/' . $row['photo_name'] .'" target="_blank">' . $row['photo_name'] . '</a>
-                        ';
-                     }else{
-                         echo '
-                            
-                         ';
-                     }
-                     ?>
+                    <?php echo htmlspecialchars($row['content']); ?>
                 </td>
                 <td>
-                    <?php echo '$' . $row['price']; ?>
+                    <?php echo htmlspecialchars($row['username']); ?>
                 </td>
                 <td>
-                    <?php echo $row['stock']; ?>
-                </td>
-                <td>
-                    <?php
-                        if($row['total_requested'] > 0){
-                            echo $row['total_requested'];
-                        }else{
-                            echo '0';
-                        }
-                     ?>
-                </td>
-                <td>
-                    <?php
-                     if($row['warned_status'] !== 0){
-                        echo '
-                            <b>Warned</b>
-                        ';
-                     }
-                     if($row['total_requested'] > $row['stock']){
-                        echo '
-                            <b>Not Enough Stock</b>
-                        ';
-                     }else if($row['stock'] > 0){
-                         echo '
-                            <b>Surplus Stock</b>
-                         ';
-                     }else if($row['stock'] == 0){
-                        echo '
-                            <b>Out of Stock</b>
-                        ';
-                     }
-                     
-                    ?>
-                </td>
-                <td>
-                    <?php
-                      echo '
-                        <a class="btn btn-primary spacing" href="product.php?id=' . $row['prod_id'] . '" >Detail</a>
-                        <a class="btn btn-warning spacing" href="editproduct.php?id=' . $row['prod_id'] . '" >Edit</a>
-                        <a class="btn btn-danger spacing" href="deleteproduct.php?id=' . $row['prod_id'] . '">Delete</a>
-                      ';
-                    ?>
+                    <a class="btn btn-primary spacing" href="notification.php?id=<?php echo $row['id'] ?>" >Detail</a>
+                    <a class="btn btn-danger spacing" href="deletenotification.php?id=<?php echo $row['id'] ?>">Delete</a>
+                    <!-- <form action="" method="post">
+                        <a class="btn btn-primary spacing" href="notification.php?id=<?php echo $row['id'] ?>" >Detail</a>
+                        <input type="number" value="<?= $row['id']?> " hidden>
+                        <input type="submit" class="btn btn-danger spacing" value="Delete" name="delete">
+                    </form> -->
                 </td>
             </tr>
-            <?php endforeach;?>
+            <?php endforeach; ?>
         </table>
     </div>
     <div class="footer fixed-bottom img-small-opacity floating-bottom">

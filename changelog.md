@@ -1,3 +1,20 @@
+### Minor Update 0.8.2.1
+
+##### Change
+
+<ul>
+    <li>Update : adding create product on index</li>
+    <li>Update : using get method in search</li>
+    <li>Create : notificationlist</li>
+</ul>
+
+#### Current Issue
+
+<ul>
+    <li>product.php will display weird layout if product displayed has atleast 20 character product name</li>
+    <li>MsgReport cannot handle more than 1</li>
+</ul>
+
 ### Minor Update 0.8.2
 
 ##### Change
@@ -19,8 +36,6 @@
     <li>product.php will display weird layout if product displayed has atleast 20 character product name</li>
     <li>MsgReport cannot handle more than 1</li>
 </ul>
-
-<!-- <hr> -->
 
 ### Minor Update 0.8.1.2
 

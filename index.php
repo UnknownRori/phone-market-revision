@@ -69,12 +69,21 @@
                 <li class="nav-item">
                     <a href="#preview" class="nav-link">Preview</a>
                 </li>
+                <?php
+                    if(isset($_SESSION['vendor'])){
+                    echo '
+                    <li class="nav-item spacing">
+                        <a class="btn btn-primary" href="editproduct.php" class="nav-link">Create Product</a>
+                    </li>
+                    ';
+                    }
+                ?>
             </ul>
             <ul class="navbar-nav">
                 <?php if(isset($_SESSION['username'])){
                     echo '
                     <div>
-                        <a href="php/notification.php" id="notification">
+                        <a href="php/notificationlist.php" id="notification">
                             <span class="glyphicon">&#x2709;</span>
                         </a>
                         <a class="navbar-brand" href="php/user.php?users=' . $_SESSION['username'] . '">' . $_SESSION['username'] . '

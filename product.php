@@ -4,8 +4,8 @@
     $preparedata->execute();
     $data = $preparedata->get_result();
     $preparedata->close();
-    if(isset($_POST['search_product'])){
-        if($_POST['search_product'] != null){
+    if(isset($_GET['search'])){
+        if($_GET['search'] != null){
             // BasicSearchEngineAlgorithm:
             $data = NULL;
             $searchengine = $conn->prepare("
@@ -14,7 +14,7 @@
             WHERE product.product_name LIKE ?  OR users.username LIKE ? OR product.prod_id LIKE ?
             ");
             $searchengine->bind_param("sss", $searchterm, $searchterm, $searchterm);
-            $searchterm = '%' . $_POST['search_product'] . '%';
+            $searchterm = '%' . $_GET['search'] . '%';
             $searchengine->execute();
             $data = $searchengine->get_result();
             $searchengine->close();
@@ -100,9 +100,9 @@
                 ?>
                 <li class="nav-item">
                     <!-- search engine input -->
-                    <form class="form-inline" action="" method="post">
+                    <form class="form-inline" action="" method="get">
                         <div class="form-group">
-                            <input type="text" name="search_product" placeholder="Search Product" class="form-control spacing">
+                            <input type="text" name="search" placeholder="Search Product" class="form-control spacing">
                         </div>
                     </form>
                 </li>
@@ -111,7 +111,7 @@
                 <?php if(isset($_SESSION['username'])){
                     echo '
                     <div>
-                        <a href="php/notification.php" id="notification">
+                        <a href="php/notificationlist.php" id="notification">
                             <span class="glyphicon">&#x2709;</span>
                         </a>
                         <a class="navbar-brand" href="php/user.php?users=' . $_SESSION['username'] . '">' . $_SESSION['username'] . '

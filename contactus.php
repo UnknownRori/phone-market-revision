@@ -71,7 +71,7 @@
                 <?php if(isset($_SESSION['username'])){
                     echo '
                     <div>
-                        <a href="php/notification.php" id="notification">
+                        <a href="php/notificationlist.php" id="notification">
                             <span class="glyphicon">&#x2709;</span>
                         </a>
                         <a class="navbar-brand" href="php/user.php?users=' . $_SESSION['username'] . '">' . $_SESSION['username'] . '

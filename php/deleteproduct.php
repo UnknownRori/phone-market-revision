@@ -93,7 +93,7 @@
                 <?php if(isset($_SESSION['username'])){
                     echo '
                     <div>
-                        <a href="notification.php" id="notification">
+                        <a href="notificationlist.php" id="notification">
                             <span class="glyphicon">&#x2709;</span>
                         </a>
                         <a class="navbar-brand" href="user.php?username=' . $_SESSION['username'] . '">' . $_SESSION['username'] . '
@@ -101,7 +101,7 @@
                         </a>
                     </div>
                     ';
-                    echo '<a href="logout.php" class="btn btn-danger">Log out</a>';
+                    echo '<a href="logout.php" class="btn btn-danger spacing">Log out</a>';
                 }?>
             </ul>
         </div>

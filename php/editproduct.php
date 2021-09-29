@@ -190,7 +190,7 @@
                     <?php if(isset($_SESSION['username'])){
                         echo '
                         <div>
-                            <a href="notification.php" id="notification">
+                            <a href="notificationlist.php" id="notification">
                                 <span class="glyphicon">&#x2709;</span>
                             </a>
                             <a class="navbar-brand" href="user.php?username=' . $_SESSION['username'] . '">' . $_SESSION['username'] . '

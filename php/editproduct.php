@@ -9,7 +9,9 @@
             $data = $getdata->get_result();
             $result = $data->fetch_assoc();
             $getdata->close();
-
+            if($_SESSION['users_id'] !== $result['user_id']){
+                MsgReport("You do not have privilege over this product!", "error", "");
+            }
             if(isset($_POST['edit']) && $_GET['id']){
                 $editdata = $conn->prepare("UPDATE product SET product_name=? , photo_name=? , price=? , stock=? , description=? WHERE prod_id=?");
                 $editdata->bind_param("ssiisi", $product_name, $photo_name, $price, $stock, $description, $prod_id);

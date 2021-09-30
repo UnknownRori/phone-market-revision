@@ -1,3 +1,19 @@
+### Minor Update 0.8.2.11
+
+##### Change
+
+<ul>
+    <li>Security Update : another user trying editing product</li>
+    <li>Create : sendntificationform (not functional yet)</li>
+</ul>
+
+#### Current Issue
+
+<ul>
+    <li>product.php will display weird layout if product displayed has atleast 20 character product name</li>
+    <li>MsgReport cannot handle more than 1</li>
+</ul>
+
 ### Minor Update 0.8.2.1
 
 ##### Change

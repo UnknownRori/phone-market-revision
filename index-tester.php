@@ -1,6 +1,8 @@
 <?php
     require_once 'php\connect.php';
-    $getpreview = $conn->prepare("SELECT product.*, users.id, users.username FROM product INNER JOIN users ON product.user_id = users.id LIMIT 4");
+    $getpreview = $conn->prepare("
+
+    ");
     $getpreview->execute();
     $data = $getpreview->get_result();
     $getpreview->close();
@@ -12,7 +14,6 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Home</title>
     <script src="resource/js/jquery-3.5.1.js"></script>
     <script src="resource/js/main.js"></script>
     <script src="resource/js/bootstrap.min.js"></script>
@@ -21,6 +22,7 @@
     <link rel="stylesheet" href="resource/css/style.css">
     <link rel="stylesheet" href="resource/css/bootstrap.min.css">
     <link rel="icon" href="resource/image/favicon.jpg">
+    <?php PageTitle("Home") ?>
 </head>
 <body id="home">
     <div class="msg fixed-top text-center">
@@ -73,11 +75,11 @@
                 <?php if(isset($_SESSION['username'])){
                     echo '
                     <div>
-                        <a href="php/notification.php" id="notification">
+                        <a href="php/notificationlist.php" id="notification">
                             <span class="glyphicon">&#x2709;</span>
                         </a>
-                        <a class="navbar-brand" href="php/user.php?users=' . $_SESSION['username'] . '">' . $_SESSION['username'] . '
-                            <img class="profile" src="resource/image/profile/' . $_SESSION['username'] . '.jpg" alt="">
+                        <a class="navbar-brand" href="php/user.php?users=' . htmlspecialchars($_SESSION['fullusername']) . '">' . htmlspecialchars($_SESSION['username']) . '
+                            <img class="profile" src="resource/image/profile/' . htmlspecialchars($_SESSION['username']) . '.jpg" alt="">
                         </a>
                         <a href=".\php\logout.php" class="btn btn-danger">Log out</a>
                     </div>
@@ -88,6 +90,9 @@
             </ul>
         </div>
     </nav>
+    <div class="">
+
+    </div>
     <div class="intro">
         <div class="container">
             <div class="text-center">
@@ -129,7 +134,61 @@
             </div>
         </section>
         <section id="preview">
-            <div class="container text-center">
+            <div id="extend" class="container">
+            <?php foreach($data as $row):?>
+            <div style="width: 300px; float:left; margin: 20px;">
+            <a href=""></a>
+                <div style="border: 1px solid black;">
+                    <?php
+                        if($row['photo_name']){
+                            echo '
+                            <a href="/php/product.php?id=' . $row['prod_id'] .'">
+                                <img src="resource/image/product/' . $row['photo_name'] .'" alt=""class="img img-fluid">
+                            </a>
+                            ';
+                        }else{
+                            echo '
+                            <a href="/php/product.php?id=' . $row['prod_id'] .'">
+                                <img src="resource/image/404imgnotfound.png" alt=""class="img img-fluid">
+                            </a>
+                            ';
+                        }
+                    ?>
+                </div>
+                <div>
+                    <table class="table" style="margin-top: 10px;">
+                        <tr>
+                            <td>
+                                <b>
+                                    Product Name
+                                </b>
+                            </td>
+                            <td>:</td>
+                            <td>
+                                <b>
+                                    <?php echo $row['product_name']; ?>
+                                </b>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <b>Price</b>
+                            </td>
+                            <td>
+                                :
+                            </td>
+                            <td>
+                                <b style="color: red;">
+                                    $ <?php echo $row['price']; ?>
+                                </b>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        <?php endforeach;?>
+    </div>
+            <!-- <div class="container text-center">
                 <h2>Newest Product</h2>
                 <div class="row">
                     <?php foreach($data as $row):?>
@@ -154,18 +213,18 @@
                     </div>
                     <?php endforeach;?>
                 </div>
-            </div>
+            </div> -->
         </section>
-        <div class="footer bg-light">
-            <div class="text-center">
-                <p class="text-muted">
-                <script>
-                    var n = new Date();
-                    document.write(n.getFullYear());
-                </script>
-                &copy;<b>UnknownRori</b>
-                </p>
-            </div>
+    </div>
+    <div class="footer fixed-bottom bg-light">
+        <div class="text-center">
+            <p class="text-muted">
+            <script>
+                var n = new Date();
+                document.write(n.getFullYear());
+            </script>
+            &copy;<b>UnknownRori</b>
+            </p>
         </div>
     </div>
     <div class="footer fixed-bottom img-small-opacity hidden floating-bottom">
@@ -176,6 +235,7 @@
     <script>
         error_msg();
         getcurrentpage();
+        alert("This is just testing before used in main index");
     </script>
     <script src="resource/js/main-js-index.js"></script>
 </body>

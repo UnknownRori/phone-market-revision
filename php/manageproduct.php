@@ -4,10 +4,15 @@
         MsgReport("User must log in first", "warning", "login.php");
     } 
     $preparedata = $conn->prepare("
-        SELECT product.*, buy_history.product_id, SUM(buy_history.total_requested) AS total_requested
+        SELECT product.*,
+        SUBSTRING(product.product_name, 1, 20) as substring_product_name,
+        SUBSTRING(product.photo_name,1 ,20) AS substring_photo_name,
+        SUBSTRING(product.price, 1, 20) AS substring_price, 
+        SUBSTRING(product.stock, 1, 20) AS substring_stock, 
+        buy_history.product_id, SUM(buy_history.total_requested) AS total_requested
         FROM product
         LEFT JOIN buy_history ON buy_history.product_id = product.prod_id
-        WHERE product.user_id = ? GROUP BY product.prod_id;
+        WHERE product.user_id = ? GROUP BY product.prod_id
         "
     );
     $preparedata->bind_param("i", $id);
@@ -20,7 +25,12 @@
             $data = NULL;
             // $searchengine = $conn->prepare("SELECT product.*, users.id FROM product INNER JOIN users ON product.user_id = users.id WHERE product.product_name LIKE ? OR product.user_id LIKE ?");
             $searchengine = $conn->prepare("
-            SELECT product.*,users.id , buy_history.product_id, SUM(buy_history.total_requested) AS total_requested
+            SELECT product.*,users.id, buy_history.product_id,
+            SUBSTRING(product.product_name, 1, 20) as substring_product_name,
+            SUBSTRING(product.photo_name,1 ,20) AS substring_photo_name,
+            SUBSTRING(product.price, 1, 20) AS substring_price, 
+            SUBSTRING(product.stock, 1, 20) AS substring_stock, 
+            SUM(buy_history.total_requested) AS total_requested
             FROM product
             LEFT JOIN buy_history ON buy_history.product_id = product.prod_id
             RIGHT JOIN users ON users.id = product.user_id
@@ -29,7 +39,7 @@
             );
             $searchengine->bind_param("iss", $user_id, $searchterm, $searchterm);
             $user_id = $_SESSION['users_id'];
-            $searchterm = '%' . $_GET['search-product'] . '%';
+            $searchterm = '%' . $_GET['search'] . '%';
             $searchengine->execute();
             $data = $searchengine->get_result();
             $searchengine->close();
@@ -52,7 +62,7 @@
     <link rel="stylesheet" href="../resource/css/style-profile.css">
     <link rel="stylesheet" href="../resource/css/bootstrap.min.css">
     <link rel="icon" href="../resource/image/favicon.jpg">
-    <title>Manage Product</title>
+    <?php PageTitle("Manage Product"); ?>
 </head>
 <body id="home">
     <div class="msg fixed-top text-center">
@@ -81,7 +91,7 @@
                     if($_SESSION['admin'] == 1){
                         echo '
                         <li class="nav-item">
-                        <a href="php/manageuser.php" class="nav-link">Manage Users</a>
+                        <a href="manageuser.php" class="nav-link">Manage Users</a>
                         </li>
                         ';
                     }
@@ -109,8 +119,8 @@
                         <a href="notificationlist.php" id="notification">
                             <span class="glyphicon">&#x2709;</span>
                         </a>
-                        <a class="navbar-brand" href="user.php?users=' . $_SESSION['username'] . '">' . $_SESSION['username'] . '
-                            <img class="profile" src="../resource/image/profile/' . $_SESSION['username'] . '.jpg" alt="">
+                        <a class="navbar-brand" href="user.php?users=' . htmlspecialchars($_SESSION['fullusername']) . '">' . htmlspecialchars($_SESSION['username']) . '
+                            <img class="profile" src="../resource/image/profile/' . htmlspecialchars($_SESSION['fullusername']) . '.jpg" alt="">
                         </a>
                         <a href="logout.php" class="btn btn-danger">Log out</a>
                     </div>
@@ -136,14 +146,14 @@
                 <td>
                     <?php echo $row['prod_id']; ?>
                 </td>
-                <td>
-                    <?php echo htmlspecialchars($row['product_name']); ?>
+                <td title="<?php echo htmlspecialchars($row['product_name']); ?>">
+                    <?php echo htmlspecialchars($row['substring_product_name']); ?>
                 </td>
-                <td>
+                <td title="<?php echo htmlspecialchars($row['photo_name']); ?>">
                     <?php
                      if($row['photo_name'] !== ""){
                         echo '
-                            <a href="../resource/image/product/' . $row['photo_name'] .'" target="_blank">' . $row['photo_name'] . '</a>
+                            <a href="../resource/image/product/' . htmlspecialchars($row['photo_name']) .'" target="_blank">' . htmlspecialchars($row['substring_photo_name']) . '</a>
                         ';
                      }else{
                          echo '

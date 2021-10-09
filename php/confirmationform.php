@@ -1,33 +1,43 @@
 <?php
     require_once 'connect.php';
-    if(isset($_SESSION['vendor'])){
+    if($_SESSION['login'] == 1){
         $prepdelete = $conn->prepare("SELECT user_id, product_name, warned_status FROM product WHERE prod_id=?");
         $prepdelete->bind_param("i", $productid);
-        $productid = $_GET['id'];
+        $productid = $_POST['id'];
         $prepdelete->execute();
         $getdata = $prepdelete->get_result();
         $data = $getdata->fetch_assoc();
         $prepdelete->close();
-        if($_SESSION['users_id'] == $data['user_id']){
-            
-        }else if($_SESSION['admin'] == 1){
-            if($data['warned_status'] === 0){
-                MsgReport("Make sure you already issue warning to owner of the product!", "warning", "msgonly");
+        if(isset($_SESSION['vendor']) == 1 || $_SESSION['admin'] == 1 || $_SESSION['super_admin'] == 1){
+            if(isset($_POST['warningconfirm'])){
+                $warncommand = $conn->prepare("UPDATE product SET warned_status='1' WHERE prod_id=?");
+                $warncommand->bind_param("i", $productid);
+                $warncommand->execute();
+                $warncommand->close();
+                MsgReport("Product successfully warned", "success", "");
+            }
+            if(isset($_POST['deleteconfirm'])){
+                $deletecommand = $conn->prepare("DELETE FROM product WHERE prod_id=?");
+                $deletecommand->bind_param("i", $productid);
+                $deletecommand->execute();
+                $deletecommand->close();
+                MsgReport("Product successfully deleted", "success", "");
+            }
+            if($_SESSION['admin'] == 1 || $_SESSION['super_admin'] == 1){
+                if($data['warned_status'] === 0){
+                    MsgReport("Make sure you already issue warning to owner of the product!", "warning", "msgonly");
+                }
+            }else if($_SESSION['users_id'] == $data['user_id']){
+                MsgReport("Make sure you know what are you doing", "warning", "msgonly");
+            }else{
+                MsgReport("You do not have privilege over this product!", "error", "");
             }
         }else{
-            MsgReport("You do not have privilege over this product!", "error", "");
+            MsgReport("You do not have privilege over this product", "error", "");
         }
-
-        if(isset($_POST['delete'])){
-            $deletecommand = $conn->prepare("DELETE FROM product WHERE prod_id=?");
-            $deletecommand->bind_param("i", $prodid);
-            $prodid = $_GET['id'];
-            $deletecommand->execute();
-            $deletecommand->close();
-            MsgReport("Product successfully deleted", "success", "");
-        }
+        
     }else{
-        MsgReport("User must log in first!", "warning", "login.php");
+        MsgReport("User must log in first", "warning", "login.php");
     }
 ?>
 <!DOCTYPE html>
@@ -43,12 +53,15 @@
     <link rel="stylesheet" href="../resource/css/style-profile.css">
     <link rel="stylesheet" href="../resource/css/bootstrap.min.css">
     <link rel="icon" href="../resource/image/favicon.jpg">
-    <title>
-        <?php
-            echo $data['product_name'];
-        ?>
-        Delete Confirmation
-    </title>
+    <?php
+        if(isset($_POST['warning'])){
+            PageTitle("Warning Confirmation " . $data['product_name']);
+        }else if(isset($_POST['delete'])){
+            PageTitle("Delete Confirmation " . $data['product_name']);
+        }else{
+            PageTitle("No command");
+        }
+    ?>
 </head>
 <body id="home">
     <div class="msg fixed-top text-center">
@@ -96,8 +109,8 @@
                         <a href="notificationlist.php" id="notification">
                             <span class="glyphicon">&#x2709;</span>
                         </a>
-                        <a class="navbar-brand" href="user.php?username=' . $_SESSION['username'] . '">' . $_SESSION['username'] . '
-                            <img class="profile" src="../resource/image/profile/' . $_SESSION['username'] . '.jpg" alt="">
+                        <a class="navbar-brand" href="user.php?username=' . htmlspecialchars($_SESSION['fullusername']) . '">' . htmlspecialchars($_SESSION['username']) . '
+                            <img class="profile" src="../resource/image/profile/' . htmlspecialchars($_SESSION['fullusername']) . '.jpg" alt="">
                         </a>
                     </div>
                     ';
@@ -109,9 +122,10 @@
     <div class="container" style="margin-top: 180px;">
         <div class="row">
             <div class="col-9" style="margin-left: 13%;">
-                <h1 class="text-center">Confirm Deletetion</h1>
+                <h1 class="text-center"><?php if(isset($_POST['warning'])){echo 'Warning Confirmation';}else if(isset($_POST['delete'])){echo 'Delete Confirmation';} ?></h1>
                 <h2 class="text-center"><?php echo $data['product_name'] ?></h2>
                 <form action="" method="POST" id="confirmationform">
+                    <input type="number" name="id" value="<?php echo $_POST['id'] ?>" hidden>
                     <div class="form-group">
                         <input title="Confirmation Code" id="confirmationcode" type="text" name="randomconfirmationcode" class="form-control" placeholder="Why you delete this" value="Generating Code ..." disabled>
                     </div>
@@ -125,7 +139,17 @@
                         </label>
                     </div>
                     <div class="form-group float-left">
-                        <input title="Just Do It!" id="confirmationsubmit" type="submit" class="btn btn-danger" value="Delete" name="delete" disabled>
+                        <?php
+                            if(isset($_POST['warning'])){
+                                echo '
+                                    <input title="Just Do It!" id="confirmationsubmit" type="submit" class="btn btn-warning" value="Confirm" name="warningconfirm" disabled>
+                                ';
+                            }else if(isset($_POST['delete'])){
+                                echo '
+                                    <input title="Just Do It!" id="confirmationsubmit" type="submit" class="btn btn-danger" value="Confirm" name="deleteconfirm" disabled>
+                                ';
+                            }
+                        ?>
                     </div>
                 </form>
             </div>
@@ -167,7 +191,7 @@
                     $('#confirmationsubmit').prop('disabled', true);
                 }
             });
-        }, 1000);
+        }, 5000);
     });
     $('#confirmationcheckbox').click(function () {
         if ($(this).is(':checked')) {

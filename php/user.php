@@ -21,15 +21,10 @@
     <link rel="stylesheet" href="../resource/css/bootstrap.min.css">
     <?php 
         echo '
-        <link rel="icon" href="../resource/image/profile/' . $_SESSION['username'] .'.jpg">
+        <link rel="icon" href="../resource/image/profile/' . htmlspecialchars($_SESSION['fullusername']) .'.jpg">
         ';
-        
+        PageTitle($_SESSION['fullusername']);
     ?>
-    <title>
-        <?php
-            echo $_SESSION['username'];
-        ?>
-    </title>
 </head>
 <body>
     <div class="msg fixed-top text-center">
@@ -79,8 +74,8 @@
                         <a href="notificationlist.php" id="notification">
                             <span class="glyphicon">&#x2709;</span>
                         </a>
-                        <a class="navbar-brand" style="transition: 0.5s;" id="user-page-active" href="user.php?username=' . $_SESSION['username'] . '">' . $_SESSION['username'] . '
-                            <img class="profile" src="../resource/image/profile/' . $_SESSION['username'] . '.jpg" alt="">
+                        <a class="navbar-brand" style="transition: 0.5s;" id="user-page-active" href="user.php?username=' . htmlspecialchars($_SESSION['fullusername']) . '">' . htmlspecialchars($_SESSION['username']) . '
+                            <img class="profile" src="../resource/image/profile/' . htmlspecialchars($_SESSION['fullusername']) . '.jpg" alt="">
                         </a>
                     </div>
                     ';

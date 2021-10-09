@@ -137,15 +137,13 @@
         <link rel="stylesheet" href="../resource/css/style-editproduct.css">
         <link rel="stylesheet" href="../resource/css/bootstrap.min.css">
         <link rel="icon" href="../resource/image/favicon.jpg">
-        <title>
             <?php
                 if(isset($result['product_name'])){
-                    echo "Editing Product" . "&nbsp" . htmlspecialchars($result['product_name']);
+                    PageTitle("Editing New Product" . " " . $result['product_name']);
                 }else{
-                    echo "Creating New Product";
+                    PageTitle("Creating New Product");
                 }
                 ?>
-        </title>
     </head>
     <body>
         <div class="msg fixed-top text-center">
@@ -195,8 +193,8 @@
                             <a href="notificationlist.php" id="notification">
                                 <span class="glyphicon">&#x2709;</span>
                             </a>
-                            <a class="navbar-brand" href="user.php?username=' . $_SESSION['username'] . '">' . $_SESSION['username'] . '
-                                <img class="profile" src="../resource/image/profile/' . $_SESSION['username'] . '.jpg" alt="">
+                            <a class="navbar-brand" href="user.php?username=' . htmlspecialchars($_SESSION['username']) . '">' . htmlspecialchars($_SESSION['username']) . '
+                                <img class="profile" src="../resource/image/profile/' . htmlspecialchars($_SESSION['username']) . '.jpg" alt="">
                             </a>
                         </div>
                         ';
@@ -309,7 +307,7 @@
                             </td>
                         </tr>
                     </table>
-                    <div class="form-group" style="float: right;">
+                    <div class="form-group float-right">
                         <?php
                             if(isset($_GET['id'])){
                                 echo '

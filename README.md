@@ -7,6 +7,7 @@ This is continuation of my old [personal project](https://github.com/UnknownRori
 
 <ul>
     <li>Clone this repository, and put it in XAMPP 'htdocs'</li>
+    <li>Create phone-market-revision database</li>
     <li>import mysql database from thisrepository/database/phone-market-revision.sql</li>
     <li>Ready to use</li>
 </ul>

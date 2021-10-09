@@ -5,7 +5,11 @@
     }
     if(isset($_POST['login'])){
         $_SESSION['preload-login-username'] = $_POST['username_1'];
-        $prepare = $conn->prepare("SELECT id, username, password, admin, vendor FROM users WHERE username=? ");
+        $prepare = $conn->prepare("
+        SELECT id, SUBSTRING(username, 1, 15) AS substring_username,
+        username, password, vendor, admin, super_admin
+        FROM users WHERE username=?
+        ");
         $prepare->bind_param("s", $username);
 
         $username = $_POST['username_1'];
@@ -27,9 +31,11 @@
                 $updatepassword->execute(); 
                 $updatepassword->close();
                 $_SESSION['users_id'] = $users['id'];
-                $_SESSION['username'] = htmlspecialchars($users['username']);
-                $_SESSION['admin'] = $users['admin'];
+                $_SESSION['username'] = $users['substring_username'];
+                $_SESSION['fullusername'] = $users['username'];
                 $_SESSION['vendor'] = $users['vendor'];
+                $_SESSION['admin'] = $users['admin'];
+                $_SESSION['super_admin'] = $users['super_admin'];
                 $_SESSION['login'] = 1;
                 if(isset($_POST["remember_me"])){
                     // cache login
@@ -55,7 +61,7 @@
     <link rel="stylesheet" href="../resource/css/style.css">
     <link rel="stylesheet" href="../resource/css/bootstrap.min.css">
     <link rel="icon" href="../resource/image/favicon.jpg">
-    <title>Login</title>
+    <?php PageTitle("Login") ?>
 </head>
 <body id="home">
     <div class="msg fixed-top text-center">
@@ -90,7 +96,7 @@
                 <h3 class="text-center">Login</h3>
                 <form method="POST">
                     <div class="form-group">
-                        <input type="text" name="username_1" class="form-control" placeholder="Enter Username" value="<?php if(isset($_SESSION['preload-login-username'])){echo $_SESSION['preload-login-username'];} ?>">
+                        <input type="text" name="username_1" class="form-control" placeholder="Enter Username" value="<?php if(isset($_SESSION['preload-login-username'])){echo htmlspecialchars($_SESSION['preload-login-username']);} ?>">
                     </div>
                     <div class="form-group">
                         <input type="password" name="password_1" class="form-control" placeholder="Enter Password">

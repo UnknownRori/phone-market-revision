@@ -91,5 +91,9 @@
 }
 
 .spacing{
-  margin: 4px !important;
+  margin: 2px !important;
+}
+
+.float-right{
+  float: right!important;
 }

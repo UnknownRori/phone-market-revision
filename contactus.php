@@ -11,20 +11,11 @@
     <script src="resource/js/main.js"></script>
     <script src="resource/js/bootstrap.min.js"></script>
     <link rel="stylesheet" href="resource/css/style.css">
+    <link rel="stylesheet" href="resource/css/style-contactus.css">
     <link rel="stylesheet" href="resource/css/style-profile.css">
     <link rel="stylesheet" href="resource/css/bootstrap.min.css">
     <link rel="icon" href="resource/image/favicon.jpg">
-    <title>Contact us</title>
-    <style>
-        body{
-            height: 100vh;
-            background-image: url(./resource/image/background-2.jpg);
-            background-attachment:fixed;
-            background-size:cover;
-            background-size:no-repeat;
-            transition: 1s;
-        }
-    </style>
+    <?php PageTitle("Contact us"); ?>
 </head>
 <body id="home">
     <div class="msg fixed-top text-center">
@@ -74,8 +65,8 @@
                         <a href="php/notificationlist.php" id="notification">
                             <span class="glyphicon">&#x2709;</span>
                         </a>
-                        <a class="navbar-brand" href="php/user.php?users=' . $_SESSION['username'] . '">' . $_SESSION['username'] . '
-                            <img class="profile" src="resource/image/profile/' . $_SESSION['username'] . '.jpg" alt="">
+                        <a class="navbar-brand" href="php/user.php?users=' . htmlspecialchars($_SESSION['fullusername']) . '">' . htmlspecialchars($_SESSION['username']) . '
+                            <img class="profile" src="resource/image/profile/' . htmlspecialchars($_SESSION['fullusername']) . '.jpg" alt="">
                         </a>
                         <a href=".\php\logout.php" class="btn btn-danger">Log out</a>
                     </div>

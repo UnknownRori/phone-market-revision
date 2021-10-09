@@ -1,3 +1,37 @@
+### Major Update 0.8.3.0 !Ongoing!
+
+##### Change
+
+<ul>
+    <li>Security Update : potential exploit javascript in MsgReport</li>
+    <li>Security Update : stoping users from running javascript using username</li>
+    <li>Fix : weird display on product</li>
+    <li>Fix : weird display in manageproduct</li>
+    <li>Fix : bug on Create Product button in index.php</li>
+    <li>Fix : bug on pressing Manage User in manageproduct.php</li>
+    <li>Fix : search engine on manageproduct.php may result other users product</li>
+    <li>Create : create notification list for superadmin  to watch all traffic [still in alpha phase]</li>
+    <li>Update : minor revision index.php [deleting create product button]</li>
+    <li>Update : adding function PageTitle for easy customization</li>
+    <li>Update : major revision manageproduct.php</li>
+    <li>Update : minor revision in product list for supporting new feature</li>
+    <li>Update : combining delete confirmation with warning confirmation</li>
+    <li>Update : fully functional notificationlist with some revision</li>
+    <li>Update : fully functional send notification form</li>
+    <li>Update : adding non functional 'Advanced Search Engine' button and removing 'Add Product' button for future new search engine</li>
+    <li>Update : index-tester.php for future test</li>
+    <li>Update : few optimization</li>
+</ul>
+
+#### Current Issue
+
+<ul>
+    <li>product.php will display weird layout if product displayed has atleast 20 character product name <b>[FIXED]<b></li>
+    <li>Search Engine in Manage Product may resulting other user product <b>[FIXED]</b></li>
+    <li>MsgReport cannot handle more than 1</li>
+    <li>Unresponsive display</li>
+</ul>
+
 ### Minor Update 0.8.2.11
 
 ##### Change

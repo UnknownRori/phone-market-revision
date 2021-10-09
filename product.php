@@ -1,6 +1,13 @@
 <?php
     require_once 'php\connect.php';
-    $preparedata = $conn->prepare("SELECT product.*, users.id, users.username FROM product INNER JOIN users ON product.user_id = users.id");
+    $preparedata = $conn->prepare("
+    SELECT product.*,
+    SUBSTRING(product.product_name, 1, 20) AS substring_product_name,
+    SUBSTRING(product.price, 1, 20) AS substring_product_price,
+    users.id, users.username
+    FROM product
+    INNER JOIN users ON product.user_id = users.id
+    ");
     $preparedata->execute();
     $data = $preparedata->get_result();
     $preparedata->close();
@@ -31,7 +38,6 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Product</title>
     <script src="resource/js/jquery-3.5.1.js"></script>
     <script src="resource/js/main.js"></script>
     <script src="resource/js/bootstrap.min.js"></script>
@@ -40,11 +46,7 @@
     <link rel="stylesheet" href="resource/css/style-product.css">
     <link rel="stylesheet" href="resource/css/bootstrap.min.css">
     <link rel="icon" href="resource/image/favicon.jpg">
-    <style>
-        p {
-            margin: 0 !important;
-        }
-    </style>
+    <?php PageTitle("Product"); ?>
 </head>
 <body id="home">
     <div class="msg fixed-top text-center">
@@ -68,15 +70,6 @@
                 <li class="nav-item">
                     <a href="contactus.php" class="nav-link">Contact us</a>
                 </li>
-                <!-- <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" id="navbardrop" data-toggle="dropdown">
-                        Display
-                    </a>
-                    <div class="dropdown-menu">
-                        <a class="dropdown-item nav-link active" href="#" id="detailed">Grid</a>
-                        <a class="dropdown-item nav-link" href="#" id="list">List</a>
-                    </div>
-                </li> -->
                 <?php
                 if(isset($_SESSION['login'])){
                     if($_SESSION['admin'] == 1){
@@ -91,9 +84,6 @@
                     <li class="nav-item">
                         <a href="php/manageproduct.php" class="nav-link">Manage Product</a>
                     </li>
-                    <li class="nav-item spacing">
-                        <a class="btn btn-primary" href="php/editproduct.php" class="nav-link">Create Product</a>
-                    </li>
                     ';
                     }
                 }
@@ -103,6 +93,7 @@
                     <form class="form-inline" action="" method="get">
                         <div class="form-group">
                             <input type="text" name="search" placeholder="Search Product" class="form-control spacing">
+                            <a href="#" class="btn btn-info spacing">Advanced Search</a> <!--temporary href=/php/advancedproduct.php-->
                         </div>
                     </form>
                 </li>
@@ -114,8 +105,8 @@
                         <a href="php/notificationlist.php" id="notification">
                             <span class="glyphicon">&#x2709;</span>
                         </a>
-                        <a class="navbar-brand" href="php/user.php?users=' . $_SESSION['username'] . '">' . $_SESSION['username'] . '
-                            <img class="profile" src="resource/image/profile/' . $_SESSION['username'] . '.jpg" alt="">
+                        <a class="navbar-brand" href="php/user.php?users=' . htmlspecialchars($_SESSION['fullusername']) . '">' . htmlspecialchars($_SESSION['username']) . '
+                            <img class="profile" src="resource/image/profile/' . htmlspecialchars($_SESSION['fullusername']) . '.jpg" alt="">
                         </a>
                         <a href=".\php\logout.php" class="btn btn-danger">Log out</a>
                     </div>
@@ -129,17 +120,17 @@
     <div id="extend" class="container height-100vh">
         <?php foreach($data as $row):?>
             <div style="width: 300px!important; float:left; margin: 20px;">
-                <div class="text-center" style="border: 1px solid black">
+                <div class="text-center" style="border: 1px solid black" title="<?php echo htmlspecialchars($row['product_name']); ?>">
                     <?php
                         if($row['photo_name']){
                             echo '
-                            <a href="php/product.php?id=' . $row['prod_id'] .'">
-                                <img src="resource/image/product/' . $row['photo_name'] .'" alt="ERROR" class="img img-fluid">
+                            <a href="php/product.php?id=' . htmlspecialchars($row['prod_id']) .'">
+                                <img src="resource/image/product/' . htmlspecialchars($row['photo_name']) .'" alt="ERROR" class="img img-fluid">
                             </a>
                             ';
                         }else{
                             echo '
-                            <a href="php/product.php?id=' . $row['prod_id'] .'">
+                            <a href="php/product.php?id=' . htmlspecialchars($row['prod_id']) .'">
                                 <img src="resource/image/404imgnotfound.png" alt="ERROR" class="img img-fluid">
                             </a>
                             ';
@@ -155,9 +146,9 @@
                                 </b>
                             </td>
                             <td>:</td>
-                            <td>
+                            <td title="<?php echo htmlspecialchars($row['product_name']); ?>">
                                 <b>
-                                    <?php echo htmlspecialchars($row['product_name']); ?>
+                                    <?php echo htmlspecialchars($row['substring_product_name']); ?>
                                 </b>
                             </td>
                         </tr>
@@ -168,32 +159,37 @@
                             <td>
                                 :
                             </td>
-                            <td>
+                            <td title="<?php echo '$ ' . $row['price']; ?>">
                                 <b style="color: red;">
-                                    $ <?php echo $row['price']; ?>
+                                    $ <?php echo $row['substring_product_price']; ?>
                                 </b>
                             </td>
                         </tr>
                     </table>
                 </div>
                 <div style="margin-top: 10px; padding: 5px;">
-                    <?php
-                        echo '<a class="btn btn-primary spacing" href="php/product.php?id=' . $row['prod_id'] .'">Detail</a>';
-                        if(isset($_SESSION['login'])){
-                            if(($_SESSION['admin'])){
-                                echo '<a class="btn btn-danger spacing" href="php/deleteproduct.php?id='. $row['prod_id'] . '">Delete</a>';
-                                if($row['warned_status'] == 1){
-                                    echo '<button title="Already Warned!"  class="btn btn-warning spacing" disabled>Issue Warning</button>';
-                                }else{
-                                    if($row['username'] == $_SESSION['username']){
-                                        echo '<button title="Cannot Send Warning to Yourself"  class="btn btn-warning spacing" disabled>Issue Warning</button>';
-                                    }else{
-                                        echo '<a class="btn btn-warning spacing" href="php/warnproduct.php?id='. $row['prod_id'] . '">Issue Warning</a>';
+                    <form action="php/confirmationform.php" method="POST">
+                    <div class="form-group float-left">
+                            <input type="number" name="id" value="<?php echo $row['prod_id'] ?>" hidden>
+                            <input type="submit" value="Detail" name="detail" class="btn btn-info spacing">
+                            <?php
+                                if(isset($_SESSION['login'])){
+                                    if(($_SESSION['admin'])){
+                                        echo '<input type="submit" value="Delete" name="delete" class="btn btn-danger spacing">';
+                                        if($row['warned_status'] == 1){
+                                            echo '<input type="submit" value="Issue Warning" class="btn btn-warning spacing" title="Already Warned" disabled>';
+                                        }else{
+                                            if($row['username'] == $_SESSION['username']){
+                                                echo '<input type="submit" value="Issue Warning" class="btn btn-warning spacing" title="Cannot send warning on yourself" disabled>';
+                                            }else{
+                                                echo '<input type="submit" value="Issue Warning" name="warning" class="btn btn-warning spacing">';
+                                            }
+                                        }
                                     }
                                 }
-                            }
-                        }
-                    ?>
+                            ?>
+                        </div>
+                    </form>
                 </div>
             </div>
         <?php endforeach;?>

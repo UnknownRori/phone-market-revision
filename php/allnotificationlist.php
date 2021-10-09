@@ -4,35 +4,34 @@
         MsgReport("User must log in first", "warning", "login.php");
     } 
     $preparedata = $conn->prepare("
-    SELECT notification.*, type_notification.*, users.id, users.username,
-    SUBSTRING(notification.topic, 1, 35) AS substring_topic,
-    SUBSTRING(notification.content, 1, 35) AS substring_content,
-    SUBSTRING(users.username, 1, 15) AS substring_username,
+    SELECT notification.*, type_notification.*, users.id AS userfromid, users.username AS userfrom,
+    SUBSTRING(notification.topic, 1, 25) AS substring_topic,
+    SUBSTRING(notification.content, 1, 25) AS substring_content,
+    SUBSTRING(users.username, 1, 15) AS substring_userfrom,
     SUBSTRING(type_notification.notification_name, 1, 18) AS substring_notification_name
     FROM notification
     INNER JOIN users on notification.fromuser = users.id
     LEFT JOIN type_notification on notification.notificationtype = type_notification.id
-    WHERE notification.touser = ?;
     ");
-    $preparedata->bind_param("i", $id);
-    $id = $_SESSION['users_id'];
     $preparedata->execute();
     $data = $preparedata->get_result();
+    // $prepdata = $data->fetch_assoc();
     $preparedata->close();
+    // var_dump($prepdata);
+    // // die;
     if(isset($_GET['search'])){
         if($_GET['search'] != null){
             $data = NULL;
             $searchengine = $conn->prepare("
-            SELECT notification.*, type_notification.*, users.id, users.username,
-            SUBSTRING(notification.topic, 1, 35) AS substring_topic,
-            SUBSTRING(notification.content, 1, 35) AS substring_content,
-            SUBSTRING(users.username, 1, 15) AS substring_username,
+            SELECT notification.*, type_notification.*, users.id AS userfromid, users.username AS userfrom,
+            SUBSTRING(notification.topic, 1, 25) AS substring_topic,
+            SUBSTRING(notification.content, 1, 25) AS substring_content,
+            SUBSTRING(users.username, 1, 15) AS substring_userfrom,
             SUBSTRING(type_notification.notification_name, 1, 18) AS substring_notification_name
             FROM notification
             INNER JOIN users on notification.fromuser = users.id
             LEFT JOIN type_notification on notification.notificationtype = type_notification.id
-            WHERE notification.touser = ? AND
-            type_notification.notification_name LIKE ? OR notification.topic LIKE ? OR notification.content LIKE ?
+            type_notification.notification_type LIKE ? OR notification.topic LIKE ? OR notification.content LIKE ?
             GROUP BY notification.fromuser
             ");
             $searchengine->bind_param("isss", $user, $searchterm, $searchterm, $searchterm);
@@ -41,6 +40,7 @@
             $searchengine->execute();
             $data = $searchengine->get_result();
             $searchengine->close();
+            MsgReport($_SESSION['users_id'], "success", "msgonly");
         }else{
             MsgReport("Cannot search empty query!", "error", "msgonly");
         }
@@ -60,7 +60,7 @@
     <link rel="stylesheet" href="../resource/css/style-notification.css">
     <link rel="stylesheet" href="../resource/css/bootstrap.min.css">
     <link rel="icon" href="../resource/image/favicon.jpg">
-    <?php PageTitle("Notification") ?>
+    <?php PageTitle("Notification All List") ?>
 </head>
 <body id="home">
     <div class="msg fixed-top text-center">
@@ -103,7 +103,7 @@
                     if($_SESSION['super_admin'] == 1){
                         echo '
                         <li class="nav-item">
-                            <a href="allnotificationlist.php" title="View all notification traffic" class="nav-link">
+                            <a href="allnotificationlist.php" title="View all notification traffic" class="nav-link active">
                                 List
                             </a>
                         </li>
@@ -153,6 +153,7 @@
                 <td>Topic</td>
                 <td>Content</td>
                 <td>From</td>
+                <td>To</td>
                 <td>Action</td>
             </tr>
             <?php foreach($data as $row): ?>
@@ -166,8 +167,11 @@
                 <td title="<?php echo htmlspecialchars($row['content']); ?>">
                     <?php echo htmlspecialchars($row['substring_content']); ?>
                 </td>
-                <td title="<?php echo htmlspecialchars($row['username']); ?>">
-                    <?php echo htmlspecialchars($row['substring_username']); ?>
+                <td title="<?php echo htmlspecialchars($row['userfrom']); ?>">
+                    <?php echo htmlspecialchars($row['substring_userfrom']); ?>
+                </td>
+                <td title="<?php echo htmlspecialchars($row['touser']); ?>">
+                    <?php echo htmlspecialchars($row['touser']); ?>
                 </td>
                 <td>
                     <a class="btn btn-primary spacing" href="notification.php?id=<?php echo $row['id'] ?>" >Detail</a>

@@ -1,0 +1,8 @@
+body{
+    height: 100vh;
+    background-image: url(./resource/image/background-2.jpg);
+    background-attachment:fixed;
+    background-size:cover;
+    background-size:no-repeat;
+    transition: 1s;
+}

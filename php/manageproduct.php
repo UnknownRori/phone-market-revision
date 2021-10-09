@@ -201,13 +201,14 @@
                     ?>
                 </td>
                 <td>
-                    <?php
-                      echo '
-                        <a class="btn btn-primary spacing" href="product.php?id=' . $row['prod_id'] . '" >Detail</a>
-                        <a class="btn btn-warning spacing" href="editproduct.php?id=' . $row['prod_id'] . '" >Edit</a>
-                        <a class="btn btn-danger spacing" href="deleteproduct.php?id=' . $row['prod_id'] . '">Delete</a>
-                      ';
-                    ?>
+                    <form action="confirmationform.php" method="POST">
+                    <div class="form-group float-left">
+                            <input type="number" name="id" value="<?php echo $row['prod_id'] ?>" hidden>
+                            <input type="submit" value="Detail" name="detail" class="btn btn-info spacing">
+                            <a href="editproduct.php?id=<?php echo $row['prod_id'] ?>" class="btn btn-warning">Edit</a>
+                            <input type="submit" value="Delete" name="delete" class="btn btn-danger spacing">
+                        </div>
+                    </form>
                 </td>
             </tr>
             <?php endforeach;?>

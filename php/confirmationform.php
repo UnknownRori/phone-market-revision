@@ -1,7 +1,12 @@
 <?php
     require_once 'connect.php';
     if($_SESSION['login'] == 1){
-        $prepdelete = $conn->prepare("SELECT user_id, product_name, warned_status FROM product WHERE prod_id=?");
+        $prepdelete = $conn->prepare("
+        SELECT product.user_id, product.product_name, product.warned_status, users.id, users.username
+        FROM product
+        INNER JOIN users ON users.id = product.user_id
+        WHERE prod_id=?
+        ");
         $prepdelete->bind_param("i", $productid);
         $productid = $_POST['id'];
         $prepdelete->execute();
@@ -55,9 +60,9 @@
     <link rel="icon" href="../resource/image/favicon.jpg">
     <?php
         if(isset($_POST['warning'])){
-            PageTitle("Warning Confirmation " . $data['product_name']);
+            PageTitle("Warning Confirmation - " . $data['product_name']) . " - " . $data['username'];
         }else if(isset($_POST['delete'])){
-            PageTitle("Delete Confirmation " . $data['product_name']);
+            PageTitle("Delete Confirmation - " . $data['product_name'] . " - "  .$data['username']);
         }else{
             PageTitle("No command");
         }

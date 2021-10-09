@@ -2,7 +2,12 @@
     require_once 'connect.php';
     if($_SESSION['vendor'] == 1 || $_SESSION['admin'] == 1){
         if(isset($_GET['id'])){
-            $getdata = $conn->prepare("SELECT * FROM product WHERE prod_id=?");
+            $getdata = $conn->prepare("
+            SELECT product.*, users.id, users.username
+            FROM product
+            INNER JOIN users ON users.id = product.user_id
+            WHERE prod_id=?"
+            );
             $getdata->bind_param("i", $id);
             $id = $_GET['id'];
             $getdata->execute();
@@ -139,9 +144,9 @@
         <link rel="icon" href="../resource/image/favicon.jpg">
             <?php
                 if(isset($result['product_name'])){
-                    PageTitle("Editing New Product" . " " . $result['product_name']);
+                    PageTitle("Editing New Product" . " - " . $result['product_name'] . " - " . $result['username']);
                 }else{
-                    PageTitle("Creating New Product");
+                    PageTitle("Creating New Product" . " - " . $_SESSION['username']);
                 }
                 ?>
     </head>

@@ -1,4 +1,14 @@
-### Major Update 0.8.3.0 !Ongoing!
+### Minor Update Update 0.8.3.1
+
+##### Change
+
+<ul>
+    <li>Fix : Delete button in manage product not working correctly</li>
+    <li>Update : Adding more dynamic title in editproduct.php</li>
+    <li>Update : Adding more dynamic title in confirmationform.php</li>
+</ul>
+
+### Major Update 0.8.3.0
 
 ##### Change
 

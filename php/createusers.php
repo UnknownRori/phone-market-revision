@@ -89,7 +89,7 @@
                     <a href="../../phone-market-revision" class="nav-link">Home</a>
                 </li>
                 <li class="nav-item">
-                    <a href="..\product.php" class="nav-link">Product</a>
+                    <a href="../productlist.php" class="nav-link">Product</a>
                 </li>
             </ul>
             <ul class="navbar-nav">

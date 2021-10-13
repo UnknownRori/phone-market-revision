@@ -96,6 +96,6 @@
     </div>
 </body>
 <script>
-    error_msg(2);
+    error_msg();
 </script>
 </html>

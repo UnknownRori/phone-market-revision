@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Oct 09, 2021 at 02:15 AM
+-- Generation Time: Oct 14, 2021 at 12:04 AM
 -- Server version: 10.4.10-MariaDB
 -- PHP Version: 7.3.12
 
@@ -72,6 +72,14 @@ CREATE TABLE `feature` (
   `feature_name` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
+--
+-- Dumping data for table `feature`
+--
+
+INSERT INTO `feature` (`id`, `product_id`, `feature_name`) VALUES
+(1, 12, 'Can Selfie'),
+(2, 12, 'Water Proof');
+
 -- --------------------------------------------------------
 
 --
@@ -112,29 +120,30 @@ CREATE TABLE `product` (
   `photo_name` varchar(36) NOT NULL,
   `price` int(11) NOT NULL,
   `stock` int(11) NOT NULL,
-  `description` varchar(144) NOT NULL,
-  `warned_status` tinyint(1) NOT NULL
+  `description` varchar(1024) NOT NULL,
+  `warned_status` tinyint(1) NOT NULL,
+  `keyword` varchar(48) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Dumping data for table `product`
 --
 
-INSERT INTO `product` (`prod_id`, `user_id`, `product_name`, `photo_name`, `price`, `stock`, `description`, `warned_status`) VALUES
-(2, 4, 'No Phone Air', 'No Phone Air.png', 0, 0, 'default', 1),
-(3, 4, 'A', '', 0, 0, 'default', 1),
-(12, 1, 'No Phone Selfie', 'No Phone Selfie.png', 1000000, 5, 'urraaa', 0),
-(13, 1, 'No Phone Employee ', 'No Phone Employee Pack.png', 4000000, 1, 'The no phone employee pack\r\n', 0),
-(14, 1, 'No Phone', 'No Phone.png', 50000, 10, '', 0),
-(15, 4, '123', 'No Phone Family Pack.png', 50, 1, '', 0),
-(20, 4, 'catpitalism', 'No Phone Air.png', 50000, 0, '', 0),
-(21, 4, 'aaaaaaaaaaaaaaaaaa', 'No Phone.png', 2, 0, '', 0),
-(22, 4, 'E', '', 1, 0, '', 0),
-(23, 4, 'U', '', 1, 0, '', 0),
-(24, 4, 'ree', '', 11, 0, '', 0),
-(26, 4, '<script>alert(\'Cat\')</script>', '', 2, 0, '', 0),
-(27, 4, 'ret', 'No Phone Employee Pack.png', 123, 1, '', 0),
-(28, 1, '44444', '', 0, 444, '111', 0);
+INSERT INTO `product` (`prod_id`, `user_id`, `product_name`, `photo_name`, `price`, `stock`, `description`, `warned_status`, `keyword`) VALUES
+(2, 4, 'No Phone Air', 'No Phone Air.png', 0, 0, 'Lorem ipsum dolor sit amet consectetur, adipisicing elit. Nam doloremque numquam autem enim quia\r\nexplicabo, quisquam illo eius illum laborum minus maiores! Corrupti non ullam aspernatur neque impedit natus culpa! Lorem ipsum dolor sit amet consectetur, adipisicing elit. Nam doloremque numquam autem enim quiaexplicabo, quisquam illo eius illum laborum minus maiores! Corrupti non ullam aspernatur nequeimpedit natus culpa!', 1, 'Phone, Nothing'),
+(3, 4, 'A', '', 0, 0, 'default', 1, ''),
+(12, 1, 'No Phone Selfie', 'No Phone Selfie.png', 1000000, 5, 'urraaa', 0, ''),
+(13, 1, 'No Phone Employee ', 'No Phone Employee Pack.png', 4000000, 1, 'The no phone employee pack\r\n', 0, ''),
+(14, 1, 'No Phone', 'No Phone.png', 50000, 10, '', 0, ''),
+(15, 4, '123', 'No Phone Family Pack.png', 50, 1, '', 0, ''),
+(20, 4, 'catpitalism', 'No Phone Air.png', 50000, 0, '', 0, ''),
+(21, 4, 'aaaaaaaaaaaaaaaaaa', 'No Phone.png', 2, 0, '', 0, ''),
+(22, 4, 'E', '', 1, 0, '', 0, ''),
+(23, 4, 'U', '', 1, 0, '', 0, ''),
+(24, 4, 'ree', '', 11, 0, '', 0, ''),
+(26, 4, '<script>alert(\'Cat\')</script>', '', 2, 0, '', 0, ''),
+(27, 4, 'ret', 'No Phone Employee Pack.png', 123, 1, '', 0, ''),
+(28, 1, '44444', '', 0, 444, '111', 0, '');
 
 -- --------------------------------------------------------
 
@@ -176,8 +185,8 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`id`, `username`, `password`, `vendor`, `admin`, `super_admin`) VALUES
-(1, 'UnknownRori', '$2y$10$5GHzqC8/xYvBH/rSCs/abuz3CJ/ujjtfKqbnLckayDXOfQ5uK/UMy', 1, 1, 1),
-(4, 'Akashi', '$2y$10$qAB4rIUa4CmS60Vf2d3AoOUqerjwy.Sz8ehw52GWyra3nLkIwTF0K', 1, 0, 0),
+(1, 'UnknownRori', '$2y$10$InUf97Bgr6RFtqPyqk9tbuNq255sZdPd7a.X9xGkwTq3mEm9tDwiG', 1, 1, 1),
+(4, 'Akashi', '$2y$10$yS7ATbvymMWBnFYzx.heauVj3U2LndvoTX.uHzSN9RIvP6AL4pFGu', 1, 0, 0),
 (5, 'a', '$2y$10$houLUH8puKLZLejbtd6uLOL10hEPJPUpiBrmq/XLzvz/12lU6fIGO', 0, 0, 0),
 (6, 'w', '$2y$10$z0d2EyTwZn.ziCC24g2CDO3FoxYUxgdPluMwGq15qpQVM3O74Lj5S', 0, 0, 0),
 (7, 'q', '$2y$10$yT7byvvZTl6yftvuB1NVeehp9BBthsU.bfzq4jimYOG0kfNzrKV1S', 0, 0, 0),
@@ -282,7 +291,7 @@ ALTER TABLE `comment`
 -- AUTO_INCREMENT for table `feature`
 --
 ALTER TABLE `feature`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `notification`

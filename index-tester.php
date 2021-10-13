@@ -1,7 +1,9 @@
 <?php
     require_once 'php\connect.php';
     $getpreview = $conn->prepare("
-
+    SELECT product.*, users.id, users.username
+    FROM product
+    INNER JOIN users ON product.user_id = users.id LIMIT 3
     ");
     $getpreview->execute();
     $data = $getpreview->get_result();
@@ -41,7 +43,7 @@
                     <a href="../phone-market-revision" class="nav-link active">Home</a>
                 </li>
                 <li class="nav-item">
-                    <a href="product.php" class="nav-link">Product</a>
+                    <a href="productlist.php" class="nav-link">Product</a>
                 </li>
                 <li class="nav-item">
                     <a href="contactus.php" class="nav-link">Contact us</a>
@@ -110,9 +112,9 @@
                 </div>
                 <div class="col-6 text-left">
                 <h1>Elegant Design</h1>
-                            <p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Nam doloremque numquam autem enim quia
-                                explicabo, quisquam illo eius illum laborum minus maiores! Corrupti non ullam aspernatur neque
-                                impedit natus culpa!</p>
+                <p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Nam doloremque numquam autem enim quia
+                explicabo, quisquam illo eius illum laborum minus maiores! Corrupti non ullam aspernatur neque
+                impedit natus culpa!</p>
                 <p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Nam doloremque numquam autem enim quia
                 explicabo, quisquam illo eius illum laborum minus maiores! Corrupti non ullam aspernatur neque
                 impedit natus culpa!</p>
@@ -124,9 +126,9 @@
                 </div>
                 <div class="col-6">
                 <h1>Fit on your hand</h1>
-                            <p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Nam doloremque numquam autem enim quia
-                                explicabo, quisquam illo eius illum laborum minus maiores! Corrupti non ullam aspernatur neque
-                                impedit natus culpa!</p>
+                <p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Nam doloremque numquam autem enim quia
+                explicabo, quisquam illo eius illum laborum minus maiores! Corrupti non ullam aspernatur neque
+                impedit natus culpa!</p>
                 <p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Nam doloremque numquam autem enim quia
                 explicabo, quisquam illo eius illum laborum minus maiores! Corrupti non ullam aspernatur neque
                 impedit natus culpa!</p>
@@ -142,13 +144,13 @@
                     <?php
                         if($row['photo_name']){
                             echo '
-                            <a href="/php/product.php?id=' . $row['prod_id'] .'">
+                            <a href="php/product.php?id=' . $row['prod_id'] .'">
                                 <img src="resource/image/product/' . $row['photo_name'] .'" alt=""class="img img-fluid">
                             </a>
                             ';
                         }else{
                             echo '
-                            <a href="/php/product.php?id=' . $row['prod_id'] .'">
+                            <a href="php/product.php?id=' . $row['prod_id'] .'">
                                 <img src="resource/image/404imgnotfound.png" alt=""class="img img-fluid">
                             </a>
                             ';

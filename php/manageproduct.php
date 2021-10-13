@@ -81,7 +81,7 @@
                     <a href="../../phone-market-revision" class="nav-link">Home</a>
                 </li>
                 <li class="nav-item">
-                    <a href="../product.php" class="nav-link">Product</a>
+                    <a href="../productlist.php" class="nav-link">Product</a>
                 </li>
                 <li class="nav-item">
                     <a href="../contactus.php" class="nav-link">Contact us</a>
@@ -204,7 +204,7 @@
                     <form action="confirmationform.php" method="POST">
                     <div class="form-group float-left">
                             <input type="number" name="id" value="<?php echo $row['prod_id'] ?>" hidden>
-                            <input type="submit" value="Detail" name="detail" class="btn btn-info spacing">
+                            <a href="product.php?id=<?php echo $row['prod_id']; ?>" class="btn btn-primary">Detail</a>
                             <a href="editproduct.php?id=<?php echo $row['prod_id'] ?>" class="btn btn-warning">Edit</a>
                             <input type="submit" value="Delete" name="delete" class="btn btn-danger spacing">
                         </div>
@@ -234,6 +234,6 @@
     </div>
 </body>
 <script>
-    error_msg(2);
+    error_msg();
 </script>
 </html>

@@ -28,7 +28,7 @@
         <span id="msg"></span>
     </div>
     <nav class="navbar navbar-expand-sm bg-light navbar-light fixed-top">
-        <a class="navbar-brand" href="#home">
+        <a class="navbar-brand" id="id" href="#home">
             <img src="resource\image\Apple.png" class="navbar-brand-image" alt="Brand"> Store
         </a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#collapsibleNavbar">
@@ -40,7 +40,7 @@
                     <a href="../phone-market-revision" class="nav-link active">Home</a>
                 </li>
                 <li class="nav-item">
-                    <a href="product.php" class="nav-link">Product</a>
+                    <a href="productlist.php" class="nav-link">Product</a>
                 </li>
                 <li class="nav-item">
                     <a href="contactus.php" class="nav-link">Contact us</a>
@@ -92,7 +92,7 @@
     <div class="intro">
         <div class="container">
             <div class="text-center">
-                <img src="resource\image\Apple.png" alt="Apple" style="width: 200px;">
+                <img class="width-200px" src="resource\image\Apple.png" alt="Apple">
             </div>
             <h3 id="intro" class="text-center"></h3>
             <h6 id="intro-secondary" class="text-center"></h6>
@@ -106,9 +106,9 @@
                 </div>
                 <div class="col-6 text-left">
                 <h1>Elegant Design</h1>
-                            <p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Nam doloremque numquam autem enim quia
-                                explicabo, quisquam illo eius illum laborum minus maiores! Corrupti non ullam aspernatur neque
-                                impedit natus culpa!</p>
+                <p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Nam doloremque numquam autem enim quia
+                explicabo, quisquam illo eius illum laborum minus maiores! Corrupti non ullam aspernatur neque
+                impedit natus culpa!</p>
                 <p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Nam doloremque numquam autem enim quia
                 explicabo, quisquam illo eius illum laborum minus maiores! Corrupti non ullam aspernatur neque
                 impedit natus culpa!</p>
@@ -120,9 +120,9 @@
                 </div>
                 <div class="col-6">
                 <h1>Fit on your hand</h1>
-                            <p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Nam doloremque numquam autem enim quia
-                                explicabo, quisquam illo eius illum laborum minus maiores! Corrupti non ullam aspernatur neque
-                                impedit natus culpa!</p>
+                <p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Nam doloremque numquam autem enim quia
+                explicabo, quisquam illo eius illum laborum minus maiores! Corrupti non ullam aspernatur neque
+                impedit natus culpa!</p>
                 <p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Nam doloremque numquam autem enim quia
                 explicabo, quisquam illo eius illum laborum minus maiores! Corrupti non ullam aspernatur neque
                 impedit natus culpa!</p>

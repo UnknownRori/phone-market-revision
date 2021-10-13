@@ -1,7 +1,7 @@
 /* other style class */
 
-.height-100vh {
-    height: 100vh;
+.height-180vh {
+    height: 180vh!important;
 }
 p {
     margin: 0 !important;

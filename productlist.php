@@ -1,5 +1,11 @@
 <?php
     require_once 'php\connect.php';
+    if(!empty($_GET['page'])) {
+        $page = filter_input(INPUT_GET, 'page', FILTER_VALIDATE_INT);
+    }else{
+        $page = 1;
+    }
+    $offset = ($page - 1) * 6;
     $preparedata = $conn->prepare("
     SELECT product.*,
     SUBSTRING(product.product_name, 1, 20) AS substring_product_name,
@@ -7,6 +13,7 @@
     users.id, users.username
     FROM product
     INNER JOIN users ON product.user_id = users.id
+    LIMIT ". $offset .", 6
     ");
     $preparedata->execute();
     $data = $preparedata->get_result();
@@ -16,11 +23,15 @@
             // BasicSearchEngineAlgorithm:
             $data = NULL;
             $searchengine = $conn->prepare("
-            SELECT product.*, users.id, users.username FROM product
+            SELECT product.*, users.id, users.username,
+            SUBSTRING(product.product_name, 1, 20) AS substring_product_name,
+            SUBSTRING(product.price, 1, 20) AS substring_product_price
+            FROM product
             INNER JOIN users ON product.user_id = users.id
-            WHERE product.product_name LIKE ?  OR users.username LIKE ? OR product.prod_id LIKE ?
+            WHERE
+            product.product_name LIKE ?  OR users.username LIKE ? OR product.prod_id LIKE ? OR product.keyword LIKE ?
             ");
-            $searchengine->bind_param("sss", $searchterm, $searchterm, $searchterm);
+            $searchengine->bind_param("ssss", $searchterm, $searchterm, $searchterm, $searchterm);
             $searchterm = '%' . $_GET['search'] . '%';
             $searchengine->execute();
             $data = $searchengine->get_result();
@@ -43,7 +54,7 @@
     <script src="resource/js/bootstrap.min.js"></script>
     <link rel="stylesheet" href="resource/css/style.css">
     <link rel="stylesheet" href="resource/css/style-profile.css">
-    <link rel="stylesheet" href="resource/css/style-product.css">
+    <link rel="stylesheet" href="resource/css/style-productlist.css">
     <link rel="stylesheet" href="resource/css/bootstrap.min.css">
     <link rel="icon" href="resource/image/favicon.jpg">
     <?php PageTitle("Product"); ?>
@@ -65,7 +76,7 @@
                     <a href="../phone-market-revision" class="nav-link">Home</a>
                 </li>
                 <li class="nav-item">
-                    <a href="product.php" class="nav-link active">Product</a>
+                    <a href="productlist.php" class="nav-link active">Product</a>
                 </li>
                 <li class="nav-item">
                     <a href="contactus.php" class="nav-link">Contact us</a>
@@ -117,82 +128,90 @@
             </ul>
         </div>
     </nav>
-    <div id="extend" class="container height-100vh">
+    <div id="extend" class="container height-180vh">
+        <div class="text-center">
+            <a href="productlist.php?page=<?php echo $page - 1 ?>" class="btn btn-info">Back</a>
+            <a href="productlist.php?page=<?php echo $page + 1 ?>" class="btn btn-info">Next</a>
+        </div>
         <?php foreach($data as $row):?>
-            <div style="width: 300px!important; float:left; margin: 20px;">
-                <div class="text-center" style="border: 1px solid black" title="<?php echo htmlspecialchars($row['product_name']); ?>">
-                    <?php
-                        if($row['photo_name']){
-                            echo '
-                            <a href="php/product.php?id=' . htmlspecialchars($row['prod_id']) .'">
-                                <img src="resource/image/product/' . htmlspecialchars($row['photo_name']) .'" alt="ERROR" class="img img-fluid">
-                            </a>
-                            ';
-                        }else{
-                            echo '
-                            <a href="php/product.php?id=' . htmlspecialchars($row['prod_id']) .'">
-                                <img src="resource/image/404imgnotfound.png" alt="ERROR" class="img img-fluid">
-                            </a>
-                            ';
-                        }
-                    ?>
-                </div>
-                <div>
-                    <table class="table" style="margin-top: 10px;">
-                        <tr>
-                            <td>
-                                <b>
-                                    Product
-                                </b>
-                            </td>
-                            <td>:</td>
-                            <td title="<?php echo htmlspecialchars($row['product_name']); ?>">
-                                <b>
-                                    <?php echo htmlspecialchars($row['substring_product_name']); ?>
-                                </b>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <b>Price</b>
-                            </td>
-                            <td>
-                                :
-                            </td>
-                            <td title="<?php echo '$ ' . $row['price']; ?>">
-                                <b style="color: red;">
-                                    $ <?php echo $row['substring_product_price']; ?>
-                                </b>
-                            </td>
-                        </tr>
-                    </table>
-                </div>
-                <div style="margin-top: 10px; padding: 5px;">
-                    <form action="php/confirmationform.php" method="POST">
-                    <div class="form-group float-left">
-                            <input type="number" name="id" value="<?php echo $row['prod_id'] ?>" hidden>
-                            <input type="submit" value="Detail" name="detail" class="btn btn-info spacing">
-                            <?php
-                                if(isset($_SESSION['login'])){
-                                    if(($_SESSION['admin'])){
-                                        echo '<input type="submit" value="Delete" name="delete" class="btn btn-danger spacing">';
-                                        if($row['warned_status'] == 1){
-                                            echo '<input type="submit" value="Issue Warning" class="btn btn-warning spacing" title="Already Warned" disabled>';
+        <div style="width: 300px!important; float:left; margin: 20px;">
+            <div class="text-center" style="border: 1px solid black" title="<?php echo htmlspecialchars($row['product_name']); ?>">
+                <?php
+                    if($row['photo_name']){
+                        echo '
+                        <a href="php/product.php?id=' . htmlspecialchars($row['prod_id']) .'">
+                            <img src="resource/image/product/' . htmlspecialchars($row['photo_name']) .'" alt="ERROR" class="img img-fluid">
+                        </a>
+                        ';
+                    }else{
+                        echo '
+                        <a href="php/product.php?id=' . htmlspecialchars($row['prod_id']) .'">
+                            <img src="resource/image/404imgnotfound.png" alt="ERROR" class="img img-fluid">
+                        </a>
+                        ';
+                    }
+                ?>
+            </div>
+            <div>
+                <table class="table" style="margin-top: 10px;">
+                    <tr>
+                        <td>
+                            <b>
+                                Product
+                            </b>
+                        </td>
+                        <td>:</td>
+                        <td title="<?php echo htmlspecialchars($row['product_name']); ?>">
+                            <b>
+                                <?php echo htmlspecialchars($row['substring_product_name']); ?>
+                            </b>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <b>Price</b>
+                        </td>
+                        <td>
+                            :
+                        </td>
+                        <td title="<?php echo '$ ' . $row['price']; ?>">
+                            <b style="color: red;">
+                                $ <?php echo $row['substring_product_price']; ?>
+                            </b>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <div style="margin-top: 10px; padding: 5px;">
+                <form action="php/confirmationform.php" method="POST">
+                <div class="form-group float-left">
+                        <input type="number" name="id" value="<?php echo $row['prod_id'] ?>" hidden>
+                        <a href="php/product.php?id=<?php echo $row['prod_id']; ?>" class="btn btn-primary">Detail</a>
+                        <?php
+                            if(isset($_SESSION['login'])){
+                                if(($_SESSION['admin'])){
+                                    echo '<input type="submit" value="Delete" name="delete" class="btn btn-danger spacing">';
+                                    if($row['warned_status'] == 1){
+                                        echo '<input type="submit" value="Issue Warning" class="btn btn-warning spacing" title="Already Warned" disabled>';
+                                    }else{
+                                        if($row['username'] == $_SESSION['username']){
+                                            echo '<input type="submit" value="Issue Warning" class="btn btn-warning spacing" title="Cannot send warning on yourself" disabled>';
                                         }else{
-                                            if($row['username'] == $_SESSION['username']){
-                                                echo '<input type="submit" value="Issue Warning" class="btn btn-warning spacing" title="Cannot send warning on yourself" disabled>';
-                                            }else{
-                                                echo '<input type="submit" value="Issue Warning" name="warning" class="btn btn-warning spacing">';
-                                            }
+                                            echo '<input type="submit" value="Issue Warning" name="warning" class="btn btn-warning spacing">';
                                         }
                                     }
                                 }
-                            ?>
-                        </div>
-                    </form>
-                </div>
+                            }
+                        ?>
+                    </div>
+                </form>
             </div>
+        </div>
         <?php endforeach;?>
+    </div>
+    <div class="text-center" style="margin-top: 10px; margin-bottom: 40px;">
+        <a href="productlist.php?page=<?php echo $page - 1 ?>" class="btn btn-info">Back</a>
+        <a href="productlist.php?page=<?php echo $page + 1 ?>" class="btn btn-info">Next</a>
     </div>
     <div class="footer fixed-bottom img-small-opacity floating-bottom">
         <a href="https://github.com/UnknownRori/phone-market-revision" target="_blank" title="Source Code">

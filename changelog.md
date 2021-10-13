@@ -1,3 +1,26 @@
+### Major Update Update 0.8.4
+
+##### Change
+
+<ul>
+    <li>Create : adding product.php to display product feature and description</li>
+    <li>Update : update basic search engine to include keyword</li>
+    <li>Update : minor revision on function 'error_msg'</li>
+    <li>Update : rename product.php to productlist.php</li>
+    <li>Update : rename style-product.css to style-productlist.css</li>
+    <li>Update : revision index-tester.php</li>
+    <li>Update : adding pagination system on productlist.php</li>
+</ul>
+
+#### Current Issue
+
+<ul>
+    <li>MsgReport cannot handle more than 1</li>
+    <li>Unresponsive display</li>
+</ul>
+
+
+
 ### Minor Update Update 0.8.3.1
 
 ##### Change
@@ -6,6 +29,13 @@
     <li>Fix : Delete button in manage product not working correctly</li>
     <li>Update : Adding more dynamic title in editproduct.php</li>
     <li>Update : Adding more dynamic title in confirmationform.php</li>
+</ul>
+
+#### Current Issue
+
+<ul>
+    <li>MsgReport cannot handle more than 1</li>
+    <li>Unresponsive display</li>
 </ul>
 
 ### Major Update 0.8.3.0

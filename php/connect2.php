@@ -38,4 +38,22 @@
              </script>';
         }
     }
+    // i am not sure if this is worth it or not so i will drop this code here
+    // function Footer($copyright){
+    //     echo '
+    //     <div class="footer bg-light fixed-bottom" style="background-color: #f8f9fa80 !important">
+    //         <div class="container">
+    //             <div class="text-center">
+    //                 <p class="">
+    //                 <script>
+    //                     var n = new Date();
+    //                     document.write(n.getFullYear());
+    //                 </script>
+    //                 &copy;<b>' . $copyright .'</b>
+    //                 </p>
+    //             </div>
+    //         </div>
+    //     </div>
+    //     ';
+    // }
 ?>

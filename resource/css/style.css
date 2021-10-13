@@ -1,6 +1,7 @@
 *{
   margin: 0;
   padding: 0;
+  scroll-behavior: smooth;
 }
 
 /* navbar style class */
@@ -96,4 +97,7 @@
 
 .float-right{
   float: right!important;
+}
+.height-100vh{
+  height: 100vh!important;
 }

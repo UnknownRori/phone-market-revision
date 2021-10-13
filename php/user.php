@@ -43,10 +43,10 @@
                     <a href="../../phone-market-revision" class="nav-link">Home</a>
                 </li>
                 <li class="nav-item">
-                    <a href="../../product.php" class="nav-link">Product</a>
+                    <a href="../productlist.php" class="nav-link">Product</a>
                 </li>
                 <li class="nav-item">
-                    <a href="../../contactus.php" class="nav-link">Contact us</a>
+                    <a href="../contactus.php" class="nav-link">Contact us</a>
                 </li>
                 <?php
                 if(isset($_SESSION['login'])){
@@ -109,16 +109,6 @@
     </div>
 </body>
 <script>
-$(document).ready(function (){
-    setInterval(function() {
-    // your code goes here...
-    document.getElementById("user-page-active").style.color = "#000";
-    }, 1000);
-    setInterval(function() {
-    // your code goes here...
-    document.getElementById("user-page-active").style.color = "#171717c9";
-    }, 2500);
-})
-error_msg(2);
+error_msg();
 </script>
 </html>

@@ -85,7 +85,7 @@
                     <a href="../../phone-market-revision" class="nav-link">Home</a>
                 </li>
                 <li class="nav-item">
-                    <a href="../product.php" class="nav-link">Product</a>
+                    <a href="../productlist.php" class="nav-link">Product</a>
                 </li>
                 <li class="nav-item">
                     <a href="../contactus.php" class="nav-link">Contact us</a>
@@ -181,7 +181,7 @@
     </div>
 </body>
 <script>
-    error_msg(2);
+    error_msg();
     $(document).ready(function(){
         setTimeout(function () {
             var r = (Math.random() + 1).toString(36).substring(2);
@@ -202,7 +202,7 @@
         if ($(this).is(':checked')) {
             sessionStorage.setItem("msg", "Warning this action irreversible!");
             sessionStorage.setItem("msg_type", "warning");
-            error_msg(2);
+            error_msg();
             $('#confirmationbox').removeAttr('disabled');
             document.getElementById('confirmationbox').value = '';
         } else {

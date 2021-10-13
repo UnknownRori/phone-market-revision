@@ -79,7 +79,7 @@
                     <a href="../../phone-market-revision" class="nav-link">Home</a>
                 </li>
                 <li class="nav-item">
-                    <a href="../product.php" class="nav-link">Product</a>
+                    <a href="../productlist.php" class="nav-link">Product</a>
                 </li>
                 <li class="nav-item">
                     <a href="../contactus.php" class="nav-link">Contact us</a>
@@ -202,6 +202,6 @@
     </div>
 </body>
 <script>
-    error_msg(2);
+    error_msg();
 </script>
 </html>

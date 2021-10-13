@@ -1,4 +1,4 @@
-function error_msg(page) {
+function error_msg() {
     var msg = sessionStorage.getItem("msg");
     var msg_type = sessionStorage.getItem("msg_type");
     if (msg !== null && msg_type !== null) {

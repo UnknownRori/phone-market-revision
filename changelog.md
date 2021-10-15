@@ -1,4 +1,12 @@
-### Major Update Update 0.8.4
+### Minor Update 0.8.1
+
+##### Change
+
+<ul>
+    <li>Fix : after sign up automatic login missing few variable</li>
+</ul>
+
+### Major Update 0.8.4
 
 ##### Change
 
@@ -21,7 +29,7 @@
 
 
 
-### Minor Update Update 0.8.3.1
+### Minor Update 0.8.3.1
 
 ##### Change
 

@@ -20,20 +20,29 @@
                 }else if(($_POST['password_1']) == ($_POST['password_2'])){
                     $addusers = $conn->prepare("INSERT INTO users (username, password, admin, vendor) VALUE (?, ?, ?, ?)");
                     $addusers->bind_param("ssbb", $username, $password, $admin, $vendor);
-            
-                    $username  = $_POST['username_1'];
                     $password  = password_hash($_POST['password_1'], PASSWORD_DEFAULT);
                     $admin     = false;
                     $vendor    = false;
-            
                     $addusers->execute();
                     $addusers->close();
+
+                    $prepare = $conn->prepare("
+                    SELECT id, SUBSTRING(username, 1, 15) AS substring_username,
+                    username, password, vendor, admin, super_admin
+                    FROM users WHERE username=?
+                    ");
+                    $prepare->bind_param("s", $username);
+                    $prepare->execute();
+                    $result = $prepare->get_result();
+                    $users = $result->fetch_assoc();
+                    $prepare->close();
                     $_SESSION['users_id'] = $users['id'];
-                    $_SESSION['username'] = $username;
+                    $_SESSION['username'] = $users['substring_username'];
+                    $_SESSION['fullusername'] = $users['username'];
+                    $_SESSION['vendor'] = $users['vendor'];
+                    $_SESSION['admin'] = $users['admin'];
+                    $_SESSION['super_admin'] = $users['super_admin'];
                     $_SESSION['login'] = 1;
-                    $_SESSION['admin'] = 0;
-                    $_SESSION['vendor'] = 0;
-                    
                     MsgReport("Account successfully created!", "success", "");
                 }else{
                     echo '<script>

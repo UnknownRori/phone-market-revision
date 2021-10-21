@@ -86,6 +86,9 @@
                 }
                 ?>
                 <li class="nav-item">
+                    <a href="" title="Create new users" class="btn btn-info spacing">Create User</a>
+                </li>
+                <li class="nav-item">
                     <!-- search engine input -->
                     <form class="form-inline" action="" method="get">
                         <div class="form-group">
@@ -119,7 +122,6 @@
                 <td>User Type</td>
                 <td>Created at</td>
                 <td>Last Login</td>
-                <td>Status</td>
                 <td>Action</td>
             </tr>
             <?php foreach($result as $row): ?>
@@ -151,9 +153,6 @@
                 </td>
                 <td>
                     <?php echo $row['last_login'] ?>
-                </td>
-                <td title="<?php echo htmlspecialchars($row['status']) ?>">
-                    <?php echo htmlspecialchars(substr($row['status'], 0, 10)) ?>
                 </td>
                 <td>
                     <form action="" method="post">

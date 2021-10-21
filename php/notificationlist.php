@@ -4,7 +4,7 @@
         MsgReport("User must log in first", "warning", "login.php");
     } 
     $preparedata = $conn->prepare("
-    SELECT notification.*, type_notification.*, users.id, users.username,
+    SELECT notification.*, notification.id AS notify_id, type_notification.*, users.id, users.username,
     SUBSTRING(notification.topic, 1, 35) AS substring_topic,
     SUBSTRING(notification.content, 1, 35) AS substring_content,
     SUBSTRING(users.username, 1, 15) AS substring_username,
@@ -170,13 +170,12 @@
                     <?php echo htmlspecialchars($row['substring_username']); ?>
                 </td>
                 <td>
-                    <a class="btn btn-primary spacing" href="notification.php?id=<?php echo $row['id'] ?>" >Detail</a>
-                    <a class="btn btn-danger spacing" href="deletenotification.php?id=<?php echo $row['id'] ?>">Delete</a>
-                    <!-- <form action="" method="post">
-                        <a class="btn btn-primary spacing" href="notification.php?id=<?php echo $row['id'] ?>" >Detail</a>
-                        <input type="number" value="<?= $row['id']?> " hidden>
+                    <form action="confirmationform.php" method="POST">
+                        <?php $_SESSION['command'] = "notification" ?>
+                        <a class="btn btn-primary spacing" href="notification.php?id=<?php echo $row['notify_id'] ?>" >Detail</a>
+                        <input type="number" name="id" value="<?php echo $row['notify_id'] ?>" hidden>
                         <input type="submit" class="btn btn-danger spacing" value="Delete" name="delete">
-                    </form> -->
+                    </form>
                 </td>
             </tr>
             <?php endforeach; ?>

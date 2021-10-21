@@ -6,8 +6,8 @@
         $page = 1;
     }
     $offset = ($page - 1) * 6;
-    $preparedata = $conn->prepare("
-    SELECT product.*,
+    $prepare_data = $conn->prepare("
+    SELECT product.prod_id, product.product_name, product.photo_name, product.price, product.warned_status,
     SUBSTRING(product.product_name, 1, 20) AS substring_product_name,
     SUBSTRING(product.price, 1, 20) AS substring_product_price,
     users.id, users.username
@@ -15,15 +15,16 @@
     INNER JOIN users ON product.user_id = users.id
     LIMIT ". $offset .", 6
     ");
-    $preparedata->execute();
-    $data = $preparedata->get_result();
-    $preparedata->close();
+    $prepare_data->execute();
+    $result = $prepare_data->get_result();
+    $prepare_data->close();
     if(isset($_GET['search'])){
         if($_GET['search'] != null){
             // BasicSearchEngineAlgorithm:
             $data = NULL;
             $searchengine = $conn->prepare("
-            SELECT product.*, users.id, users.username,
+            SELECT product.prod_id, product.product_name, product.photo_name, product.price, product.warned_status,
+            users.id, users.username,
             SUBSTRING(product.product_name, 1, 20) AS substring_product_name,
             SUBSTRING(product.price, 1, 20) AS substring_product_price
             FROM product
@@ -34,7 +35,7 @@
             $searchengine->bind_param("ssss", $searchterm, $searchterm, $searchterm, $searchterm);
             $searchterm = '%' . $_GET['search'] . '%';
             $searchengine->execute();
-            $data = $searchengine->get_result();
+            $result = $searchengine->get_result();
             $searchengine->close();
             //AdvancedSearchEngineAlgorithm:
             //Todo: add ProductNameOnly Tag, VendorOnly Tag, SpecificCharacter Tag
@@ -104,7 +105,7 @@
                     <form class="form-inline" action="" method="get">
                         <div class="form-group">
                             <input type="text" name="search" placeholder="Search Product" class="form-control spacing">
-                            <a href="#" class="btn btn-info spacing">Advanced Search</a> <!--temporary href=/php/advancedproduct.php-->
+                            <a href="advanced-search-product.php" class="btn btn-info spacing">Advanced Search</a>
                         </div>
                     </form>
                 </li>
@@ -128,24 +129,24 @@
             </ul>
         </div>
     </nav>
-    <div id="extend" class="container height-180vh">
+    <div id="extend" class="container height-185vh">
         <div class="text-center">
             <a href="productlist.php?page=<?php echo $page - 1 ?>" class="btn btn-info">Back</a>
             <a href="productlist.php?page=<?php echo $page + 1 ?>" class="btn btn-info">Next</a>
         </div>
-        <?php foreach($data as $row):?>
-        <div style="width: 300px!important; float:left; margin: 20px;">
+        <?php foreach($result as $row):?>
+        <div style="width: 300px!important; margin: 20px;" class="float-left">
             <div class="text-center" style="border: 1px solid black" title="<?php echo htmlspecialchars($row['product_name']); ?>">
                 <?php
                     if($row['photo_name']){
                         echo '
-                        <a href="php/product.php?id=' . htmlspecialchars($row['prod_id']) .'">
+                        <a href="php/product.php?id=' . $row['prod_id'] .'">
                             <img src="resource/image/product/' . htmlspecialchars($row['photo_name']) .'" alt="ERROR" class="img img-fluid">
                         </a>
                         ';
                     }else{
                         echo '
-                        <a href="php/product.php?id=' . htmlspecialchars($row['prod_id']) .'">
+                        <a href="php/product.php?id=' . $row['prod_id'] .'">
                             <img src="resource/image/404imgnotfound.png" alt="ERROR" class="img img-fluid">
                         </a>
                         ';
@@ -185,6 +186,7 @@
             <div style="margin-top: 10px; padding: 5px;">
                 <form action="php/confirmationform.php" method="POST">
                 <div class="form-group float-left">
+                        <?php $_SESSION['command'] = "product" ?>
                         <input type="number" name="id" value="<?php echo $row['prod_id'] ?>" hidden>
                         <a href="php/product.php?id=<?php echo $row['prod_id']; ?>" class="btn btn-primary">Detail</a>
                         <?php

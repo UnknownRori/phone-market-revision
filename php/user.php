@@ -1,11 +1,40 @@
 <?php
     require_once 'connect.php';
-    $getusers = $conn->prepare("SELECT * FROM users WHERE username=?");
-    $getusers->bind_param("s", $username);
-    $username = $_SESSION['username'];
-    $getusers->execute();
-    $usersdata = $getusers->get_result();
-    $getusers->close();
+    if(isset($_GET['users'])){
+        $get_users = $conn->prepare("SELECT * FROM users WHERE username=?");
+        $get_users->bind_param("s", $username);
+        $username = $_GET['users'];
+        $get_users->execute();
+        $users_data = $get_users->get_result();
+        $result = $users_data->fetch_assoc();
+        $get_users->close();
+        if($result['username']){
+
+            if(isset($result['vendor'])){
+                // next : randomize featured product
+                // add show more function
+                $get_featured_product = $conn->prepare("
+                SELECT product.prod_id, product.product_name, product.photo_name, product.price, product.warned_status,
+                SUBSTRING(product.product_name, 1, 20) AS substring_product_name,
+                SUBSTRING(product.price, 1, 20) AS substring_product_price,
+                users.id, users.username
+                FROM product
+                INNER JOIN users ON product.user_id = users.id
+                WHERE product.user_id=?
+                LIMIT 3
+                ");
+                $get_featured_product->bind_param("i", $id);
+                $id = $result['id'];
+                $get_featured_product->execute();
+                $result_data = $get_featured_product->get_result();
+                $get_featured_product->close();
+            }
+        }else{
+            MsgReport("Cannot retrive users profile", "error", "../index.php");
+        }
+    }else{
+        MsgReport("Cannot retrive users profile", "error", "../index.php");
+    }
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -17,13 +46,14 @@
     <script src="../resource/js/main.js"></script>
     <script src="../resource/js/bootstrap.min.js"></script>
     <link rel="stylesheet" href="../resource/css/style.css">
+    <link rel="stylesheet" href="../resource/css/style-image.css">
     <link rel="stylesheet" href="../resource/css/style-profile.css">
     <link rel="stylesheet" href="../resource/css/bootstrap.min.css">
     <?php 
         echo '
-        <link rel="icon" href="../resource/image/profile/' . htmlspecialchars($_SESSION['fullusername']) .'.jpg">
+        <link rel="icon" href="../resource/image/profile/' . htmlspecialchars($result['username']) .'.jpg">
         ';
-        PageTitle($_SESSION['fullusername']);
+        PageTitle(htmlspecialchars($result['username']));
     ?>
 </head>
 <body>
@@ -74,19 +104,91 @@
                         <a href="notificationlist.php" id="notification">
                             <span class="glyphicon">&#x2709;</span>
                         </a>
-                        <a class="navbar-brand" style="transition: 0.5s;" id="user-page-active" href="user.php?username=' . htmlspecialchars($_SESSION['fullusername']) . '">' . htmlspecialchars($_SESSION['username']) . '
+                        <a class="navbar-brand" href="user.php?users=' . htmlspecialchars($_SESSION['fullusername']) . '">' . htmlspecialchars($_SESSION['username']) . '
                             <img class="profile" src="../resource/image/profile/' . htmlspecialchars($_SESSION['fullusername']) . '.jpg" alt="">
                         </a>
+                        <a href="logout.php" class="btn btn-danger">Log out</a>
                     </div>
                     ';
-                    echo '<a href="logout.php" class="btn btn-danger">Log out</a>';
+                }else{
+                    echo '<a href="login.php" class="btn btn-info">Log in</a>';
                 }?>
             </ul>
         </div>
     </nav>
-    <div class="container">
-        <div class="" style="margin-top: 90px;">
-            <img src="" alt="">
+    <div id="extend" class="container height-100vh">
+        <div class="row d-flex">
+            <div class="col-6">
+                <div class="image-container border-2px-solid-black">
+                    <a href="../resource/image/profile/<?php echo htmlspecialchars($result['username']) ?>.jpg">
+                        <img src="../resource/image/profile/<?php echo htmlspecialchars($result['username']) ?>.jpg" alt="Profile" class="img img-fluid image">
+                    </a>
+                </div>
+            </div>
+            <div class="col-6">
+                <h4 class="text-center">
+                    <?php echo htmlspecialchars($result['username']) ?>
+                </h4>
+                <div style="max-height: 120px; min-height: 100px; overflow:auto;">
+                    <p>
+                        <?php echo htmlspecialchars($result['bio']) ?>
+                    </p>
+                </div>
+            </div>
+            <div class=>
+            <h3>Featured Product</h3>
+            <?php foreach($result_data as $row):?>
+            <div class="float-left preview-image" style="margin: 30px;">
+                <div class="text-center" style="border: 1px solid black" title="<?php echo htmlspecialchars($row['product_name']); ?>">
+                    <?php
+                        if($row['photo_name']){
+                            echo '
+                            <a href="product.php?id=' . $row['prod_id'] .'">
+                                <img src="../resource/image/product/' . htmlspecialchars($row['photo_name']) .'" alt="ERROR" class="img img-fluid">
+                            </a>
+                            ';
+                        }else{
+                            echo '
+                            <a href="product.php?id=' . $row['prod_id'] .'">
+                                <img src="../resource/image/404imgnotfound.png" alt="ERROR" class="img img-fluid">
+                            </a>
+                            ';
+                        }
+                    ?>
+                </div>
+                <div>
+                    <table class="table" style="margin-top: 5px;">
+                        <tr>
+                            <td>
+                                <b>
+                                    Product
+                                </b>
+                            </td>
+                            <td>:</td>
+                            <td title="<?php echo htmlspecialchars($row['product_name']); ?>">
+                                <b>
+                                    <?php echo htmlspecialchars($row['substring_product_name']); ?>
+                                </b>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <b>Price</b>
+                            </td>
+                            <td>
+                                :
+                            </td>
+                            <td title="<?php echo '$ ' . $row['price']; ?>">
+                                <b style="color: red;">
+                                    $ <?php echo $row['substring_product_price']; ?>
+                                </b>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+            <?php endforeach; ?>
+        </div>
         </div>
     </div>
     <div class="footer fixed-bottom img-small-opacity floating-bottom" style="">
@@ -110,5 +212,6 @@
 </body>
 <script>
 error_msg();
+getcurrentpage();
 </script>
 </html>

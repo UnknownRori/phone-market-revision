@@ -1,7 +1,13 @@
 <?php
     require_once 'php\connect.php';
     // this is only reserved for preview
-    $getpreview = $conn->prepare("SELECT product.*, users.id, users.username FROM product INNER JOIN users ON product.user_id = users.id LIMIT 4");
+    $getpreview = $conn->prepare("
+    SELECT product.prod_id, product.product_name, product.photo_name, product.price, product.warned_status,
+    SUBSTRING(product.product_name, 1, 20) AS substring_product_name,
+    SUBSTRING(product.price, 1, 20) AS substring_product_price
+    FROM product
+    LIMIT 3
+    ");
     $getpreview->execute();
     $data = $getpreview->get_result();
     $getpreview->close();
@@ -130,7 +136,57 @@
             </div>
         </section>
         <section id="preview">
-            
+            <?php foreach($data as $row):?>
+            <div class="float-left preview-image">
+                <div class="text-center" style="border: 1px solid black" title="<?php echo htmlspecialchars($row['product_name']); ?>">
+                    <?php
+                        if($row['photo_name']){
+                            echo '
+                            <a href="php/product.php?id=' . $row['prod_id'] .'">
+                                <img src="resource/image/product/' . htmlspecialchars($row['photo_name']) .'" alt="ERROR" class="img img-fluid">
+                            </a>
+                            ';
+                        }else{
+                            echo '
+                            <a href="php/product.php?id=' . $row['prod_id'] .'">
+                                <img src="resource/image/404imgnotfound.png" alt="ERROR" class="img img-fluid">
+                            </a>
+                            ';
+                        }
+                    ?>
+                </div>
+                <div>
+                    <table class="table" style="margin-top: 10px;">
+                        <tr>
+                            <td>
+                                <b>
+                                    Product
+                                </b>
+                            </td>
+                            <td>:</td>
+                            <td title="<?php echo htmlspecialchars($row['product_name']); ?>">
+                                <b>
+                                    <?php echo htmlspecialchars($row['substring_product_name']); ?>
+                                </b>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <b>Price</b>
+                            </td>
+                            <td>
+                                :
+                            </td>
+                            <td title="<?php echo '$ ' . $row['price']; ?>">
+                                <b style="color: red;">
+                                    $ <?php echo $row['substring_product_price']; ?>
+                                </b>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+            <?php endforeach; ?>
         </section>
     </div>
     <div class="footer fixed-bottom img-small-opacity hidden floating-bottom">
@@ -138,7 +194,7 @@
             <img src="resource/image/contactus/github.png" alt="github">
         </a>
     </div>
-    <div class="footer bg-light">
+    <div class="footer fixed-bottom bg-light">
         <div class="container">
             <div class="text-center">
                 <p class="text-muted">

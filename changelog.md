@@ -1,4 +1,41 @@
-### Minor Update 0.8.1
+### Major Update 0.8.5
+
+##### Change
+
+<ul>
+    <li>Fix : fixing typo</li>
+    <li>Fix : upload non image file still sending name to database</li>
+    <li>Fix : fixing delete button in notification</li>
+    <li>Fix : fixing allowed access in allnotificationlist.php</li>
+    <li>Create : creating starter sql command</li>
+    <li>Create : creating empty sql command</li>
+    <li>Create : create manageuser.php</li>
+    <li>Create : create user profile page</li>
+    <li>Create : create style-image.css</li>
+    <li>Update : dev database sql update</li>
+    <li>Update : new database limit</li>
+    <li>Update : redesign product display</li>
+    <li>Update : revise product list display</li>
+    <li>Update : delete transition in style-profile</li>
+    <li>Update : adding multifunctional confirmationform.php</li>
+    <li>Update : code optimization</li>
+    <li>Update : making code easy to read</li>
+    <li>Update : rename advancedproductsearch to advanced-search-product</li>
+    <li>Delete : deleting index-tester.php</li>
+</ul>
+
+#### Current Issue
+
+<ul>
+    <li>Upload image can upload non image file<b>[FIXED]</b></li>
+    <li>Delete button in notification not working properly<b>[FIXED]</b></li>
+    <li>can enter allnotificationlist.php without proper privilege<b>[FIXED]</b></li>
+    <li>MsgReport cannot handle more than 1</li>
+    <li>Unresponsive display</li>
+</ul>
+
+
+### Minor Update 0.8.4.1
 
 ##### Change
 

@@ -1,46 +1,89 @@
 <?php
     require_once 'connect.php';
     if($_SESSION['login'] == 1){
-        $prepdelete = $conn->prepare("
-        SELECT product.user_id, product.product_name, product.warned_status, users.id, users.username
-        FROM product
-        INNER JOIN users ON users.id = product.user_id
-        WHERE prod_id=?
-        ");
-        $prepdelete->bind_param("i", $productid);
-        $productid = $_POST['id'];
-        $prepdelete->execute();
-        $getdata = $prepdelete->get_result();
-        $data = $getdata->fetch_assoc();
-        $prepdelete->close();
-        if(isset($_SESSION['vendor']) == 1 || $_SESSION['admin'] == 1 || $_SESSION['super_admin'] == 1){
-            if(isset($_POST['warningconfirm'])){
-                $warncommand = $conn->prepare("UPDATE product SET warned_status='1' WHERE prod_id=?");
-                $warncommand->bind_param("i", $productid);
-                $warncommand->execute();
-                $warncommand->close();
-                MsgReport("Product successfully warned", "success", "");
-            }
-            if(isset($_POST['deleteconfirm'])){
-                $deletecommand = $conn->prepare("DELETE FROM product WHERE prod_id=?");
-                $deletecommand->bind_param("i", $productid);
-                $deletecommand->execute();
-                $deletecommand->close();
-                MsgReport("Product successfully deleted", "success", "");
-            }
-            if($_SESSION['admin'] == 1 || $_SESSION['super_admin'] == 1){
-                if($data['warned_status'] === 0){
-                    MsgReport("Make sure you already issue warning to owner of the product!", "warning", "msgonly");
-                }
-            }else if($_SESSION['users_id'] == $data['user_id']){
-                MsgReport("Make sure you know what are you doing", "warning", "msgonly");
+        if(isset($_SESSION['command']) == Null){
+            error_reporting(1);
+            if($_SESSION['vendor'] !== 1 || $_SESSION['admin'] !== 1 || $_SESSION['super_admin'] !== 1){
+                MsgReport("You do not have privilege over this feature!", "error", "");
             }else{
-                MsgReport("You do not have privilege over this product!", "error", "");
+                MsgReport("Whoa what are you doing there!", "error", "");
             }
+        }else if($_SESSION['command'] == "product"){
+            $prepdelete = $conn->prepare("
+            SELECT product.user_id,
+            SUBSTRING(product.product_name, 1, 20) AS name,
+            product.warned_status, users.id
+            FROM product
+            INNER JOIN users ON users.id = product.user_id
+            WHERE prod_id=?
+            ");
+            $prepdelete->bind_param("i", $productid);
+            $productid = $_POST['id'];
+            $prepdelete->execute();
+            $getdata = $prepdelete->get_result();
+            $data = $getdata->fetch_assoc();
+            $prepdelete->close();
+            if(isset($_SESSION['vendor']) == 1 || $_SESSION['admin'] == 1 || $_SESSION['super_admin'] == 1){
+                if(isset($_POST['warningconfirm'])){
+                    $warncommand = $conn->prepare("UPDATE product SET warned_status='1' WHERE prod_id=?");
+                    $warncommand->bind_param("i", $productid);
+                    $warncommand->execute();
+                    $warncommand->close();
+                    $_SESSION['command'] == Null;
+                    MsgReport("Product successfully warned", "success", "");
+                }
+                if(isset($_POST['deleteconfirm'])){
+                    $deletecommand = $conn->prepare("DELETE FROM product WHERE prod_id=?");
+                    $deletecommand->bind_param("i", $productid);
+                    $deletecommand->execute();
+                    $deletecommand->close();
+                    $_SESSION['command'] == Null;
+                    MsgReport("Product successfully deleted", "success", "");
+                }
+                // fix this
+                if($_SESSION['users_id'] !== $data['id'] && $_POST['warning'] == null && $_SESSION['admin'] || $_SESSION['super_admin']){
+                    if($data['warned_status'] === 0){
+                        MsgReport("Make sure you already issue warning to owner of the product!", "warning", "msgonly");
+                    }
+                }else if($_SESSION['users_id'] == $data['id']){
+                    MsgReport("Make sure you know what are you doing", "warning", "msgonly");
+                }else{
+                    MsgReport("You do not have privilege over this product!", "error", "");
+                }
+            }else{
+                MsgReport("You do not have privilege over this product", "error", "");
+            }
+        }else if($_SESSION['command'] == "notification"){
+            $prepare_notify_data = $conn->prepare("
+            SELECT id, SUBSTRING(topic, 1, 20) AS name, touser
+            FROM notification
+            WHERE id=?
+            ");
+            $prepare_notify_data->bind_param("i", $id);
+            $id = $_POST['id'];
+            $prepare_notify_data->execute();
+            $getdata = $prepare_notify_data->get_result();
+            $data = $getdata->fetch_assoc();
+            $prepare_notify_data->close();
+            if($data['touser'] == $_SESSION['users_id'] || $_SESSION['super_admin']){
+                if(isset($_POST['deleteconfirm'])){
+                    $prepare_delete_notify = $conn->prepare("
+                    DELETE FROM notification WHERE id=?
+                    ");
+                    $prepare_delete_notify->bind_param("i", $id);
+                    $prepare_notify_data->execute();
+                    $prepare_delete_notify->close();
+                    MsgReport("Notification  successfully deleted!", "success", "");
+                    $_SESSION['command'] == Null;
+                }
+            }else{
+                MsgReport("You do not have privilege over this notification!", "error", "");
+            }
+        }else if($_SESSION['command'] == "users"){
+
         }else{
-            MsgReport("You do not have privilege over this product", "error", "");
+
         }
-        
     }else{
         MsgReport("User must log in first", "warning", "login.php");
     }
@@ -59,12 +102,22 @@
     <link rel="stylesheet" href="../resource/css/bootstrap.min.css">
     <link rel="icon" href="../resource/image/favicon.jpg">
     <?php
-        if(isset($_POST['warning'])){
-            PageTitle("Warning Confirmation - " . $data['product_name']) . " - " . $data['username'];
-        }else if(isset($_POST['delete'])){
-            PageTitle("Delete Confirmation - " . $data['product_name'] . " - "  .$data['username']);
+        if(isset($_SESSION['command']) == "product"){
+            if(isset($_POST['warning'])){
+                PageTitle("Warning Product Confirmation - " . htmlspecialchars($data['name']));
+            }else if(isset($_POST['delete'])){
+                PageTitle("Delete Product Confirmation - " . htmlspecialchars($data['name']));
+            }else{
+                PageTitle("No command");
+            }
+        }else if($_SESSION['command'] == "notification"){
+            if(isset($_POST['delete'])){
+                PageTitle("Delete Notification Confirmation - " . htmlspecialchars($data['name']));
+            }else{
+                PageTitle("No Command");
+            }
         }else{
-            PageTitle("No command");
+            PageTitle("No Command");
         }
     ?>
 </head>
@@ -128,11 +181,11 @@
         <div class="row">
             <div class="col-9" style="margin-left: 13%;">
                 <h1 class="text-center"><?php if(isset($_POST['warning'])){echo 'Warning Confirmation';}else if(isset($_POST['delete'])){echo 'Delete Confirmation';} ?></h1>
-                <h2 class="text-center"><?php echo $data['product_name'] ?></h2>
+                <h2 class="text-center"><?php echo $data['name'] ?></h2>
                 <form action="" method="POST" id="confirmationform">
                     <input type="number" name="id" value="<?php echo $_POST['id'] ?>" hidden>
                     <div class="form-group">
-                        <input title="Confirmation Code" id="confirmationcode" type="text" name="randomconfirmationcode" class="form-control" placeholder="Why you delete this" value="Generating Code ..." disabled>
+                        <input title="Confirmation Code" id="confirmationcode" type="text" name="confirmationcode" class="form-control" placeholder="Why you delete this" value="Generating Code . . ." disabled>
                     </div>
                     <div class="form-group">
                         <input title="What are you waiting for?" id="confirmationbox" type="text" name="confirmation" class="form-control" placeholder="Please re-enter the confirmation code" value="" disabled onkeyup="manage(this)">
@@ -187,29 +240,29 @@
             var r = (Math.random() + 1).toString(36).substring(2);
             console.log("random", r);
             document.getElementById('confirmationcode').value = r;
-    
             $(document).ready(function() {
-            $('#confirmationbox').keyup(function() {
-                if($(this).val() == r) {
-                    $('#confirmationsubmit').prop('disabled', false);
-                }else{
-                    $('#confirmationsubmit').prop('disabled', true);
-                }
-            });
-        }, 5000);
+                $('#confirmationbox').keyup(function() {
+                    if($(this).val() == r) {
+                        $('#confirmationsubmit').prop('disabled', false);
+                    }else{
+                        $('#confirmationsubmit').prop('disabled', true);
+                    }
+                });
+            }, 500);
+        });
+        $('#confirmationcheckbox').click(function () {
+            if ($(this).is(':checked')) {
+                sessionStorage.setItem("msg", "Warning this action irreversible!");
+                sessionStorage.setItem("msg_type", "warning");
+                error_msg();
+                $('#confirmationbox').removeAttr('disabled');
+                document.getElementById('confirmationbox').value = '';
+            } else {
+                $('#confirmationbox').attr('disabled', true);
+                $('#confirmationsubmit').prop('disabled', true);
+                document.getElementById('confirmationbox').value = '';
+            }
+        });
     });
-    $('#confirmationcheckbox').click(function () {
-        if ($(this).is(':checked')) {
-            sessionStorage.setItem("msg", "Warning this action irreversible!");
-            sessionStorage.setItem("msg_type", "warning");
-            error_msg();
-            $('#confirmationbox').removeAttr('disabled');
-            document.getElementById('confirmationbox').value = '';
-        } else {
-            $('#confirmationbox').attr('disabled', true);
-            document.getElementById('confirmationbox').value = '';
-        }
-    });
- });
 </script>
 </html>

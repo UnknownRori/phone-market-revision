@@ -1,0 +1,16 @@
+.image-container{
+    max-width: 400px;
+    border-radius: 10% !important;
+    margin-left: 15%
+}
+.image-container .image{
+    border-radius: 10%;
+}
+.description_box{
+    background-color: rgba(128, 128, 128, 0.644);
+    border: 0.1px solid gray;
+    /* box-shadow: 2px 6px 8px 5px #5353537e; */
+}
+.border-2px-solid-black{
+    border: 2px solid black!important;
+}

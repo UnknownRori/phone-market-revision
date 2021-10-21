@@ -98,6 +98,9 @@
 .float-right{
   float: right!important;
 }
+.float-left{
+  float: left!important;
+}
 .height-100vh{
   height: 100vh!important;
 }

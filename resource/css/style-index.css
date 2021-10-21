@@ -53,3 +53,9 @@
 .width-200px{
   width: 200px!important;
 }
+.preview-image{
+  width: 300px!important;
+  margin: 30px;
+  float: left;
+  margin-bottom: 40px!important;
+}

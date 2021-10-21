@@ -95,10 +95,10 @@
             <img src="resource/image/contactus/github.png" alt="github">
         </a>
     </div>
-    <div class="footer bg-light fixed-bottom" style="background-color: #f8f9fa80 !important">
+    <div class="footer fixed-bottom bg-light">
         <div class="container">
             <div class="text-center">
-                <p class="">
+                <p class="text-muted">
                 <script>
                     var n = new Date();
                     document.write(n.getFullYear());

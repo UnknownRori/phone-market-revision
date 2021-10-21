@@ -1,10 +1,13 @@
 <?php
     require_once 'connect.php';
     if(isset($_SESSION['login']) == 0){
+        if($_SESSION['super_admin'] !== 1){
+            MsgReport("You do not have privilege over this feature!", "error", "");
+        }
         MsgReport("User must log in first", "warning", "login.php");
-    } 
+    }
     $preparedata = $conn->prepare("
-    SELECT notification.*, type_notification.*, users.id AS userfromid, users.username AS userfrom,
+    SELECT notification.*, notification.id AS notify_id, type_notification.*, users.id AS userfromid, users.username AS userfrom,
     SUBSTRING(notification.topic, 1, 25) AS substring_topic,
     SUBSTRING(notification.content, 1, 25) AS substring_content,
     SUBSTRING(users.username, 1, 15) AS substring_userfrom,
@@ -171,13 +174,12 @@
                     <?php echo htmlspecialchars($row['touser']); ?>
                 </td>
                 <td>
-                    <a class="btn btn-primary spacing" href="notification.php?id=<?php echo $row['id'] ?>" >Detail</a>
-                    <a class="btn btn-danger spacing" href="deletenotification.php?id=<?php echo $row['id'] ?>">Delete</a>
-                    <!-- <form action="" method="post">
-                        <a class="btn btn-primary spacing" href="notification.php?id=<?php echo $row['id'] ?>" >Detail</a>
-                        <input type="number" value="<?= $row['id']?> " hidden>
+                    <form action="confirmationform.php" method="POST">
+                        <?php $_SESSION['command'] = "notification" ?>
+                        <a class="btn btn-primary spacing" href="notification.php?id=<?php echo $row['notify_id'] ?>" >Detail</a>
+                        <input type="number" name="id" value="<?= $row['notify_id']?>" hidden>
                         <input type="submit" class="btn btn-danger spacing" value="Delete" name="delete">
-                    </form> -->
+                    </form>
                 </td>
             </tr>
             <?php endforeach; ?>

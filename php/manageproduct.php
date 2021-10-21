@@ -202,7 +202,8 @@
                 </td>
                 <td>
                     <form action="confirmationform.php" method="POST">
-                    <div class="form-group float-left">
+                        <?php $_SESSION['command'] = "product" ?>
+                        <div class="form-group float-left">
                             <input type="number" name="id" value="<?php echo $row['prod_id'] ?>" hidden>
                             <a href="product.php?id=<?php echo $row['prod_id']; ?>" class="btn btn-primary">Detail</a>
                             <a href="editproduct.php?id=<?php echo $row['prod_id'] ?>" class="btn btn-warning">Edit</a>

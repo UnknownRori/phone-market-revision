@@ -1,24 +1,34 @@
 <?php
     require_once 'connect.php';
-    $preparedata = $conn->prepare("
-    SELECT product.*
-    FROM product
-    WHERE prod_id=?
-    ");
-    $preparedata->bind_param("i", $id);
-    $id = $_GET['id'];
-    $preparedata->execute();
-    $data = $preparedata->get_result();
-    $result = $data->fetch_assoc();
-    $preparedata->close();
-    $preparesecdata = $conn->prepare("
-    SELECT feature.* FROM feature where product_id=? LIMIT 10
-    ");
-    $preparesecdata->bind_param("i", $id);
-    $preparesecdata->execute();
-    $data = $preparesecdata->get_result();
-    $data2 = $data->fetch_assoc();
-    $preparesecdata->close();
+    if(isset($_GET['id'])){
+        $get_product_data = $conn->prepare("
+        SELECT prod_id, user_id, product_name, photo_name, price, stock, description
+        FROM product
+        WHERE prod_id=?
+        ");
+        $get_product_data->bind_param("i", $id);
+        $id = $_GET['id'];
+        $get_product_data->execute();
+        $data = $get_product_data->get_result();
+        $result = $data->fetch_assoc();
+        $get_product_data->close();
+        
+        $get_product_data_feature = $conn->prepare("
+        SELECT feature.* FROM feature where product_id=? LIMIT 10
+        ");
+        $get_product_data_feature->bind_param("i", $id);
+        $get_product_data_feature->execute();
+        $data = $get_product_data_feature->get_result();
+        $result_feature = $data->fetch_assoc();
+        $get_product_data_feature->close();
+        if(isset($_POST['buy'])){
+            if($_POST['quantity'] < 1){
+                MsgReport("Cannot buy non existent quantity of product", "warning", "msgonly");
+            }
+        }
+    }else{
+        MsgReport('Error : no product can be retrived', "error", "../productlist.php");
+    }
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -33,7 +43,13 @@
     <link rel="stylesheet" href="../resource/css/style-profile.css">
     <link rel="stylesheet" href="../resource/css/bootstrap.min.css">
     <link rel="icon" href="../resource/image/favicon.jpg">
-    <?php echo PageTitle("Product - " . $result['product_name']); ?>
+    <?php
+    if($result['product_name']){
+        PageTitle($result['product_name']); 
+    }else{
+        PageTitle("No product selected");
+    }
+    ?>
 </head>
 <body id="home">
     <div class="msg fixed-top text-center">
@@ -80,7 +96,7 @@
                     <form class="form-inline" action="" method="get">
                         <div class="form-group">
                             <input type="text" name="search" placeholder="Search Product" class="form-control spacing">
-                            <a href="#" class="btn btn-info spacing">Advanced Search</a> <!--temporary href=/php/advancedproduct.php-->
+                            <a href="../advanced-search-product.php" class="btn btn-info spacing">Advanced Search</a>
                         </div>
                     </form>
                 </li>
@@ -105,106 +121,72 @@
         </div>
     </nav>
     <div id="extend" class="container height-100vh">
-        <div class="text-center">
-            <?php
-                if($result['photo_name']){
-                    echo '
-                    <a href="product.php?id=' . htmlspecialchars($result['prod_id']) .'">
-                        <img src="../resource/image/product/' . htmlspecialchars($result['photo_name']) .'" alt="ERROR" class="img img-fluid">
-                    </a>
-                    ';
-                }else{
-                    echo '
-                    <a href="product.php?id=' . htmlspecialchars($result['prod_id']) .'">
-                        <img src="../resource/image/404imgnotfound.png" alt="ERROR" class="img img-fluid">
-                    </a>
-                    ';
-                }
-            ?>
-            <h4>
-                <?php echo htmlspecialchars($result['product_name']) ?>
-            </h4>
-        </div>
-        <div style="margin-bottom: 20px">
-            <h3>Feature List</h3>
-            <?php
-            foreach($data as $row):
-                if(isset($_SESSION['login'])){
-                    if($_SESSION['admin'] == 1 || $_SESSION['superadmin'] == 1 || $_SESSION['users_id'] == $result['user_id']){
+        <div class="row d-flex">
+            <div class="col-6">
+                <div class="text-center" style="border: 1px solid black; background-color:#8080803d; box-shadow: 2px 2px 2px 2px gray" title="<?php echo htmlspecialchars($result['product_name']); ?>">
+                    <?php
+                        if($result['photo_name']){
+                            echo '
+                            <a href="product.php?id=' . $result['prod_id'] .'">
+                                <img src="../resource/image/product/' . htmlspecialchars($result['photo_name']) .'" alt="ERROR" class="img img-fluid">
+                            </a>
+                            ';
+                        }else{
+                            echo '
+                            <a href="product.php?id=' . $result['prod_id'] .'">
+                                <img src="../resource/image/404imgnotfound.png" alt="ERROR" class="img img-fluid">
+                            </a>
+                            ';
+                        }
+                    ?>
+                </div>
+            </div>
+            <div class="col-6">
+                <h4 class="text-center">
+                    <?php echo htmlspecialchars($result['product_name']) ?>
+                </h4>
+                <div style="max-height: 120px; min-height: 100px; overflow:auto;">
+                    <p>
+                        <?php echo htmlspecialchars($result['description']) ?>
+                    </p>
+                </div>
+                <?php
+                    if(isset($_SESSION['login'])){
                         echo '
-                        <ul>
-                            <li>
-                                ' . htmlspecialchars($row['feature_name']) . ' | 
-                                <a class="text-warning">Edit</a> | 
-                                <a class="text-danger">Delete</a>
-                            </li>
-                        </ul>
-                        ';
-                    }else{
-                        echo '
-                        <ul>
-                            <li>
-                                ' . htmlspecialchars($row['feature_name']) . '
-                            </li>
-                        </ul>
+                        <div>
+                            <form action="" method="POST">
+                                <div class="form-group">
+                                    <div class="row d-flex">
+                                        <div class="col-6">
+                                            <input type="number" name="quantity" class="form-control" value="0">
+                                        </div>
+                                        <div class="col-6">
+                                            <button type="submit" class="btn btn-primary" name="buy">Buy</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
                         ';
                     }
-                }else{
-                    echo '
-                        <ul>
-                            <li>
-                                ' . htmlspecialchars($row['feature_name']) . '
-                            </li>
-                        </ul>
-                    ';
-                }
-            endforeach;
-            if($data2['feature_name'] == NULL){
-                if(isset($_SESSION['login'])){
-                    if($_SESSION['admin'] == 1 || $_SESSION['super_admin'] == 1 || $_SESSION['users_id'] == $result['user_id']){
-                        echo '
-                            This product doesnt have any feature yet
-                            <button class="btn btn-primary" id="addfeature">Add Feature</button>
-                        ';
-                    }else{
-                    echo '
-                    <p>This product doesnt have any feature yet</p>
-                    ';
-                    }
-                }else{
-                echo '
-                <p>This product doesnt have any feature yet</p>
-                ';
-                }
-            }
-            ?>
-        </div>
-        <div style="margin-top: 20px!important; margin-bottom: 50px!important;">
-            <p>
-                <h4>Product Description</h4>
-                <?php echo htmlspecialchars($result['description']); ?>
-            </p>
-            <p>Keyword : <?php echo $result['keyword'] ?></p>
-        </div>
-        <?php
-        if(isset($_SESSION['login'])){
-            echo '
-            <div>
-            <h5>Buy Form</h5>
-                <form action="" method="POST">
-                    <input type="number" value="' . htmlspecialchars($result['prod_id']) . '" hidden>
-                    <div class="form-group">
-                        <input id="buyquantity" type="number" placeholder="How many product do you wish to buy" title="How many product do you wish to buy" name="buy_quantity" class="form-control">
-                    </div>
-                    <div class="form-group">
-                        <input id="confirmbuy" type="submit" value="Buy" name="buy" class="btn btn-primary spacing" disabled>
-                    </div>
-                </form>
+                ?>
+            </div>
+            <div class="container row">
+                <div class="">
+                    <ul>
+                        <?php
+                            if($result_feature){
+                                foreach ($result_feature as $result_feature):
+                                echo '<li>' . $result_feature .'</li>';
+                                endforeach;
+                            }else{
+                                echo "This product doesnt have any noteable feature";
+                            }
+                        ?>
+                    </ul>
+                </div>
             </div>
         </div>
-            ';
-        }
-        ?>
     </div>
     <div class="footer fixed-bottom img-small-opacity floating-bottom">
         <a href="https://github.com/UnknownRori/phone-market-revision" target="_blank" title="Source Code">
@@ -229,13 +211,6 @@
     error_msg();
     getcurrentpage();
     $(document).ready(function(){
-        $('#buyquantity').keyup(function() {
-            if($(this).val() > 0) {
-                $('#confirmbuy').prop('disabled', false);
-            }else{
-                $('#confirmbuy').prop('disabled', true);
-            }
-        });
         $('#addfeature').click(function(){
             sessionStorage.setItem("msg", "Warning this action irreversible!");
             sessionStorage.setItem("msg_type", "warning");

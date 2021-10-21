@@ -1,40 +1,40 @@
 <?php
     include_once "connect.php";
     if($_SESSION['admin'] == 1 || $_SESSION['superadmin'] == 1){
-        $preparetype = $conn->prepare("
+        $get_notification_type = $conn->prepare("
         SELECT * FROM type_notification
         ");
-        $preparetype->execute();
-        $data = $preparetype->get_result();
-        $preparetype->close();
+        $get_notification_type->execute();
+        $data = $get_notification_type->get_result();
+        $get_notification_type->close();
         if(isset($_POST['send'])){
             $_SESSION['preload-topic'] = $_POST['topic'];
             $_SESSION['preload-content'] = $_POST['content'];
 			
-            $preparecheck = $conn->prepare("
+            $verify_notification_type = $conn->prepare("
 			SELECT *
             FROM type_notification WHERE notification_name=?
 			");
-			$preparecheck->bind_param("s", $notification_name);
+			$verify_notification_type->bind_param("s", $notification_name);
 			$notification_name = $_POST['type'];
-            $preparecheck->execute();
-			$result = $preparecheck->get_result();
-            $datacheck = $result->fetch_assoc();
-			$preparecheck->close();
-            if($datacheck['notification_name'] == $_POST['type']){
-                $checkusertarget = $conn->prepare("
+            $verify_notification_type->execute();
+			$result = $verify_notification_type->get_result();
+            $result_verify = $result->fetch_assoc();
+			$verify_notification_type->close();
+            if($result_verify['notification_name'] == $_POST['type']){
+                $verify_target_user = $conn->prepare("
                 SELECT users.username, users.id FROM users WHERE username=?
                 ");
-                $checkusertarget->bind_param("s", $target);
-                $target = $_POST['touser'];
-                $checkusertarget->execute();
-                $result = $checkusertarget->get_result();
-                $checkuser = $result->fetch_assoc();
-                $checkusertarget->close();
+                $verify_target_user->bind_param("s", $target_users);
+                $target_users = $_POST['touser'];
+                $verify_target_user->execute();
+                $result = $verify_target_user->get_result();
+                $verify_users = $result->fetch_assoc();
+                $verify_target_user->close();
                 $_SESSION['preload-touser'] = $_POST['touser'];
-                if($checkuser['username'] == $_SESSION['username']){
+                if($verify_users['username'] == $_SESSION['username']){
                     MsgReport("Cannot send notification to yourself!", "warning", "msgonly");
-                }else if($checkuser['username'] === $_POST['touser']){
+                }else if($verify_users['username'] === $_POST['touser']){
                     $prepsend = $conn->prepare("
                     INSERT INTO notification
                     (fromuser, touser, notificationtype, topic, content)
@@ -48,14 +48,14 @@
                     $prepsend->execute();
                     $prepsend->close();
 
-                    $checkresult =$conn->prepare("
+                    $verify_result =$conn->prepare("
                     SELECT * FROM notification WHERE touser=? AND fromuser=? AND notificationtype=? AND topic=? AND content=?
                     ");
-                    $checkresult->bind_param("iiiss", $touser, $fromuser, $datacheck['id'], $topic, $content);
-                    $checkresult->execute();
-                    $result = $checkresult->get_result();
+                    $verify_result->bind_param("iiiss", $touser, $fromuser, $datacheck['id'], $topic, $content);
+                    $verify_result->execute();
+                    $result = $verify_result->get_result();
                     $check = $result->fetch_assoc();
-                    $checkresult->close();
+                    $verify_result->close();
                     if($check['topic'] == $topic){
                         MsgReport("Notification successfully sended", "success", "notificationlist.php");
                     }else{
@@ -149,9 +149,6 @@
         </nav>
         <div class="container extend">
             <div class="col-12">
-                <h3 class="text-center">
-
-                </h3>
                 <form method="POST" action="" enctype="multipart/form-data">
                     <div class="form-group">
                         <select class="form-control" name="type" title="Notification Type">

@@ -3,10 +3,10 @@
 .profile{
   height: 30px;
   border-radius: 100%;
-  transition: 1s;
 }
 .profile:hover{
   transition: 1s;
+  border-radius: 0;
   transform: scale(2)!important;
   border-radius: 0%;
 }

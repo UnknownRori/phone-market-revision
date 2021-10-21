@@ -5,31 +5,31 @@
     }
     if(isset($_POST['login'])){
         $_SESSION['preload-login-username'] = $_POST['username_1'];
-        $prepare = $conn->prepare("
+        $check_user = $conn->prepare("
         SELECT id, SUBSTRING(username, 1, 15) AS substring_username,
         username, password, vendor, admin, super_admin
         FROM users WHERE username=?
         ");
-        $prepare->bind_param("s", $username);
+        $check_user->bind_param("s", $username);
 
         $username = $_POST['username_1'];
 
-        $prepare->execute();
-        $result = $prepare->get_result();
+        $check_user->execute();
+        $result = $check_user->get_result();
         $users = $result->fetch_assoc();
-        $prepare->close();
+        $check_user->close();
         if($users['username'] == null){
             MsgReport("Incorrect Username!", "error", "login.php");
         }
-        if($prepare == TRUE){
+        if($check_user == TRUE){
             $password = $_POST['password_1'];
             if(password_verify($password, $users['password'])){
-                $updatepassword = $conn->prepare("UPDATE users SET password=? WHERE id=?");
-                $updatepassword->bind_param("si", $newpassword, $id);
+                $update_user_status = $conn->prepare("UPDATE users SET password=?, last_login=CURRENT_TIMESTAMP WHERE id=?");
+                $update_user_status->bind_param("si", $newpassword, $id);
                 $newpassword = password_hash($password, PASSWORD_DEFAULT);
                 $id = $users['id'];
-                $updatepassword->execute(); 
-                $updatepassword->close();
+                $update_user_status->execute(); 
+                $update_user_status->close();
                 $_SESSION['users_id'] = $users['id'];
                 $_SESSION['username'] = $users['substring_username'];
                 $_SESSION['fullusername'] = $users['username'];

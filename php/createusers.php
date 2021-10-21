@@ -7,35 +7,35 @@
     if(isset($_POST['signup'])){
         if($_POST['username_1'] != null){
             $_SESSION['preload-create-username'] = $_POST['username_1'];
-            $checkusers = $conn->prepare("SELECT id, username, password FROM users WHERE username=? ");
-            $checkusers->bind_param("s", $username);
+            $verify_users = $conn->prepare("SELECT id, username, password FROM users WHERE username=? ");
+            $verify_users->bind_param("s", $username);
             $username = $_POST['username_1'];
-            $checkusers->execute();
-            $result = $checkusers->get_result();
+            $verify_users->execute();
+            $result = $verify_users->get_result();
             $users = $result->fetch_assoc();
-            $checkusers->close();
+            $verify_users->close();
             if(($_POST['username_1']) != $users['username']){
                 if($_POST['password_1'] == null){
                     MsgReport("Account cannot have empty password", "error", "msgonly");
                 }else if(($_POST['password_1']) == ($_POST['password_2'])){
-                    $addusers = $conn->prepare("INSERT INTO users (username, password, admin, vendor) VALUE (?, ?, ?, ?)");
-                    $addusers->bind_param("ssbb", $username, $password, $admin, $vendor);
+                    $add_users = $conn->prepare("INSERT INTO users (username, password, admin, vendor) VALUE (?, ?, ?, ?)");
+                    $add_users->bind_param("ssbb", $username, $password, $admin, $vendor);
                     $password  = password_hash($_POST['password_1'], PASSWORD_DEFAULT);
                     $admin     = false;
                     $vendor    = false;
-                    $addusers->execute();
-                    $addusers->close();
+                    $add_users->execute();
+                    $add_users->close();
 
-                    $prepare = $conn->prepare("
+                    $get_users_data = $conn->prepare("
                     SELECT id, SUBSTRING(username, 1, 15) AS substring_username,
                     username, password, vendor, admin, super_admin
                     FROM users WHERE username=?
                     ");
-                    $prepare->bind_param("s", $username);
-                    $prepare->execute();
-                    $result = $prepare->get_result();
+                    $get_users_data->bind_param("s", $username);
+                    $get_users_data->execute();
+                    $result = $get_users_data->get_result();
                     $users = $result->fetch_assoc();
-                    $prepare->close();
+                    $get_users_data->close();
                     $_SESSION['users_id'] = $users['id'];
                     $_SESSION['username'] = $users['substring_username'];
                     $_SESSION['fullusername'] = $users['username'];
@@ -45,24 +45,13 @@
                     $_SESSION['login'] = 1;
                     MsgReport("Account successfully created!", "success", "");
                 }else{
-                    echo '<script>
-                        sessionStorage.setItem("msg", "Please re-enter your password correctly!");
-                        sessionStorage.setItem("msg_type", "error");
-                        </script>';
+                    MsgReport("Please re-enter your password correctly!", "success", "msgonly");
                 }
             }else{
-                echo '<script>
-                sessionStorage.setItem("msg", "Usersname already in use!");
-                sessionStorage.setItem("msg_type", "error");
-                </script>';
+                MsgReport("Username already in use!", "error", "msgonly");
             }
         }else{
-            echo '
-            <script>
-            sessionStorage.setItem("msg", "Please fill it properly!");
-            sessionStorage.setItem("msg_type", "error");
-            </script>
-            ';
+            MsgReport("Please fill it properly!", "error", "msgonly");
         }
     }
 

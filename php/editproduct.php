@@ -28,18 +28,18 @@
                     $filetype = strtolower(pathinfo($target_file, PATHINFO_EXTENSION));
                     if(!file_exists($target_file)){
                         if ($_FILES["product_photo"]["size"] > 500000) {
+                            $photo_name = null;
                             MsgReport("Error : File size too large! size must below 500kb", "error", "editproduct.php?id=" . $_GET['id']);
-                        }else{
-                            // bug : image type file cannot upload
-                            if($filetype === "jpg" || $filetype === "png" || $filetype === "jpeg"){
-                                if(copy($_FILES["product_photo"]["tmp_name"],$target_file)){
-                                    $photo_name = basename($_FILES["product_photo"]["name"]);
-                                }else{
-                                    MsgReport("Error : File failed upload!", "error", "editproduct.php?id=" . $_GET['id']);
-                                }
+                        }else if($filetype === "jpg" || $filetype === "png" || $filetype === "jpeg"){
+                            if(copy($_FILES["product_photo"]["tmp_name"],$target_file)){
+                                $photo_name = basename($_FILES["product_photo"]["name"]);
                             }else{
-                                MsgReport("Error : File must be an image!", "error", "editproduct.php?id=" . $_GET['id']);
+                                $photo_name = NULL;
+                                MsgReport("Error : File failed upload!", "error", "editproduct.php?id=" . $_GET['id']);
                             }
+                        }else{
+                            $photo_name = NULL;
+                            MsgReport("Error : File must be an image!", "error", "editproduct.php?id=" . $_GET['id']);
                         }
                     }else{
                         MsgReport("Warning : File already exist!", "warning", "msgonly");
@@ -84,18 +84,18 @@
                     $filetype = strtolower(pathinfo($target_file, PATHINFO_EXTENSION));
                     if(!file_exists($target_file)){
                         if ($_FILES["product_photo"]["size"] > 500000) {
+                            $photo_name = null;
                             MsgReport("Error : File size too large! size must below 500kb", "error", "editproduct.php?id=" . $_GET['id']);
-                        }else{
-                            // bug : image type file cannot upload
-                            if($filetype === "jpg" || $filetype === "png" || $filetype === "jpeg"){
-                                if(copy($_FILES["product_photo"]["tmp_name"],$target_file)){
-                                    $photo_name = basename($_FILES["product_photo"]["name"]);
-                                }else{
-                                    MsgReport("Error : File failed upload!", "error", "editproduct.php?id=" . $_GET['id']);
-                                }
+                        }else if($filetype === "jpg" || $filetype === "png" || $filetype === "jpeg"){
+                            if(copy($_FILES["product_photo"]["tmp_name"],$target_file)){
+                                $photo_name = basename($_FILES["product_photo"]["name"]);
                             }else{
-                                MsgReport("Error : File must be an image!", "error", "editproduct.php?id=" . $_GET['id']);
+                                $photo_name = NULL;
+                                MsgReport("Error : File failed upload!", "error", "editproduct.php?id=" . $_GET['id']);
                             }
+                        }else{
+                            $photo_name = NULL;
+                            MsgReport("Error : File must be an image!", "error", "editproduct.php?id=" . $_GET['id']);
                         }
                     }else{
                         MsgReport("Warning : File already exist!", "warning", "msgonly");
@@ -144,7 +144,7 @@
         <link rel="icon" href="../resource/image/favicon.jpg">
             <?php
                 if(isset($result['product_name'])){
-                    PageTitle("Editing New Product" . " - " . $result['product_name'] . " - " . $result['username']);
+                    PageTitle("Editing Product" . " - " . $result['product_name'] . " - " . $result['username']);
                 }else{
                     PageTitle("Creating New Product" . " - " . $_SESSION['username']);
                 }

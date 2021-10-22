@@ -1,3 +1,15 @@
+### Minor Update 0.8.5.1
+
+##### Change
+
+<ul>
+    <li>Fix : fixing some typo</li>
+    <li>Fix : cannot open users profile in manage user</li>
+    <li>Fix : fixing notification list showing other users notification</li>
+    <li>Update : implementing search engine in Manage Users tabs</li>
+    <li>Update : adding keyword on product display</li>
+</ul>
+
 ### Major Update 0.8.5
 
 ##### Change

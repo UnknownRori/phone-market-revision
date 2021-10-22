@@ -2,7 +2,7 @@
     require_once 'connect.php';
     if(isset($_GET['id'])){
         $get_product_data = $conn->prepare("
-        SELECT prod_id, user_id, product_name, photo_name, price, stock, description
+        SELECT prod_id, user_id, product_name, photo_name, price, description, keyword
         FROM product
         WHERE prod_id=?
         ");
@@ -14,7 +14,10 @@
         $get_product_data->close();
         
         $get_product_data_feature = $conn->prepare("
-        SELECT feature.* FROM feature where product_id=? LIMIT 10
+        SELECT feature_name, COUNT(id) AS total_feature
+        FROM feature 
+        WHERE product_id=?
+        LIMIT 10
         ");
         $get_product_data_feature->bind_param("i", $id);
         $get_product_data_feature->execute();
@@ -40,6 +43,8 @@
     <script src="../resource/js/main.js"></script>
     <script src="../resource/js/bootstrap.min.js"></script>
     <link rel="stylesheet" href="../resource/css/style.css">
+    <link rel="stylesheet" href="../resource/css/style-product-user.css">
+    <!-- <link rel="stylesheet" href="../resource/css/style-image.css"> -->
     <link rel="stylesheet" href="../resource/css/style-profile.css">
     <link rel="stylesheet" href="../resource/css/bootstrap.min.css">
     <link rel="icon" href="../resource/image/favicon.jpg">
@@ -93,7 +98,7 @@
                 ?>
                 <li class="nav-item">
                     <!-- search engine input -->
-                    <form class="form-inline" action="" method="get">
+                    <form class="form-inline" action="../productlist.php" method="get">
                         <div class="form-group">
                             <input type="text" name="search" placeholder="Search Product" class="form-control spacing">
                             <a href="../advanced-search-product.php" class="btn btn-info spacing">Advanced Search</a>
@@ -145,11 +150,12 @@
                 <h4 class="text-center">
                     <?php echo htmlspecialchars($result['product_name']) ?>
                 </h4>
-                <div style="max-height: 120px; min-height: 100px; overflow:auto;">
+                <div class="description-box">
                     <p>
                         <?php echo htmlspecialchars($result['description']) ?>
                     </p>
                 </div>
+                <p>Keyword : <?php echo htmlspecialchars($result['keyword']) ?></p>
                 <?php
                     if(isset($_SESSION['login'])){
                         echo '
@@ -171,16 +177,43 @@
                     }
                 ?>
             </div>
-            <div class="container row">
+            <div class="container row margin-top-20">
                 <div class="">
                     <ul>
                         <?php
-                            if($result_feature){
-                                foreach ($result_feature as $result_feature):
-                                echo '<li>' . $result_feature .'</li>';
-                                endforeach;
+                            if(isset($_SESSION['login'])){
+                                if($_SESSION['users_id'] == $result['user_id']){
+                                    if($result_feature['feature_name'] !== NULL){
+                                        foreach ($data as $row['feature_name']):
+                                        echo '<li>' . $row['feature_name'] .'</li>';
+                                        endforeach;
+                                        if($result_feature['total_feature'] < 10){
+                                            echo '
+                                                <button id="add_feature" class="btn btn-info">Add Feature</button>
+                                            ';
+                                        }
+                                    }else{
+                                        echo '
+                                            <button id="add_feature" class="btn btn-info">Add Feature</button>
+                                        ';
+                                    }
+                                }else{
+                                    if($result_feature['feature_name'] !== NULL){
+                                        foreach ($data as $row['feature_name']):
+                                        echo '<li>' . $row['feature_name'] .'</li>';
+                                        endforeach;
+                                    }else{
+                                        echo "This product doesnt have any noteable feature";
+                                    }
+                                }
                             }else{
-                                echo "This product doesnt have any noteable feature";
+                                if($result_feature['feature_name'] !== NULL){
+                                    foreach ($data as $row['feature_name']):
+                                    echo '<li>' . $row['feature_name']['feature_name'] .'</li>';
+                                    endforeach;
+                                }else{
+                                    echo "This product doesnt have any noteable feature";
+                                }
                             }
                         ?>
                     </ul>

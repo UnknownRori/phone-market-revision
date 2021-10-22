@@ -12,7 +12,7 @@
     FROM notification
     INNER JOIN users on notification.fromuser = users.id
     LEFT JOIN type_notification on notification.notificationtype = type_notification.id
-    WHERE notification.touser = ?;
+    WHERE notification.touser = ?
     ");
     $preparedata->bind_param("i", $id);
     $id = $_SESSION['users_id'];
@@ -22,8 +22,9 @@
     if(isset($_GET['search'])){
         if($_GET['search'] != null){
             $data = NULL;
+            // bug : another owner can see notification
             $searchengine = $conn->prepare("
-            SELECT notification.*, type_notification.*, users.id, users.username,
+            SELECT notification.*, notification.id AS notify_id, type_notification.*, users.id, users.username,
             SUBSTRING(notification.topic, 1, 35) AS substring_topic,
             SUBSTRING(notification.content, 1, 35) AS substring_content,
             SUBSTRING(users.username, 1, 15) AS substring_username,
@@ -31,12 +32,11 @@
             FROM notification
             INNER JOIN users on notification.fromuser = users.id
             LEFT JOIN type_notification on notification.notificationtype = type_notification.id
-            WHERE notification.touser = ? AND
-            type_notification.notification_name LIKE ? OR notification.topic LIKE ? OR notification.content LIKE ?
-            GROUP BY notification.fromuser
+            WHERE notification.touser=? AND notification.topic LIKE ?
+            OR notification.touser=? AND notification.content LIKE ?
+            OR notification.touser=? AND notification.notificationtype LIKE ?
             ");
-            $searchengine->bind_param("isss", $user, $searchterm, $searchterm, $searchterm);
-            $user = $_SESSION['users_id'];
+            $searchengine->bind_param("isssss", $id, $searchterm, $searchterm, $searchterm, $searchterm, $searchterm);
             $searchterm = '%' . $_GET['search'] . '%';
             $searchengine->execute();
             $data = $searchengine->get_result();

@@ -46,6 +46,7 @@
     <script src="../resource/js/main.js"></script>
     <script src="../resource/js/bootstrap.min.js"></script>
     <link rel="stylesheet" href="../resource/css/style.css">
+    <link rel="stylesheet" href="../resource/css/style-product-user.css">
     <link rel="stylesheet" href="../resource/css/style-image.css">
     <link rel="stylesheet" href="../resource/css/style-profile.css">
     <link rel="stylesheet" href="../resource/css/bootstrap.min.css">
@@ -129,16 +130,16 @@
                 <h4 class="text-center">
                     <?php echo htmlspecialchars($result['username']) ?>
                 </h4>
-                <div style="max-height: 120px; min-height: 100px; overflow:auto;">
+                <div class="description-box">
                     <p>
                         <?php echo htmlspecialchars($result['bio']) ?>
                     </p>
                 </div>
             </div>
-            <div class=>
+            <div class="margin-top-20">
             <h3>Featured Product</h3>
             <?php foreach($result_data as $row):?>
-            <div class="float-left preview-image" style="margin: 30px;">
+            <div class="float-left preview-image margin-30">
                 <div class="text-center" style="border: 1px solid black" title="<?php echo htmlspecialchars($row['product_name']); ?>">
                     <?php
                         if($row['photo_name']){
@@ -157,7 +158,7 @@
                     ?>
                 </div>
                 <div>
-                    <table class="table" style="margin-top: 5px;">
+                    <table class="table spacing">
                         <tr>
                             <td>
                                 <b>

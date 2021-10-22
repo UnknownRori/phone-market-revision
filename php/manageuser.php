@@ -15,14 +15,14 @@
     $prepare_data->close();
     if(isset($_GET['search'])){
         if($_GET['search'] != null){
-            $data = NULL;
+            $result = NULL;
             $searchengine = $conn->prepare("
-
+            SELECT *, SUBSTRING(username, 1, 15) AS substring_username FROM users WHERE username LIKE ?
             ");
-            $searchengine->bind_param("", );
-
+            $searchengine->bind_param("s", $search_term);
+            $search_term = '%' . $_GET['search'] . '%';
             $searchengine->execute();
-            $data = $searchengine->get_result();
+            $result = $searchengine->get_result();
             $searchengine->close();
         }else{
             MsgReport("Cannot search empty query!", "error", "msgonly");
@@ -43,7 +43,7 @@
     <link rel="stylesheet" href="../resource/css/style-notification.css">
     <link rel="stylesheet" href="../resource/css/bootstrap.min.css">
     <link rel="icon" href="../resource/image/favicon.jpg">
-    <?php PageTitle("Notification") ?>
+    <?php PageTitle("Manage Users") ?>
 </head>
 <body id="home">
     <div class="msg fixed-top text-center">
@@ -156,7 +156,7 @@
                 </td>
                 <td>
                     <form action="" method="post">
-                        <a href="user.php?id=<?php echo $row['id'] ?>" class="btn btn-primary">Details</a>
+                        <a href="user.php?users=<?php echo htmlspecialchars($row['username']) ?>" class="btn btn-primary">Details</a>
                         <input title="<?php if($_SESSION['admin'] && !$_SESSION['super_admin']){echo 'send report to Main Administrator for further review';} ?>" type="submit" name="report" value="Report" class="btn btn-warning">
                         <?php
                             if($_SESSION['super_admin']){

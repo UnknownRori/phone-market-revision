@@ -155,14 +155,62 @@
                     <?php echo $row['last_login'] ?>
                 </td>
                 <td>
-                    <form action="" method="post">
+                    <form action="confirmationform.php" method="POST">
+                        <input type="number" name="id" value="<?php echo $row['id'] ?>" hidden>
                         <a href="user.php?users=<?php echo htmlspecialchars($row['username']) ?>" class="btn btn-primary">Details</a>
-                        <input title="<?php if($_SESSION['admin'] && !$_SESSION['super_admin']){echo 'send report to Main Administrator for further review';} ?>" type="submit" name="report" value="Report" class="btn btn-warning">
+                        <?php $_SESSION['command'] = "users" ?>
                         <?php
                             if($_SESSION['super_admin']){
-                                echo '
-                                <input title="" type="submit" name="delete" value="Delete" class="btn btn-danger">
-                                ';
+                                if($row['id'] == $_SESSION['users_id']){
+                                    echo '
+                                        <input type="button" title="cannot send warning to yourself" class="btn btn-warning" name="warning" value="Warning" disabled>
+                                    ';
+                                }else{
+                                    if($row['warned'] == 1){
+                                        echo '
+                                            <input type="button" title="cannot send warning twice" class="btn btn-warning" name="warning" value="Warning" disabled>
+                                        ';
+                                    }else{
+                                        echo '
+                                            <input type="submit" title="cannot send warning twice" class="btn btn-warning" name="warning" value="Warning">
+                                        ';
+                                    }
+                                }
+                            }else if($_SESSION['admin']){
+                                if($row['id'] == $_SESSION['users_id']){
+                                    echo '
+                                        <input type="button" title="cannot send warning to yourself" class="btn btn-warning" name="report" value="Report" disabled>
+                                    ';
+                                }else{
+                                    if($row['warned'] == 1){
+                                        echo '
+                                            <input title="cannot send report to already warned users" type="button" class="btn btn-warning" name="report" value="Report" disabled>
+                                        ';
+                                    }else{
+                                        if($row['reported'] == 0){
+                                            echo '
+                                                <input type="submit" class="btn btn-warning" name="report" value="Report">
+                                            ';
+                                        }else{
+                                            echo '
+                                                <input title="cannot send another report" type="button" class="btn btn-warning" name="report" value="Report" disabled>
+                                            ';
+                                        }
+                                    }
+                                }
+                            }
+                        ?>
+                        <?php
+                            if($_SESSION['super_admin']){
+                                if($row['id'] == $_SESSION['users_id']){
+                                    echo '
+                                        <input title="Cannot delete yourself" type="button" name="delete" value="Delete" class="btn btn-danger" disabled>
+                                    ';
+                                }else{
+                                    echo '
+                                        <input title="" type="submit" name="delete" value="Delete" class="btn btn-danger">
+                                    ';
+                                }
                             }
                         ?>
                     </form>

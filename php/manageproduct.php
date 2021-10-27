@@ -1,8 +1,12 @@
 <?php
     require_once 'connect.php';
-    if(isset($_SESSION['vendor']) == 0){
+    if(isset($_SESSION['login'])){
+        if($_SESSION['vendor'] !== 1){
+            MsgReport("You do not have privilege over this feature!", "error", "");
+        }
+    } else{
         MsgReport("User must log in first", "warning", "login.php");
-    } 
+    }
     $preparedata = $conn->prepare("
         SELECT product.*,
         SUBSTRING(product.product_name, 1, 20) as substring_product_name,

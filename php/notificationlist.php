@@ -60,7 +60,7 @@
     <link rel="stylesheet" href="../resource/css/style-notification.css">
     <link rel="stylesheet" href="../resource/css/bootstrap.min.css">
     <link rel="icon" href="../resource/image/favicon.jpg">
-    <?php PageTitle("Notification") ?>
+    <?php PageTitle("Notification List") ?>
 </head>
 <body id="home">
     <div class="msg fixed-top text-center">

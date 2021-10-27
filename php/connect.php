@@ -17,6 +17,7 @@
                 sessionStorage.setItem("msg_type", "' . htmlspecialchars($msgtype) .'");
                 window.location = sessionStorage.getItem("last_url");
             </script>';
+            die;
         }else if($location === "msgonly"){
             echo '
             <script>
@@ -30,6 +31,7 @@
                  sessionStorage.setItem("msg_type", "' . htmlspecialchars($msgtype) .'");
                  window.location = "' . $location . '";
              </script>';
+             die;
         }
     }
 ?>

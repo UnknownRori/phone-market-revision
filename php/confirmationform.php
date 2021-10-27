@@ -30,7 +30,7 @@
                     $warncommand->execute();
                     $warncommand->close();
                     $_SESSION['command'] == Null;
-                    MsgReport("Product successfully warned", "success", "");
+                    MsgReport("Product successfully warned", "success", "manageproduct.php");
                 }
                 if(isset($_POST['deleteconfirm'])){
                     $deletecommand = $conn->prepare("DELETE FROM product WHERE prod_id=?");
@@ -38,7 +38,7 @@
                     $deletecommand->execute();
                     $deletecommand->close();
                     $_SESSION['command'] == Null;
-                    MsgReport("Product successfully deleted", "success", "");
+                    MsgReport("Product successfully deleted", "success", "manageproduct.php");
                 }
                 // fix this
                 if($_SESSION['users_id'] !== $data['id'] && $_POST['warning'] == null && $_SESSION['admin'] || $_SESSION['super_admin']){
@@ -62,8 +62,8 @@
             $prepare_notify_data->bind_param("i", $id);
             $id = $_POST['id'];
             $prepare_notify_data->execute();
-            $getdata = $prepare_notify_data->get_result();
-            $data = $getdata->fetch_assoc();
+            $get_data = $prepare_notify_data->get_result();
+            $data = $get_data->fetch_assoc();
             $prepare_notify_data->close();
             if($data['touser'] == $_SESSION['users_id'] || $_SESSION['super_admin']){
                 if(isset($_POST['deleteconfirm'])){
@@ -71,18 +71,80 @@
                     DELETE FROM notification WHERE id=?
                     ");
                     $prepare_delete_notify->bind_param("i", $id);
-                    $prepare_notify_data->execute();
+                    $prepare_delete_notify->execute();
                     $prepare_delete_notify->close();
-                    MsgReport("Notification  successfully deleted!", "success", "");
                     $_SESSION['command'] == Null;
+                    MsgReport("Notification  successfully deleted!", "success", "notificationlist.php");
                 }
             }else{
                 MsgReport("You do not have privilege over this notification!", "error", "");
             }
         }else if($_SESSION['command'] == "users"){
-
+            $prepare_users_data = $conn->prepare("
+            SELECT * username as name FROM users WHERE id=?
+            ");
+            $prepare_users_data->bind_param("i",$id);
+            $id = $_POST['id'];
+            $prepare_users_data->execute();
+            $get_data = $prepare_users_data->get_result();
+            $data = $get_data->fetch_assoc();
+            $prepare_users_data->close();
+            if(isset($_POST['warningconfirm'])){
+                $warncommand = $conn->prepare("UPDATE users SET warned='1' WHERE id=? ");
+                $warncommand->bind_param("i", $id);
+                $warncommand->execute();
+                $warncommand->close();
+                $_SESSION['command'] == Null;
+                MsgReport("Users successfully warned", "success", "manageuser.php");
+            }else if(isset($_POST['deleteconfirm'])){
+                if($_SESSION['super_admin'] == 1){
+                    $prepare_delete_users = $conn->prepare("
+                    DELETE FROM users WHERE id=?
+                    ");
+                    $prepare_delete_users->bind_param("i", $id);
+                    $prepare_delete_users->execute();
+                    $prepare_delete_users->close();
+                    $_SESSION['command'] == Null;
+                    MsgReport("Users successfully deleted", "success", "manageuser.php");
+                }else{
+                    MsgReport("You do not have privilege over this users!", "error", "");
+                }
+            }else if(isset($_POST['reportconfirm'])){
+                if($data['reported'] || $data['warned']){
+                    MsgReport("This users already warned or reported", "error", "");
+                }
+                $update_report_status_users = $conn->prepare("
+                UPDATE users SET reported='1' WHERE id=?
+                ");
+                $update_report_status_users->bind_param("i", $id);
+                $update_report_status_users->execute();
+                $update_report_status_users->close();
+                $prepare_users_to_report = $conn->prepare("
+                SELECT id, username, super_admin FROM users WHERE super_admin = 1 
+                ");
+                $prepare_users_to_report->execute();
+                $get_users_result = $prepare_users_to_report->get_result();
+                $users_result = $get_users_result->fetch_assoc();
+                $prepare_users_to_report->close();
+                foreach ($get_users_result as $get_users_result):
+                    $prepare_report_users = $conn->prepare("
+                    INSERT INTO notification (fromuser, touser, notificationtype, topic, content)
+                    VALUES
+                    (?, ?, ?, ?, ?)
+                    ");
+                    $prepare_report_users->bind_param("iiiss", $from_users, $to_users, $notification_type, $topic, $content);
+                    $from_users = $_SESSION['users_id'];
+                    $to_users = $get_users_result['id'];
+                    $notification_type = 1;
+                    $topic = "Reported Users" . " " . $data['name'];
+                    $content = "This users is doing wrong way";
+                    $prepare_report_users->execute();
+                    $prepare_report_users->close();
+                endforeach;
+                MsgReport("Users successfully reported and waiting for review from all Super Admin!", "success", "");
+            }
         }else{
-
+            MsgReport("No Command", "error", "msgonly");
         }
     }else{
         MsgReport("User must log in first", "warning", "login.php");
@@ -102,7 +164,7 @@
     <link rel="stylesheet" href="../resource/css/bootstrap.min.css">
     <link rel="icon" href="../resource/image/favicon.jpg">
     <?php
-        if(isset($_SESSION['command']) == "product"){
+        if($_SESSION['command'] == "product"){
             if(isset($_POST['warning'])){
                 PageTitle("Warning Product Confirmation - " . htmlspecialchars($data['name']));
             }else if(isset($_POST['delete'])){
@@ -113,6 +175,16 @@
         }else if($_SESSION['command'] == "notification"){
             if(isset($_POST['delete'])){
                 PageTitle("Delete Notification Confirmation - " . htmlspecialchars($data['name']));
+            }else{
+                PageTitle("No Command");
+            }
+        }else if($_SESSION['command'] == "users"){
+            if(isset($_POST['delete'])){
+                PageTitle("Delete Users Confirmation - " . htmlspecialchars($data['name']));
+            }else if(isset($_POST['report'])){
+                PageTitle("Report Users Confirmation - " . htmlspecialchars($data['name']));
+            }else if(isset($_POST['warning'])){
+                PageTitle("Warning Users Confirmation - " . htmlspecialchars($data['name']));
             }else{
                 PageTitle("No Command");
             }
@@ -180,7 +252,17 @@
     <div class="container" style="margin-top: 180px;">
         <div class="row">
             <div class="col-9" style="margin-left: 13%;">
-                <h1 class="text-center"><?php if(isset($_POST['warning'])){echo 'Warning Confirmation';}else if(isset($_POST['delete'])){echo 'Delete Confirmation';} ?></h1>
+                <h1 class="text-center"><?php
+                    if(isset($_POST['warning'])){
+                        echo 'Warning Confirmation';
+                    }else if(isset($_POST['delete'])){
+                        echo 'Delete Confirmation';
+                    }else if(isset($_POST{'report'})){
+                        echo 'Report Confirmation';
+                    }else{
+                        echo 'No Command';
+                    }
+                ?></h1>
                 <h2 class="text-center"><?php echo $data['name'] ?></h2>
                 <form action="" method="POST" id="confirmationform">
                     <input type="number" name="id" value="<?php echo $_POST['id'] ?>" hidden>
@@ -205,6 +287,10 @@
                             }else if(isset($_POST['delete'])){
                                 echo '
                                     <input title="Just Do It!" id="confirmationsubmit" type="submit" class="btn btn-danger" value="Confirm" name="deleteconfirm" disabled>
+                                ';
+                            }else if(isset($_POST['report'])){
+                                echo '
+                                    <input title="Just Do It!" id="confirmationsubmit" type="submit" class="btn btn-warning" value="Confirm" name="reportconfirm" disabled>
                                 ';
                             }
                         ?>

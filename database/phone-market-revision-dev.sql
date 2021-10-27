@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Oct 21, 2021 at 03:11 AM
+-- Generation Time: Oct 28, 2021 at 12:09 AM
 -- Server version: 10.4.10-MariaDB
 -- PHP Version: 7.3.12
 
@@ -100,11 +100,15 @@ CREATE TABLE `notification` (
 --
 
 INSERT INTO `notification` (`id`, `fromuser`, `touser`, `notificationtype`, `topic`, `content`) VALUES
-(2, 1, 4, 1, 'Testing new notification system', 'akashi the cat so she need gems everyday'),
-(6, 10, 4, 1, 'Cats', 'asadsd'),
 (7, 1, 9, 1, 'catpitalism', 'test'),
 (8, 1, 4, 2, '11111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111', '11111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111'),
-(17, 1, 4, 1, 'catspitalism', '123123123');
+(17, 1, 4, 1, 'catspitalism', '123123123'),
+(18, 9, 1, 1, 'Reported UsersCats', 'This users is doing wrong way'),
+(19, 9, 10, 1, 'Reported UsersCats', 'This users is doing wrong way'),
+(20, 9, 1, 1, 'Reported Users&nbspCats', 'This users is doing wrong way'),
+(21, 9, 10, 1, 'Reported Users&nbspCats', 'This users is doing wrong way'),
+(22, 9, 1, 1, 'Reported Users Cats', 'This users is doing wrong way'),
+(23, 9, 10, 1, 'Reported Users Cats', 'This users is doing wrong way');
 
 -- --------------------------------------------------------
 
@@ -133,14 +137,14 @@ INSERT INTO `product` (`prod_id`, `user_id`, `product_name`, `photo_name`, `pric
 (12, 1, 'No Phone Selfie', 'No Phone Selfie.png', 1000000, 5, 'urraaa', 0, ''),
 (13, 1, 'No Phone Employee ', 'No Phone Employee Pack.png', 4000000, 1, 'The no phone employee pack\r\n', 0, ''),
 (14, 1, 'No Phone', 'No Phone.png', 50000, 10, '', 0, ''),
-(15, 4, '123', 'No Phone Family Pack.png', 50, 1, '', 0, ''),
+(15, 4, '123', 'No Phone Family Pack.png', 50, 1, '', 1, ''),
 (21, 4, 'aaaaaaaaaaaaaaaaaa', 'No Phone.png', 2, 0, '', 0, ''),
 (22, 4, 'E', '', 1, 0, '', 0, ''),
 (23, 4, 'U', '', 1, 0, '', 0, ''),
 (24, 4, 'ree', '', 11, 0, '', 0, ''),
 (26, 4, '<script>alert(\'Cat\')</script>', '', 2, 0, '', 0, ''),
 (27, 4, 'ret', 'No Phone Employee Pack.png', 123, 1, '', 0, ''),
-(28, 1, '44444', '', 0, 444, '111', 0, ''),
+(28, 1, '44444', 'No Phone Employee Pack.png', 222, 444, '111', 0, ''),
 (29, 4, 'Catpitalism HO', '', 150, 5, '12', 0, ''),
 (30, 4, 'test123', '', 12, 12, 'test', 0, ''),
 (32, 1, 'sqltest', '', 1231, 21231, '', 0, ''),
@@ -198,21 +202,23 @@ CREATE TABLE `users` (
   `vendor` tinyint(1) NOT NULL,
   `admin` tinyint(1) NOT NULL,
   `super_admin` tinyint(1) NOT NULL,
-  `bio` varchar(255) DEFAULT NULL
+  `bio` varchar(255) DEFAULT NULL,
+  `warned` tinyint(1) NOT NULL,
+  `reported` tinyint(1) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Dumping data for table `users`
 --
 
-INSERT INTO `users` (`id`, `username`, `password`, `create_time`, `last_login`, `vendor`, `admin`, `super_admin`, `bio`) VALUES
-(1, 'UnknownRori', '$2y$10$p2DOg2jiNTS5Icsf7keY3uayK76H.CM2djozq9MKZzIQWrAFGBTMS', '2021-10-15 22:42:21', '2021-10-20 11:40:15', 1, 1, 1, 'Test'),
-(4, 'Akashi', '$2y$10$sOCRUSUZHQsGoMIi7je9mO4fVV1uUPjqodG8U1LQHrud./9Oz95zK', '2021-10-15 22:42:21', '2021-10-19 22:18:42', 1, 0, 0, NULL),
-(9, 'Admin', '$2y$10$tDw778LjK2yNE8AylZ7Dc.lzmfFla4llMH8u0CfXzMK1Xs3tcZg4S', '2021-10-15 22:42:21', '2021-10-16 23:15:19', 0, 1, 0, NULL),
-(10, '<script>alert(\"cats\");</script>', '$2y$10$/AaYuOfeljJjqArU4a0AQeRp6XNiKhe4W.04./HBrvIA44ENPnVXS', '2021-10-15 22:42:21', '2021-10-15 22:42:21', 1, 1, 1, NULL),
-(11, 'Kawaiikaze', '$2y$10$I3PVxR/cKo8BVBjiRQ01NuQ8dJt5p3R8r/GUIas/o2sTjAn8kVHSW', '2021-10-15 22:49:02', '2021-10-15 22:49:02', 0, 0, 0, NULL),
-(12, 'q', '$2y$10$rii7CFsVjJxGysTMT/nzaeWDmzyHq8RWtzP89gNDDm2az2ZuqvNuS', '2021-10-15 22:56:07', '2021-10-15 22:56:07', 0, 0, 0, NULL),
-(13, 'Cats', '$2y$10$52akePYuDClVniD1cHZLJerSNVK1Rz0H0VkyDCWNvQ9.jRsASvXpS', '2021-10-20 10:05:46', '2021-10-20 10:05:46', 0, 0, 0, NULL);
+INSERT INTO `users` (`id`, `username`, `password`, `create_time`, `last_login`, `vendor`, `admin`, `super_admin`, `bio`, `warned`, `reported`) VALUES
+(1, 'UnknownRori', '$2y$10$N8M0JUrDlDr2n80ETWd.A.Weuo4OY22zNgECBVmBIFHr5C/Q7nrES', '2021-10-15 22:42:21', '2021-10-27 21:46:34', 1, 1, 1, 'Lorem ipsum dolor sit amet consectetur, adipisicing elit. Nam doloremque numquam autem enim quia\r\nexplicabo, quisquam illo eius illum laborum minus maiores! Corrupti non ullam aspernatur neque impedit natus culpa! Lorem ipsum dolor sit amet consectetur, a', 0, 0),
+(4, 'Akashi', '$2y$10$LNO80hUeVGfliaZwWupIU.kFDoMZAripFQ7R.mysKAInOSnBExUEu', '2021-10-15 22:42:21', '2021-10-26 23:32:54', 1, 0, 0, NULL, 0, 0),
+(9, 'Admin', '$2y$10$hpoZo.aFIF84Anu.6w4CwuSj3T9w4gB7oMF64Mbg4Ug91VyNwxySa', '2021-10-15 22:42:21', '2021-10-27 21:46:54', 0, 1, 0, NULL, 0, 0),
+(10, '<script>alert(\"cats\");</script>', '$2y$10$/AaYuOfeljJjqArU4a0AQeRp6XNiKhe4W.04./HBrvIA44ENPnVXS', '2021-10-15 22:42:21', '2021-10-15 22:42:21', 1, 1, 1, NULL, 0, 0),
+(11, 'Kawaiikaze', '$2y$10$I3PVxR/cKo8BVBjiRQ01NuQ8dJt5p3R8r/GUIas/o2sTjAn8kVHSW', '2021-10-15 22:49:02', '2021-10-15 22:49:02', 0, 0, 0, NULL, 0, 0),
+(12, 'q', '$2y$10$G/48JoFO0WB6jkXuqFNaQuSZNIZK.ccuyV7/5rQdG6LohhqIETJ0u', '2021-10-15 22:56:07', '2021-10-21 01:12:36', 0, 0, 0, NULL, 1, 0),
+(13, 'Cats', '$2y$10$3duejlTmVqmzXkxOi6gxuuO0uvpKLVEOx0YGTsoPGbWFsVfCRzuw2', '2021-10-20 10:05:46', '2021-10-22 10:13:50', 0, 0, 0, NULL, 0, 1);
 
 -- --------------------------------------------------------
 
@@ -326,7 +332,7 @@ ALTER TABLE `feature`
 -- AUTO_INCREMENT for table `notification`
 --
 ALTER TABLE `notification`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=24;
 
 --
 -- AUTO_INCREMENT for table `product`

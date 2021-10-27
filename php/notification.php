@@ -1,5 +1,24 @@
 <?php
     require_once 'connect.php';
+    if(isset($_SESSION['login'])){
+        $prepare_notification_content = $conn->prepare("
+        SELECT notification.*, users.username FROM notification
+        INNER JOIN users on users.id = notification.fromuser
+        WHERE notification.id=?
+        ");
+        $prepare_notification_content->bind_param("i", $id);
+        $id = $_GET['id'];
+        $prepare_notification_content->execute();
+        $get_result = $prepare_notification_content->get_result();
+        $result = $get_result->fetch_assoc();
+        if($_SESSION['users_id'] == $result['touser'] || $_SESSION['super_admin'] == 1){
+
+        }else{
+            MsgReport("You do not have privilege over this notification!", "error", "");
+        }
+    }else{
+        MsgReport("Users must login first", "error", "login.php");
+    }
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -12,8 +31,10 @@
     <script src="../resource/js/bootstrap.min.js"></script>
     <link rel="stylesheet" href="../resource/css/style.css">
     <link rel="stylesheet" href="../resource/css/style-profile.css">
+    <link rel="stylesheet" href="../resource/css/style-notification.css">
     <link rel="stylesheet" href="../resource/css/bootstrap.min.css">
-    <?php PageFile("notification"); ?>
+    <link rel="icon" href="../resource/image/favicon.jpg">
+    <?php PageTitle("Notification - " . $result['topic']); ?>
 </head>
 <body>
     <div class="msg fixed-top text-center">
@@ -73,8 +94,44 @@
             </ul>
         </div>
     </nav>
-    <div class="container" style="margin-top:90px;">
-
+    <div id="extend" class="container">
+        <table class="table table-hover">
+            <tr>
+                <th colspan="3" class="text-center">
+                    <?php
+                        echo htmlspecialchars($result['topic'])
+                    ?>
+                </th>
+            </tr>
+            <tr>
+                <td>
+                    From
+                </td>
+                <td>
+                    :
+                </td>
+                <td>
+                    <?php
+                        echo htmlspecialchars($result['username'])
+                    ?>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Content
+                </td>
+                <td>
+                    :
+                </td>
+                <td>
+                    <textarea name="" id="" cols="30" rows="10" class="form-control" disabled>
+                        <?php
+                            echo htmlspecialchars($result['content'])
+                        ?>
+                    </textarea>
+                </td>
+            </tr>
+        </table>
     </div>
     <div class="footer fixed-bottom img-small-opacity floating-bottom">
         <a href="https://github.com/UnknownRori/phone-market-revision" target="_blank" title="Source Code">

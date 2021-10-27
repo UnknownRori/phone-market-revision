@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Oct 21, 2021 at 03:08 AM
+-- Generation Time: Oct 28, 2021 at 12:10 AM
 -- Server version: 10.4.10-MariaDB
 -- PHP Version: 7.3.12
 
@@ -140,15 +140,17 @@ CREATE TABLE `users` (
   `vendor` tinyint(1) NOT NULL,
   `admin` tinyint(1) NOT NULL,
   `super_admin` tinyint(1) NOT NULL,
-  `bio` varchar(255) DEFAULT NULL
+  `bio` varchar(255) DEFAULT NULL,
+  `warned` tinyint(1) NOT NULL,
+  `reported` tinyint(1) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Dumping data for table `users`
 --
 
-INSERT INTO `users` (`id`, `username`, `password`, `create_time`, `last_login`, `vendor`, `admin`, `super_admin`, `bio`) VALUES
-(1, 'Admin', '$2y$10$N8VXQF1TmsrKz24cBbgjLurLo.JNdzJkkZu/mkw9AH1T8yjkz9YEe', '2021-10-21 01:07:41', '2021-10-21 01:08:03', 1, 1, 1, NULL);
+INSERT INTO `users` (`id`, `username`, `password`, `create_time`, `last_login`, `vendor`, `admin`, `super_admin`, `bio`, `warned`, `reported`) VALUES
+(1, 'Admin', '$2y$10$vuuv.s56EZ1UlX5QQT87megcrxWgnIheKuUYLFxgjQppkrA75HiV6', '2021-10-27 22:10:33', '2021-10-27 22:10:33', 1, 1, 1, NULL, 0, 0);
 
 -- --------------------------------------------------------
 

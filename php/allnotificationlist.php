@@ -1,10 +1,13 @@
 <?php
     require_once 'connect.php';
-    if(isset($_SESSION['login']) == 0){
-        if($_SESSION['super_admin'] !== 1){
+    if(isset($_SESSION['login']) == 1){
+        if($_SESSION['super_admin'] == 1){
+
+        }else{
             MsgReport("You do not have privilege over this feature!", "error", "");
         }
-        MsgReport("User must log in first", "warning", "login.php");
+    }else{
+        MsgReport("User must log in first", "error", "login.php");
     }
     $preparedata = $conn->prepare("
     SELECT notification.*, notification.id AS notify_id, type_notification.*, users.id AS userfromid, users.username AS userfrom,

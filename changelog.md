@@ -1,3 +1,16 @@
+### Minor Update 0.8.5.2
+<ul>
+    <li>Fix : fixing some typo</li>
+    <li>Fix : fixing cannot delete notification</li>
+    <li>Security Fix : all notification list can be accessed by anyone who already log in</li>
+    <li>Security Fix : normal admin [with no vendor access] can access manageproduct.php</li>
+    <li>Update : database update</li>
+    <li>Update : adding functional notification.php</li>
+    <li>Update : revision on manageuser.php</li>
+    <li>Update : adding deletion and warning to users in confirmationform.php</li>
+</ul>
+
+
 ### Minor Update 0.8.5.1
 
 ##### Change

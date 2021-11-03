@@ -18,11 +18,12 @@
                 if($_POST['password_1'] == null){
                     MsgReport("Account cannot have empty password", "error", "msgonly");
                 }else if(($_POST['password_1']) == ($_POST['password_2'])){
-                    $add_users = $conn->prepare("INSERT INTO users (username, password, admin, vendor) VALUE (?, ?, ?, ?)");
-                    $add_users->bind_param("ssbb", $username, $password, $admin, $vendor);
+                    $add_users = $conn->prepare("INSERT INTO users (username, password, vendor, admin, super_admin) VALUE (?, ?, ?, ?, ?)");
+                    $add_users->bind_param("ssbbb", $username, $password, $admin, $vendor, $super_admin);
                     $password  = password_hash($_POST['password_1'], PASSWORD_DEFAULT);
                     $admin     = false;
                     $vendor    = false;
+                    $super_admin = false;
                     $add_users->execute();
                     $add_users->close();
 

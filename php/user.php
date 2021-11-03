@@ -88,13 +88,13 @@
                         </li>
                         ';
                     }
-                }
-                if(isset($_SESSION['vendor'])){
-                    echo '
-                    <li class="nav-item">
-                        <a href="manageproduct.php" class="nav-link">Manage Product</a>
-                    </li>
-                    ';
+                    if($_SESSION['vendor']){
+                       echo '
+                        <li class="nav-item">
+                            <a href="manageproduct.php" class="nav-link">Manage Product</a>
+                        </li>
+                        ';
+                    }
                 }
                 ?>
             </ul>

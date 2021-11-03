@@ -184,7 +184,7 @@
                             if(isset($_SESSION['login'])){
                                 if($_SESSION['users_id'] == $result['user_id']){
                                     if($result_feature['feature_name'] !== NULL){
-                                        foreach ($data as $row['feature_name']):
+                                        foreach ($data as $row):
                                         echo '<li>' . $row['feature_name'] .'</li>';
                                         endforeach;
                                         if($result_feature['total_feature'] < 10){

@@ -1,4 +1,5 @@
 <?php
+    // bug if file png will get id and return yo do not have privilege and send back to last_url
     require_once 'connect.php';
     if($_SESSION['vendor'] == 1 || $_SESSION['admin'] == 1){
         if(isset($_GET['id'])){
@@ -142,13 +143,13 @@
         <link rel="stylesheet" href="../resource/css/style-editproduct.css">
         <link rel="stylesheet" href="../resource/css/bootstrap.min.css">
         <link rel="icon" href="../resource/image/favicon.jpg">
-            <?php
-                if(isset($result['product_name'])){
-                    PageTitle("Editing Product" . " - " . $result['product_name'] . " - " . $result['username']);
-                }else{
-                    PageTitle("Creating New Product" . " - " . $_SESSION['username']);
-                }
-                ?>
+        <?php
+            if(isset($result['product_name'])){
+                PageTitle("Editing Product" . " - " . $result['product_name'] . " - " . $result['username']);
+            }else{
+                PageTitle("Creating New Product" . " - " . $_SESSION['username']);
+            }
+        ?>
     </head>
     <body>
         <div class="msg fixed-top text-center">
@@ -177,7 +178,7 @@
                             if($_SESSION['admin'] == 1){
                                 echo '
                                 <li class="nav-item">
-                                    <a href="php/manageuser.php" class="nav-link">Manage Users</a>
+                                    <a href="manageuser.php" class="nav-link">Manage Users</a>
                                 </li>
                                 ';
                             }

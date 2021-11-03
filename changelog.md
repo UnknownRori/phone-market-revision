@@ -1,9 +1,24 @@
+### Major Update 0.8.6.0
+
+<ul>
+    <li>Fix : fixing some typo</li>
+    <li>Fix : fixing bug on product.php throwing array to string error</li>
+    <li>Fix : fixing display bug in users.php</li>
+    <li>Fix : fixing button editproduct.php that trying to display non existance .php file</li>
+    <li>Fix : fixing confirmation.php user delete and warning</li>
+    <li>Update : revise manageproduct.php display</li>
+    <li>Update : revise manageusers.php display</li>
+    <li>Update : adding editusers.php</li>
+    <li>Update : minor database update</li>
+</ul>
+
 ### Minor Update 0.8.5.2
+
 <ul>
     <li>Fix : fixing some typo</li>
     <li>Fix : fixing cannot delete notification</li>
-    <li>Security Fix : all notification list can be accessed by anyone who already log in</li>
-    <li>Security Fix : normal admin [with no vendor access] can access manageproduct.php</li>
+    <li>Security Fix : now all notification list can be accessed by anyone who already log in</li>
+    <li>Security Fix : now normal admin [with no vendor access] cannot access manageproduct.php</li>
     <li>Update : database update</li>
     <li>Update : adding functional notification.php</li>
     <li>Update : revision on manageuser.php</li>

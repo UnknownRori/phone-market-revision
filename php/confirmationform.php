@@ -81,9 +81,9 @@
             }
         }else if($_SESSION['command'] == "users"){
             $prepare_users_data = $conn->prepare("
-            SELECT * username as name FROM users WHERE id=?
+            SELECT *, username as name FROM users WHERE id=?
             ");
-            $prepare_users_data->bind_param("i",$id);
+            $prepare_users_data->bind_param("i", $id);
             $id = $_POST['id'];
             $prepare_users_data->execute();
             $get_data = $prepare_users_data->get_result();

@@ -139,7 +139,7 @@
                 <td>ID</td>
                 <td>Name</td>
                 <td>Photo</td>
-                <td>Price</td>
+                <!-- <td>Price</td> -->
                 <td>Available</td>
                 <td>Request</td>
                 <td>Status</td>
@@ -166,9 +166,9 @@
                      }
                      ?>
                 </td>
-                <td>
+                <!-- <td>
                     <?php echo '$' . $row['price']; ?>
-                </td>
+                </td> -->
                 <td>
                     <?php echo $row['stock']; ?>
                 </td>
@@ -209,8 +209,9 @@
                         <?php $_SESSION['command'] = "product" ?>
                         <div class="form-group float-left">
                             <input type="number" name="id" value="<?php echo $row['prod_id'] ?>" hidden>
-                            <a href="product.php?id=<?php echo $row['prod_id']; ?>" class="btn btn-primary">Detail</a>
-                            <a href="editproduct.php?id=<?php echo $row['prod_id'] ?>" class="btn btn-warning">Edit</a>
+                            <a href="product.php?id=<?php echo $row['prod_id']; ?>" class="btn btn-primary spacing">Detail</a>
+                            <a href="managefeature.php?id=<?php echo $row['prod_id'] ?>" class="btn btn-info spacing">Manage Feature</a>
+                            <a href="editproduct.php?id=<?php echo $row['prod_id'] ?>" class="btn btn-warning spacing">Edit</a>
                             <input type="submit" value="Delete" name="delete" class="btn btn-danger spacing">
                         </div>
                     </form>

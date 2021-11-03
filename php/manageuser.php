@@ -1,8 +1,8 @@
 <?php
     require_once 'connect.php';
     if(isset($_SESSION['login']) == 1){
-        if($_SESSION['admin'] == 0){
-            MsgReport("You do not have privilege over this product", "error", "");
+        if(!$_SESSION['admin'] && !$_SESSION['super_admin']){
+            MsgReport("You do not have privilege over this feature", "error", "");
         }
     }else{
         MsgReport("User must log in first", "warning", "login.php");
@@ -77,17 +77,21 @@
                         ';
                     }
                     if(($_SESSION['vendor'])){
-                    echo '
-                    <li class="nav-item">
-                        <a href="manageproduct.php" class="nav-link">Manage Product</a>
-                    </li>
-                    ';
+                        echo '
+                        <li class="nav-item">
+                            <a href="manageproduct.php" class="nav-link">Manage Product</a>
+                        </li>
+                        ';
+                    }
+                    if($_SESSION['super_admin']){
+                        echo '
+                        <li class="nav-item">
+                            <a href="editusers.php" title="Create new users" class="btn btn-info spacing">Create User</a>
+                        </li>
+                        ';
                     }
                 }
                 ?>
-                <li class="nav-item">
-                    <a href="" title="Create new users" class="btn btn-info spacing">Create User</a>
-                </li>
                 <li class="nav-item">
                     <!-- search engine input -->
                     <form class="form-inline" action="" method="get">
@@ -117,7 +121,7 @@
     <div class="container extend">
         <table class="table table-hover">
             <tr>
-                <td>User ID</td>
+                <td>ID</td>
                 <td>Username</td>
                 <td>User Type</td>
                 <td>Created at</td>
@@ -131,16 +135,18 @@
                 <td title="<?php echo htmlspecialchars($row['username']) ?>">
                     <?php echo htmlspecialchars($row['substring_username']) ?>
                 </td>
-                <td>
+                <td title="<?php echo 'vendor : ' . $row['vendor'] . ' admin : ' . $row['admin'] .' super admin : ' . $row['super_admin'] ?>">
                     <?php
                         if($row['vendor'] && $row['admin'] && $row['super_admin']){
+                            echo 'Super Administrator';
+                        }else if(!$row['vendor'] && $row['admin'] && !$row['super_admin']){
                             echo 'Administrator';
-                        }else if($row['vendor'] && $row['admin'] && !$row['super_admin']){
-                            echo 'Staff';
-                        }else if($row['admin'] && !$row['vendor'] && !$row['super_admin']){
-                            echo 'Deputy Administrator';
                         }else if($row['vendor'] && !$row['admin'] && !$row['super_admin']){
                             echo 'Vendor';
+                        }else if(!$row['vendor'] && $row['admin'] && $row['super_admin']){
+                            echo 'User Management';
+                        }else if($row['vendor'] && $row['admin'] && !$row['super_admin']){
+                            echo 'Product Management';
                         }else if(!$row['vendor'] && !$row['admin'] && !$row['super_admin']){
                             echo 'User';
                         }else{
@@ -161,6 +167,9 @@
                         <?php $_SESSION['command'] = "users" ?>
                         <?php
                             if($_SESSION['super_admin']){
+                                echo '
+                                    <a href="editusers.php?id=' . $row['id'] .'" title="Edit clicked users" class="btn btn-warning">Edit</a>
+                                ';
                                 if($row['id'] == $_SESSION['users_id']){
                                     echo '
                                         <input type="button" title="cannot send warning to yourself" class="btn btn-warning" name="warning" value="Warning" disabled>
@@ -172,7 +181,7 @@
                                         ';
                                     }else{
                                         echo '
-                                            <input type="submit" title="cannot send warning twice" class="btn btn-warning" name="warning" value="Warning">
+                                            <input type="submit" title="" class="btn btn-warning" name="warning" value="Warning">
                                         ';
                                     }
                                 }
@@ -204,7 +213,7 @@
                             if($_SESSION['super_admin']){
                                 if($row['id'] == $_SESSION['users_id']){
                                     echo '
-                                        <input title="Cannot delete yourself" type="button" name="delete" value="Delete" class="btn btn-danger" disabled>
+                                        <input title="Beware this is your current account" type="submit" name="delete" value="Delete" class="btn btn-danger">
                                     ';
                                 }else{
                                     echo '
